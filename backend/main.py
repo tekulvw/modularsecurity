@@ -15,11 +15,12 @@
 # limitations under the License.
 #
 from flask import Flask
+from flask_login import LoginManager
 
 import os
 import logging
 
-from resources.user import AuthorizeUser
+from resources.user import AuthorizeUser, AuthorizedUser
 from resources.home import Home
 
 from auth import google
@@ -30,8 +31,11 @@ app.config['GOOGLE_ID'] = os.environ.get("GOOGLE_CLIENT_ID")
 app.config['GOOGLE_SECRET'] = os.environ.get("GOOGLE_SECRET")
 app.secret_key = os.environ.get("APP_SECRET_KEY")
 
+app.config["LOGIN_MGR"] = LoginManager(app)
+
 app.add_url_rule('/', view_func=Home.as_view("home"))
 app.add_url_rule('/authorize/', view_func=AuthorizeUser.as_view("authorize"))
+app.add_url_rule('/authorize/complete', view_func=AuthorizedUser.as_view("authorized"))
 
 google.initialize(app)
 
