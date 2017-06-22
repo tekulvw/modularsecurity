@@ -20,10 +20,10 @@ from flask_login import LoginManager
 import os
 import logging
 
-from resources.user import AuthorizeUser, AuthorizedUser
+from resources.user import AuthorizeUser, AuthorizedUser, UserInfo
 from resources.home import Home
 
-from auth import google
+from auth import google, initialize_tokengetter
 
 app = Flask(__name__)
 
@@ -36,8 +36,10 @@ app.config["LOGIN_MGR"] = LoginManager(app)
 app.add_url_rule('/', view_func=Home.as_view("home"))
 app.add_url_rule('/authorize/', view_func=AuthorizeUser.as_view("authorize"))
 app.add_url_rule('/authorize/complete', view_func=AuthorizedUser.as_view("authorized"))
+app.add_url_rule('/user/info', view_func=UserInfo.as_view('user.info'))
 
-google.initialize(app)
+auth = google.initialize(app)
+initialize_tokengetter(auth)
 
 
 @app.errorhandler(500)

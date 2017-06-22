@@ -1,5 +1,5 @@
 from flask import current_app as app
-from flask import url_for, redirect, session
+from flask import url_for, redirect, session, jsonify
 from flask.views import MethodView
 
 
@@ -15,5 +15,12 @@ class AuthorizedUser(MethodView):
         resp = auth.authorized_response()
 
         if resp:
-            session["authorization"] = (resp, '')
+            session["authorization"] = resp
         return redirect(url_for('home'))
+
+
+class UserInfo(MethodView):
+    def get(self):
+        auth = app.config.get("AUTH")
+        data = auth.get('userinfo')
+        return jsonify({'data': data.data})

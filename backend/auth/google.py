@@ -20,3 +20,4 @@ def initialize(app):
     )
 
     app.config["AUTH"] = google
+    return google
