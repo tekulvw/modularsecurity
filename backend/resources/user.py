@@ -1,12 +1,12 @@
 from flask import current_app as app
-from flask import url_for, redirect
+from flask import url_for, redirect, session
 from flask.views import MethodView
 
 
 class AuthorizeUser(MethodView):
     def get(self):
         auth = app.config.get("AUTH")
-        return auth.authorize(callback=url_for('authorized', _external=True)), 302
+        return auth.authorize(callback=url_for('authorized', _external=True))
 
 
 class AuthorizedUser(MethodView):
@@ -15,6 +15,5 @@ class AuthorizedUser(MethodView):
         resp = auth.authorized_response()
 
         if resp:
-            # Authentication didn't fail
-            pass
+            session["authorization"] = (resp, '')
         return redirect(url_for('home'))
