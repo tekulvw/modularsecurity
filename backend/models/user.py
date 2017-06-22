@@ -12,7 +12,7 @@ class User(ndb.Model, UserMixin):
     phone_num = ndb.IntegerProperty()
 
     oauth_id = ndb.StringProperty(required=True)
-    create_date = ndb.DateTimeProperty(auto_no_add=True)
+    create_date = ndb.DateTimeProperty(auto_now_add=True)
 
     @classmethod
     def create(cls, userinfo):
@@ -42,4 +42,4 @@ class User(ndb.Model, UserMixin):
         return cls.query(cls.oauth_id == oauth_id).get()
 
     def get_id(self):
-        return self.key.integer_id()
+        return self.oauth_id
