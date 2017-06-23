@@ -11,4 +11,4 @@ class User(ndb.Model):
     phone_num = ndb.IntegerProperty()
 
     oauth_id = ndb.StringProperty(required=True)
-    create_date = ndb.DateTimeProperty(auto_no_add=True)
+    create_date = ndb.DateTimeProperty(auto_now_add=True)
