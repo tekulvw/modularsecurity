@@ -1,7 +1,9 @@
+import calendar
+import datetime
 from flask import current_app as app
 from flask import url_for, redirect, session, jsonify, flash
 from flask.views import MethodView
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required
 
 from models import User
 
@@ -18,11 +20,16 @@ class AuthorizedUser(MethodView):
         resp = auth.authorized_response()
 
         if resp:
+            now = datetime.datetime.utcnow()
+            expires_in = int(resp.get("expires_in", 3600))
+            expires_at = now + datetime.timedelta(seconds=expires_in)
+            resp.update(expires_at=calendar.timegm(expires_at.timetuple()))
             session["authorization"] = resp
         return redirect(url_for('login'))
 
 
 class UserInfo(MethodView):
+    @login_required
     def get(self):
         auth = app.config.get("AUTH")
         data = auth.get('userinfo')

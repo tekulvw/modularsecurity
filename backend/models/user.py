@@ -1,5 +1,7 @@
 from google.appengine.ext import ndb
+from flask import session
 from flask_login import UserMixin
+import datetime
 
 # Property Information can be found here:
 # https://cloud.google.com/appengine/docs/standard/python/ndb/entity-property-reference
@@ -43,3 +45,13 @@ class User(ndb.Model, UserMixin):
 
     def get_id(self):
         return self.oauth_id
+
+    @property
+    def is_authenticated(self):
+        oauth_resp = session.get("authorization")
+        if oauth_resp is None:
+            return False
+
+        now = datetime.datetime.utcnow()
+        expires_at = datetime.datetime.utcfromtimestamp(oauth_resp["expires_at"])
+        return now < expires_at

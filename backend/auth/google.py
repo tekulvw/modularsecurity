@@ -9,8 +9,7 @@ def initialize(app):
         consumer_key=app.config.get('GOOGLE_ID'),
         consumer_secret=app.config.get('GOOGLE_SECRET'),
         request_token_params={
-            'scope': 'email',
-            'access_type': 'offline'
+            'scope': 'email'
         },
         base_url='https://www.googleapis.com/oauth2/v1/',
         request_token_url=None,
