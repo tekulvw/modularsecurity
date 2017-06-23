@@ -1,5 +1,5 @@
 from google.appengine.ext import ndb
-from flask import session
+from flask import session, current_app
 from flask_login import UserMixin
 import datetime
 
@@ -54,4 +54,7 @@ class User(ndb.Model, UserMixin):
 
         now = datetime.datetime.utcnow()
         expires_at = datetime.datetime.utcfromtimestamp(oauth_resp["expires_at"])
-        return now < expires_at
+        if now > expires_at:
+            login_manager = current_app.config.get("LOGIN_MGR")
+            return login_manager.needs_refresh()
+        return True
