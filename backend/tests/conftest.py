@@ -3,7 +3,7 @@ from mock import MagicMock
 import sys
 
 
-@pytest.yield_fixture(autouse=True)
+@pytest.fixture(autouse=True)
 def patch_ndb(monkeypatch):
     sys.modules['google'] = MagicMock()
     sys.modules['google.appengine'] = MagicMock()
