@@ -16,4 +16,30 @@
 #
 from flask import Flask
 
+import os
+import logging
+
+from resources.user import AuthorizeUser
+from resources.home import Home
+
+from auth import google
+
 app = Flask(__name__)
+
+app.config['GOOGLE_ID'] = os.environ.get("GOOGLE_CLIENT_ID")
+app.config['GOOGLE_SECRET'] = os.environ.get("GOOGLE_SECRET")
+app.secret_key = os.environ.get("APP_SECRET_KEY")
+
+app.add_url_rule('/', view_func=Home.as_view("home"))
+app.add_url_rule('/authorize/', view_func=AuthorizeUser.as_view("authorize"))
+
+google.initialize(app)
+
+
+@app.errorhandler(500)
+def server_error(e):
+    logging.exception('An error occurred during a request.')
+    return """
+    An internal error occurred: <pre>{}</pre>
+    See logs for full stacktrace.
+    """.format(e), 500
