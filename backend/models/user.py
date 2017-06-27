@@ -12,6 +12,9 @@ from .secondary import Secondary
 
 # noinspection PyUnresolvedReferences
 class User(ndb.Model, UserMixin):
+
+    VALID_UPDATE_ATTRS = ("fname", "lname", "phone_num")
+
     fname = ndb.StringProperty()
     lname = ndb.StringProperty()
     phone_num = ndb.IntegerProperty()
@@ -45,6 +48,21 @@ class User(ndb.Model, UserMixin):
         :return: User, None
         """
         return cls.query(cls.oauth_id == oauth_id).get()
+
+    def update_from(self, data):
+        """
+        Updates this user with the given data. Data keys must be in
+            VALID_UPDATE_ATTRS.
+        :param data: dict
+        :return:
+        """
+        if not self.valid_update_keys(data.keys):
+            raise RuntimeError("Invalid update keys.")
+
+        for k, v in data.items():
+            setattr(self, k, v)
+
+        self.put()
 
     def to_json(self):
         data = {
@@ -87,3 +105,17 @@ class User(ndb.Model, UserMixin):
         secondary = [s.system_key.get() for s in q.fetch(count)]
 
         return tuple(s.to_json() for s in secondary)
+
+    @staticmethod
+    def valid_update_keys(keys):
+        """
+        Determines if the given list of keys are valid attributes.
+
+        Used in conjunction with resources/user/User/update
+        :param keys: list[str]
+        :return: bool
+        """
+        for k in keys:
+            if k not in User.VALID_UPDATE_ATTRS:
+                return False
+        return True

@@ -1,7 +1,7 @@
 import calendar
 import datetime
 from flask import current_app as app
-from flask import url_for, redirect, session, jsonify, flash, abort
+from flask import url_for, redirect, session, jsonify, flash, abort, request
 from flask.views import MethodView
 from flask_login import login_user, logout_user, login_required, current_user
 
@@ -67,8 +67,25 @@ class Logout(MethodView):
 class User(MethodView):
     @login_required
     def get(self, oauth_id):
+        """
+        Gets current user information.
+        :param oauth_id:
+        :return: models/user/User plus owned_systems, secondary_systems
+        """
         if current_user.oauth_id != oauth_id:
             # TODO: Check for admin status here.
             abort(403)
 
         return jsonify(current_user.to_json())
+
+    @login_required
+    def update(self):
+        """
+        Keys sent must be a subset or equal to the keys in model/user/User
+        :return: model/user/User
+        """
+        data = request.get_json()
+        if data is None or not UserModel.valid_update_keys(data.keys()):
+            abort(401)
+
+
