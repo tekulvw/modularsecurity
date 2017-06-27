@@ -5,6 +5,7 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from models.owner import Owner as OwnerModel
+from models.user import User as UserModel
 
 
 class System(MethodView):
@@ -25,7 +26,8 @@ class System(MethodView):
             abort(401)
         grace = data.get('grace_period')
         oauth = data.get('oauth_id')
-        entry = OwnerModel.create(oauth, grace)
+        user = UserModel.from_oauth_id(oauth_id=oauth)
+        entry = OwnerModel.create(user, grace)
         entry.put()
 
     @login_required
