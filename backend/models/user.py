@@ -3,6 +3,9 @@ from flask import session, current_app
 from flask_login import UserMixin
 import datetime
 
+from .owner import Owner
+from .secondary import Secondary
+
 # Property Information can be found here:
 # https://cloud.google.com/appengine/docs/standard/python/ndb/entity-property-reference
 
@@ -70,9 +73,17 @@ class User(ndb.Model, UserMixin):
         return True
 
     def owned_systems(self):
-        # TODO: Implementation must wait until system model is created.
-        raise NotImplementedError()
+        q = Owner.query(Owner.user_key == self.key)
+        count = q.count()
+
+        owned = [o.system_key.get() for o in q.fetch(count)]
+
+        return tuple(s.to_json() for s in owned)
 
     def secondary_systems(self):
-        # TODO: Implementation must wait until system model is created.
-        raise NotImplementedError()
+        q = Secondary.query(Secondary.user_key == self.key)
+        count = q.count()
+
+        secondary = [s.system_key.get() for s in q.fetch(count)]
+
+        return tuple(s.to_json() for s in secondary)
