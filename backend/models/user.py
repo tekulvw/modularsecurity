@@ -43,6 +43,16 @@ class User(ndb.Model, UserMixin):
         """
         return cls.query(cls.oauth_id == oauth_id).get()
 
+    def to_json(self):
+        data = {
+            "fname": self.fname,
+            "lname": self.lname,
+            "phone_num": self.phone_num,
+            "owned_systems": self.owned_systems(),
+            "secondary_systems": self.secondary_systems()
+        }
+        return data
+
     def get_id(self):
         return self.oauth_id
 
@@ -58,3 +68,11 @@ class User(ndb.Model, UserMixin):
             login_manager = current_app.config.get("LOGIN_MGR")
             return login_manager.needs_refresh()
         return True
+
+    def owned_systems(self):
+        # TODO: Implementation must wait until system model is created.
+        raise NotImplementedError()
+
+    def secondary_systems(self):
+        # TODO: Implementation must wait until system model is created.
+        raise NotImplementedError()

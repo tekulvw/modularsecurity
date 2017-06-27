@@ -1,11 +1,11 @@
 import calendar
 import datetime
 from flask import current_app as app
-from flask import url_for, redirect, session, jsonify, flash
+from flask import url_for, redirect, session, jsonify, flash, abort
 from flask.views import MethodView
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 
-from models import User
+from models import User as UserModel
 
 
 class AuthorizeUser(MethodView):
@@ -44,9 +44,9 @@ class Login(MethodView):
             return redirect(url_for('authorize'))
 
         userinfo = auth.get('userinfo')
-        user = User.from_oauth_id(userinfo.data['id'])
+        user = UserModel.from_oauth_id(userinfo.data['id'])
         if user is None:
-            user = User.create(userinfo)
+            user = UserModel.create(userinfo)
             user.put()
 
         login_user(user)
@@ -62,3 +62,13 @@ class Logout(MethodView):
         except KeyError:
             pass
         return redirect(url_for('home'))
+
+
+class User(MethodView):
+    @login_required
+    def get(self, oauth_id):
+        if current_user.oauth_id != oauth_id:
+            # TODO: Check for admin status here.
+            abort(403)
+
+        return jsonify(current_user.to_json())
