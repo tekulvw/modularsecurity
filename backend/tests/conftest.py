@@ -14,3 +14,10 @@ def patch_ndb(monkeypatch):
     del sys.modules['google']
     del sys.modules['google.appengine']
     del sys.modules['google.appengine.ext']
+
+
+@pytest.fixture
+def app():
+    import main
+    main.app.testing = True
+    return main.app.test_client()
