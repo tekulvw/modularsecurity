@@ -66,12 +66,15 @@ class Logout(MethodView):
 
 class User(MethodView):
     @login_required
-    def get(self, oauth_id):
+    def get(self, oauth_id=None):
         """
         Gets current user information.
         :param oauth_id:
         :return: models/user/User plus owned_systems, secondary_systems
         """
+        if oauth_id is None:
+            oauth_id = current_user.oauth_id
+
         if current_user.oauth_id != oauth_id:
             # TODO: Check for admin status here.
             abort(403)
@@ -88,4 +91,5 @@ class User(MethodView):
         if data is None or not UserModel.valid_update_keys(data.keys()):
             abort(401)
 
-
+        current_user.update_from(data)
+        return jsonify(current_user.to_json())
