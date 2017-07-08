@@ -1,6 +1,6 @@
 import pytest
 
-"""
+
 @pytest.fixture
 def random_user():
     from models import User
@@ -8,14 +8,15 @@ def random_user():
     user = User(
         fname="FirstName",
         lname="LastName",
-        phone_num="0000000000",
-        oauth_id=uuid.uuid4()
+        phone_num=0000000000,
+        oauth_id=str(uuid.uuid4())
     )
     user.put()
     yield user
     user.key.delete()
 
 
+"""
 @pytest.fixture
 def logged_in_user(random_user):
     from flask_login import login_user, logout_user
