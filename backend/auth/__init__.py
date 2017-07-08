@@ -19,6 +19,8 @@ def read_client_keys(path="client_secret.json"):
     :param path: path relative to CWD to find the keys file
     :return: tuple of (client_id, client_secret)
     """
+    if os.environ.get("TESTING"):
+        return "something", "nothing"
 
     if not os.path.exists(path):
         raise RuntimeError("No oauth keys were found.")
