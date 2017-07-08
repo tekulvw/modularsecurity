@@ -10,7 +10,6 @@ class Device(MethodView):
         data = request.get_json()
         if data is None:
             abort(401)
-        return
         serial_number = data.get('serial_number')
         key = from_device_serial_number(serial_number)
         entry=device.create(key,data)
