@@ -21,6 +21,11 @@ class Device(ndb.Model):
             return [d.get() for d in dev_keys.fetch(count)]
         return []
 
+    def to_json(self):
+        device_dict = self.to_dict(exclude=['system_key', 'device_type_key'])
+        device_dict['system_id'] = self.system_key.integer_id()
+        return device_dict
+
 
 class DeviceData(ndb.Model):
     location = ndb.StringProperty()
