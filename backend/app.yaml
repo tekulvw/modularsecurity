@@ -15,8 +15,3 @@ handlers:
 - url: /(.*)
   static_files: www/\1
   upload: www/(.*)
-
-env_variables:
-  GOOGLE_CLIENT_ID: "725677432275-tuep01s7aetclnd592g7sto8fp0g6nrj.apps.googleusercontent.com"
-  GOOGLE_SECRET: "fywJT0Jl6MXB8VqL1ZVwYzGj"
-  APP_SECRET_KEY: "development"
