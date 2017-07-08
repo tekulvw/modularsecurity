@@ -2,7 +2,8 @@ function NavController($mdSidenav) {
   var self = this;
   var userInfo;
   $.get("/api/user", function(data, status){
-    alert("Data: " + data + "\nStatus: " + status);
+    userInfo = data;
+    console.log(userInfo)
   });
   self.bodyText = "You're on the monitor screen"
   self.navMonitor = function(){
