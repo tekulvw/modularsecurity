@@ -37,7 +37,7 @@ class DeviceData(ndb.Model):
         return data
 
     @classmethod
-    def create(cls, key, data):
+    def create(cls, key):
         device_key = key
 
         return cls(

@@ -1,4 +1,3 @@
-from flask import current_app as app
 from flask import url_for, redirect, session, jsonify, flash, abort, request
 from flask.views import MethodView
 
@@ -6,6 +5,7 @@ from models import device
 
 class Device(MethodView):
     def post(self):
+
         #Request post json data
         data = request.get_json()
 
