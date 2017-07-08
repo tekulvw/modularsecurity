@@ -94,6 +94,7 @@ class User(ndb.Model, UserMixin):
         q = Owner.query(Owner.user_key == self.key)
         count = q.count()
 
+        owned = []
         if count > 0:
             owned = [o.system_key.get() for o in q.fetch(count)]
 
@@ -103,6 +104,7 @@ class User(ndb.Model, UserMixin):
         q = Secondary.query(Secondary.user_key == self.key)
         count = q.count()
 
+        secondary = []
         if count > 0:
             secondary = [s.system_key.get() for s in q.fetch(count)]
 
