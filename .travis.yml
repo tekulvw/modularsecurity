@@ -14,7 +14,8 @@ before_script:
 - unzip -q google_appengine_$SDK_VERSION.zip
 
 install:
+  # Needed to satisfy appengine_config.py
   - mkdir lib
-  - pip install -t lib -r backend/requirements.txt
+  - pip install -r backend/requirements.txt
 
 script: py.test --ignore=lib --ignore=google_appengine
