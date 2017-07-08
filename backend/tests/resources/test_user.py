@@ -16,6 +16,12 @@ def random_user():
     user.key.delete()
 
 
+def test_key_not_none(random_user):
+    from google.appengine.ext import ndb
+    assert random_user.key is not None
+    assert isinstance(random_user.key, ndb.Key)
+
+
 """
 @pytest.fixture
 def logged_in_user(random_user):
