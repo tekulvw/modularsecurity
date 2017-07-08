@@ -12,28 +12,56 @@
   <link rel="stylesheet" href="./assets/app.css"/>
 </head>
 
-<body ng-cloak layout="column" ng-controller="LoginController as login">
+<body ng-cloak layout="column" ng-controller="GlobalController as global">
 
   <md-toolbar layout="row" class="md-toolbar-tools">
     <h1 flex=80>Modular Security</h1>
-    <md-button hide-gt-sm ng-click="login.login()">Login</md-button>
+
+    <md-menu>
+      <md-button md-raised md-primry ng-click="global.openSystemMenu($mdMenu, $event)">
+        {{global.currentSystem}}
+      </md-button>
+      <md-menu-content width = 2>
+        <md-menu-item ng-repeat="s in global.availableSystems">
+          <md-button ng-click="global.selectSystem(s)">
+           {{s}}
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+
+    <md-switch md-invert ng-model="global.killSwitch">
+      Kill Switch
+    </md-switch>
+
   </md-toolbar>
 
-  <div flex layout="row">
+  <div flex layout="row" ng-controller="NavController as nav">
 
     <md-sidenav class="md-whiteframe-4dp" md-is-locked-open="$mdMedia('gt-sm')"
                 md-component-id="left">
-      <md-button ng-click="login.login()">Login</md-button>
-    </md-sidenav>
-    <div layout="column">
-      <p>Blah blah blah</p>
-    </div>
-  </div> 
 
+      <md-button md-raised ng-click="nav.navMonitor()">
+        Monitor
+      </md-button>
+
+      <md-button md-raised ng-click="nav.navManagement()">
+        Management
+      </md-button>
+
+      <md-button md-raised ng-click="nav.navSettings()">
+        Account Settings
+      </md-button>
+    </md-sidenav>
+
+    <div layout="column">
+      <p>{{nav.bodyText}}</p>
+    </div>
+  </div>
 
   <script src="./jspm_packages/system.js" type="text/javascript"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="config.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript">
     System
         .import('src/boot/boot')

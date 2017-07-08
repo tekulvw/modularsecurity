@@ -6,6 +6,9 @@ import 'angular-aria';
 import 'angular-material';
 
 import LoginController from 'src/LoginController';
+import MonitorController from 'src/MonitorController';
+import GlobalController from 'src/GlobalController';
+import NavController from 'src/NavController';
 
 export default angular.module( 'starter-app', [ 'ngMaterial' ] )
   .config(($mdIconProvider, $mdThemingProvider) => {
@@ -18,4 +21,7 @@ export default angular.module( 'starter-app', [ 'ngMaterial' ] )
       .primaryPalette('brown')
       .accentPalette('red');
   })
-  .controller('LoginController', LoginController);
+  .controller('LoginController', LoginController)
+  .controller('MonitorController', MonitorController)
+  .controller('GlobalController', GlobalController)
+  .controller('NavController', NavController);
