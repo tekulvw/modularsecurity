@@ -8,6 +8,10 @@ class Device(ndb.Model):
     is_connected = ndb.BooleanProperty()
     device_type_key = ndb.IntegerProperty()
 
+    @classmethod
+    def from_device_serial_number(cls, serial_number):
+        return cls.query(cls.serial_num == serial_number)
+
     def to_json(self):
         data = {
             "serial_num": self.serial_num,
@@ -23,32 +27,21 @@ class DeviceData(ndb.Model):
     location = ndb.StringProperty()
     data_received = ndb.DateTimeProperty(auto_now_add=True)
     device_key = ndb.KeyProperty(kind="Device")
-    grace_period = ndb.IntegerProperty()
 
     def to_json(self):
         data = {
             "location": self.location,
             "data_received": self.data_received,
             "device_key": self.device_key,
-            "grace_period": self.grace_period
         }
         return data
 
-    def from_device_serial_number(cls, serial_number):
-        return cls.query(cls.serial_num == serial_number)
-
     @classmethod
     def create(cls, key, data):
-        location = data.get('location')
-        data_received = data.get('data_received')
         device_key = key
-        grace_period = data.get('grace_period')
 
         return cls(
-            location=location,
-            data_received=data_received,
             device_key=device_key,
-            grace_period=grace_period
         )
 
 
