@@ -51,7 +51,7 @@ class Login(MethodView):
 
         login_user(user)
         flash("Logged in!")
-        return redirect(url_for('home'))
+        return redirect('/')
 
 
 class Logout(MethodView):
