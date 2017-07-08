@@ -15,4 +15,4 @@ before_script:
 install:
   - pip install -r backend/requirements.txt
 
-script: py.test tests/
+script: py.test --ignore=lib --ignore=google_appengine
