@@ -17,8 +17,8 @@
 from flask import Flask
 from flask_login import LoginManager
 
-import os
 import logging
+import uuid
 
 from models import User as UserModel
 
@@ -26,13 +26,15 @@ from resources.user import AuthorizeUser, AuthorizedUser, UserInfo, Login, User
 from resources.user import Logout
 from resources.home import Home
 
-from auth import google, initialize_tokengetter
+from auth import google, initialize_tokengetter, read_client_keys
 
 app = Flask(__name__)
 
-app.config['GOOGLE_ID'] = os.environ.get("GOOGLE_CLIENT_ID")
-app.config['GOOGLE_SECRET'] = os.environ.get("GOOGLE_SECRET")
-app.secret_key = os.environ.get("APP_SECRET_KEY")
+client_id, client_secret = read_client_keys()
+
+app.config['GOOGLE_ID'] = client_id
+app.config['GOOGLE_SECRET'] = client_secret
+app.secret_key = uuid.uuid4()
 
 login_manager = LoginManager(app)
 app.config["LOGIN_MGR"] = login_manager
