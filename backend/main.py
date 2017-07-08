@@ -33,7 +33,7 @@ client_id, client_secret = read_client_keys()
 
 app.config['GOOGLE_ID'] = client_id
 app.config['GOOGLE_SECRET'] = client_secret
-app.secret_key = uuid.uuid4()
+app.secret_key = str(uuid.uuid4())
 
 login_manager = LoginManager(app)
 app.config["LOGIN_MGR"] = login_manager
