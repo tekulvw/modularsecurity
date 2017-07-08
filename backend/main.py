@@ -41,12 +41,12 @@ app.config["LOGIN_MGR"] = login_manager
 def load_user(user_id):
     return User.from_oauth_id(user_id)
 
-app.add_url_rule('/', view_func=Home.as_view("home"))
-app.add_url_rule('/authorize/', view_func=AuthorizeUser.as_view("authorize"))
-app.add_url_rule('/authorize/complete', view_func=AuthorizedUser.as_view("authorized"))
-app.add_url_rule('/user/info', view_func=UserInfo.as_view('user.info'))
-app.add_url_rule('/login', view_func=Login.as_view('login'))
-app.add_url_rule('/logout', view_func=Logout.as_view('logout'))
+# app.add_url_rule('/', view_func=Home.as_view("home"))
+app.add_url_rule('/api/authorize/', view_func=AuthorizeUser.as_view("authorize"))
+app.add_url_rule('/api/authorize/complete', view_func=AuthorizedUser.as_view("authorized"))
+app.add_url_rule('/api/user/info', view_func=UserInfo.as_view('user.info'))
+app.add_url_rule('/api/login', view_func=Login.as_view('login'))
+app.add_url_rule('/api/logout', view_func=Logout.as_view('logout'))
 
 auth = google.initialize(app)
 initialize_tokengetter(auth)
