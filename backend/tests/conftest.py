@@ -2,6 +2,11 @@ import pytest
 from mock import MagicMock
 import sys
 
+import sys
+sys.path.insert(1, 'google_appengine')
+sys.path.insert(1, 'google_appengine/lib/yaml/lib')
+sys.path.insert(1, 'lib')
+
 
 @pytest.fixture(autouse=True)
 def patch_ndb(monkeypatch):
