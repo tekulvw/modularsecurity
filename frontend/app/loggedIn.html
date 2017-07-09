@@ -9,6 +9,7 @@
   <title>Modular Security</title>
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:400,700'>
   <link rel="stylesheet" href="./jspm_packages/github/angular/bower-material@master/angular-material.css"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="./assets/app.css"/>
 </head>
 
@@ -19,7 +20,7 @@
 
     <md-menu>
       <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
-        {{global.currentSystem}}
+        {{global.currentSystem}} <md-icon class="material-icons">arrow_drop_down</md-icon>
       </md-button>
       <md-menu-content width = 2>
         <md-menu-item ng-repeat="s in global.availableSystems">
@@ -40,7 +41,7 @@
 
     <md-menu>
       <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
-        {{global.currentTab.name}}
+        {{global.currentTab.name}} <md-icon class="material-icons">arrow_drop_down</md-icon>
       </md-button>
       <md-menu-content width = 2>
         <md-menu-item ng-repeat="t in global.tabs">

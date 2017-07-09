@@ -12,10 +12,8 @@ import GlobalController from 'src/GlobalController';
 
 export default angular.module( 'starter-app', [ 'ngMaterial' ] )
   .config(($mdIconProvider, $mdThemingProvider) => {
-    // Register the user `avatar` icons
-    $mdIconProvider
-      .defaultIconSet("./assets/svg/avatars.svg", 128)
-      .icon("menu", "./assets/svg/menu.svg", 24)
+    
+    $mdIconProvider.fontSet('md', 'material-icons');
 
     $mdThemingProvider.theme('default')
       .primaryPalette('blue-grey')
