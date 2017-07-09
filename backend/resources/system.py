@@ -4,7 +4,7 @@ from flask import jsonify, abort, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
-from models import owner as OwnerModel
+from models.owner import Owner as OwnerModel
 
 
 class System(MethodView):
@@ -25,7 +25,7 @@ class System(MethodView):
             abort(401)
         grace = data.get('grace_period')
         oauth = data.get('oauth_id')
-        entry = OwnerModel.Owner.create(oauth, grace)
+        entry = OwnerModel.create(oauth, grace)
         entry.put()
 
     @login_required

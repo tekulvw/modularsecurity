@@ -1,7 +1,8 @@
 from google.appengine.ext import ndb
 
-from models import system as SystemModel
-from models import user as UserModel
+from models.system import System as SystemModel
+from models.user import User as UserModel
+
 
 class Owner(ndb.Model):
     user_key = ndb.KeyProperty(kind="User")

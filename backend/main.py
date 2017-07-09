@@ -20,7 +20,7 @@ from flask_login import LoginManager
 import logging
 import uuid
 
-from models import User as UserModel
+from models.user import User as UserModel
 
 from resources.user import AuthorizeUser, AuthorizedUser, UserInfo, Login, User
 from resources.user import Logout
