@@ -29,7 +29,6 @@ def init_datastore():
 def app():
     import main
     main.app.testing = True
-    main.app.config['LOGIN_DISABLED'] = True
     app_client = main.app.test_client()
 
     return app_client
