@@ -25,6 +25,7 @@ from models.user import User as UserModel
 from resources.user import AuthorizeUser, AuthorizedUser, UserInfo, Login, User
 from resources.user import Logout
 from resources.device import Device
+from resources.system import System
 
 from auth import google, initialize_tokengetter, read_client_keys
 
@@ -52,6 +53,7 @@ app.add_url_rule('/api/user/info', view_func=UserInfo.as_view('user.info'))
 app.add_url_rule('/api/login', view_func=Login.as_view('login'))
 app.add_url_rule('/api/logout', view_func=Logout.as_view('logout'))
 
+app.add_url_rule('/api/system', view_func=System.as_view('system'))
 app.add_url_rule('/api/device', view_func=Device.as_view('device'))
 
 auth = google.initialize(app)
