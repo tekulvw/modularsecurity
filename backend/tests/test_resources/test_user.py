@@ -1,25 +1,21 @@
-import pytest
-
-
-@pytest.fixture
-def random_user():
-    from models import User
-    import uuid
-    user = User(
-        fname="FirstName",
-        lname="LastName",
-        phone_num=0000000000,
-        oauth_id=str(uuid.uuid4())
-    )
-    user.put()
-    yield user
-    user.key.delete()
+import json
 
 
 def test_key_not_none(random_user):
     from google.appengine.ext import ndb
     assert random_user.key is not None
     assert isinstance(random_user.key, ndb.Key)
+
+
+def test_random_user_in_db(random_user):
+    from models.user import User
+    assert random_user == User.from_oauth_id(random_user.oauth_id)
+
+
+def test_user_get(logged_in_app, random_user):
+    with logged_in_app:
+        resp = logged_in_app.get('/api/user', follow_redirects=True)
+    assert json.loads(resp.data) == random_user.to_json()
 
 
 """
