@@ -8,7 +8,7 @@ def test_attrs():
 
 
 def test_owner_create(random_user):
-    owner = Owner.create(random_user.oauth_id, 60)
+    owner = Owner.create(random_user, 60)
     owner.put()
 
     assert owner.user_key == random_user.key

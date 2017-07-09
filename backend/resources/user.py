@@ -50,7 +50,7 @@ class Login(MethodView):
             user = UserModel.create(userinfo)
             user.put()
 
-            owner = OwnerModel.create(user.oauth_id, 60)
+            owner = OwnerModel.create(user, 60)
             owner.put()
 
         login_user(user)
