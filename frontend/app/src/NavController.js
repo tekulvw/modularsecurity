@@ -9,19 +9,14 @@ function NavController($mdSidenav) {
     async: false
   });
 
-  self.getUserName = function(){
-    return self.userInfo.fname.toUpperCase() + " FUCKING " + self.userInfo.lname.toUpperCase();
-  };
+  self.tabs = [{i: 0, name: 'Monitor', url: 'partials/monitor.html'},
+              {i: 1, name: 'Management', url: 'partials/management.html'},
+              {i: 2, name: 'Account Settings', url: 'partials/settings.html'}];
 
-  self.bodyText = "You're on the monitor screen"
-  self.navMonitor = function(){
-  	self.bodyText = "You're on the monitor screen"
-  };
-  self.navManagement = function(){
-  	self.bodyText = "You're on the management screen"
-  };
-  self.navSettings = function(){
-  	self.bodyText = "You're on the account settings screen"
-  };
+  self.currentTab = self.tabs[0];
+
+  self.navToTab = function(i){
+    self.currentTab = self.tabs[i];
+  }
 };
 export default [ '$mdSidenav', NavController ];
