@@ -2,6 +2,7 @@ from google.appengine.ext import ndb
 from flask import session, current_app
 from flask_login import UserMixin
 import datetime
+import os
 
 from .owner import Owner
 from .secondary import Secondary
@@ -79,6 +80,9 @@ class User(ndb.Model, UserMixin):
 
     @property
     def is_authenticated(self):
+        if os.environ.get("TESTING"):
+            return True
+
         oauth_resp = session.get("authorization")
         if oauth_resp is None:
             return False
@@ -98,7 +102,7 @@ class User(ndb.Model, UserMixin):
         if count > 0:
             owned = [o.system_key.get() for o in q.fetch(count)]
 
-        return tuple(s.to_json() for s in owned)
+        return [s.to_json() for s in owned]
 
     def secondary_systems(self):
         q = Secondary.query(Secondary.user_key == self.key)
@@ -108,7 +112,7 @@ class User(ndb.Model, UserMixin):
         if count > 0:
             secondary = [s.system_key.get() for s in q.fetch(count)]
 
-        return tuple(s.to_json() for s in secondary)
+        return [s.to_json() for s in secondary]
 
     @staticmethod
     def valid_update_keys(keys):

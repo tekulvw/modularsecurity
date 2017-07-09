@@ -1,6 +1,4 @@
 import pytest
-from mock import MagicMock
-import sys
 
 import sys
 sys.path.insert(1, 'google_appengine')
@@ -31,9 +29,30 @@ def init_datastore():
 def app():
     import main
     main.app.testing = True
+    main.app.config['LOGIN_DISABLED'] = True
     app_client = main.app.test_client()
 
-    import flask
-    flask.current_app = app_client
-
     return app_client
+
+
+@pytest.fixture
+def random_user():
+    from models import User
+    import uuid
+    user = User(
+        fname="FirstName",
+        lname="LastName",
+        phone_num=0000000000,
+        oauth_id=str(uuid.uuid4())
+    )
+    user.put()
+    yield user
+    user.key.delete()
+
+
+@pytest.fixture
+def logged_in_app(app, random_user):
+    with app.session_transaction() as sess:
+        sess['user_id'] = random_user.oauth_id
+        sess['_fresh'] = True
+    return app
