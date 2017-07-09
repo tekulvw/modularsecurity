@@ -1,4 +1,4 @@
-function GlobalController($mdSidenav) {
+function GlobalController($mdSidenav, $window) {
   var self = this;
   self.killSwitch = false;
   self.currentSystem = "System 1";
@@ -7,7 +7,7 @@ function GlobalController($mdSidenav) {
   var originatorEv;
 
   self.openSystemMenu = function($mdMenu, ev){
-	originatorEv = ev;
+	  originatorEv = ev;
     $mdMenu.open(ev);
   };
   self.selectSystem = function(s){
@@ -15,4 +15,4 @@ function GlobalController($mdSidenav) {
   }
 }
 
-export default [ '$mdSidenav', GlobalController ];
+export default [ '$mdSidenav', '$window', GlobalController ];
