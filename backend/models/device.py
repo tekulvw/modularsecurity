@@ -10,7 +10,7 @@ class Device(ndb.Model):
 
     @classmethod
     def from_serial_number(cls, serial_number):
-        return cls.query(cls.serial_num == serial_number)
+        return cls.query(cls.serial_num == serial_number).get()
 
     @classmethod
     def from_system_key(cls, system_key):
