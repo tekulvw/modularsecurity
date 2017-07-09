@@ -1,13 +1,13 @@
 import pytest
 import sys
+from models.user import User
 
 
-@pytest.fixture
-def user_cls():
-    from models.user import User
-    return User
-
-
-def test_user_attrs(user_cls):
+def test_user_attrs():
     attrs = ("fname", "lname", "oauth_id", "phone_num", "create_date")
-    assert all(hasattr(user_cls, attr) for attr in attrs) is True
+    assert all(hasattr(User, attr) for attr in attrs) is True
+
+
+def test_real_json(random_user):
+    import json
+    assert random_user.to_json() == json.loads(json.dumps(random_user.to_json()))
