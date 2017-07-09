@@ -24,7 +24,9 @@ def test_system_post(logged_in_app, random_system, random_user):
         grace_period=random_system.grace_period
     )
 
+
     with logged_in_app:
         resp = logged_in_app.post('/api/system', data=json.dumps(data), headers={'content-type': 'application/json'})
 
     assert resp.status_code == 200
+
