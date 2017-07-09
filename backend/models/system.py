@@ -52,8 +52,3 @@ class System(ndb.Model):
             if k not in System.VALID_UPDATE_ATTRS:
                 return False
         return True
-
-
-class Secondary(ndb.Model):
-    oauth_id = ndb.StringProperty(required=True)
-    system_id = ndb.StringProperty(required=True)
