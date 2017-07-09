@@ -9,7 +9,7 @@ class Owner(ndb.Model):
     system_key = ndb.KeyProperty(kind="System")
 
     @classmethod
-    def create(cls,oauth,grace):
+    def create(cls, oauth, grace):
         user_key = User.from_oauth_id(oauth)
         system_key = System.create(grace)
         return cls(
