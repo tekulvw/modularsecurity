@@ -12,13 +12,23 @@ class Device(ndb.Model):
     def from_serial_number(cls, serial_number):
         return cls.query(cls.serial_num == serial_number)
 
+    @classmethod
+    def from_system_key(cls, system_key):
+        """
+        Returns a list of devices associated with a given system key.
+        :param system_key:
+        :return:
+        """
+        dev_keys = cls.query(cls.system_key == system_key)
+        count = dev_keys.count()
+        if count > 0:
+            return [d.get() for d in dev_keys.fetch(count)]
+        return []
+
     def to_json(self):
-        data = {
-            "serial_num": self.serial_num,
-            "name": self.name,
-            "is_connected": self.is_connected
-        }
-        return data
+        device_dict = self.to_dict(exclude=['system_key', 'device_type_key'])
+        device_dict['system_id'] = self.system_key.integer_id()
+        return device_dict
 
 
 class DeviceData(ndb.Model):

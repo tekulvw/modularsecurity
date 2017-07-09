@@ -1,11 +1,12 @@
 import calendar
 import datetime
 from flask import current_app as app
-from flask import url_for, redirect, session, jsonify, flash
+from flask import url_for, redirect, session, jsonify, flash, abort, request
 from flask.views import MethodView
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 
-from models import User
+from models.user import User as UserModel
+from models.owner import Owner as OwnerModel
 
 
 class AuthorizeUser(MethodView):
@@ -44,14 +45,17 @@ class Login(MethodView):
             return redirect(url_for('authorize'))
 
         userinfo = auth.get('userinfo')
-        user = User.from_oauth_id(userinfo.data['id'])
+        user = UserModel.from_oauth_id(userinfo.data['id'])
         if user is None:
-            user = User.create(userinfo)
+            user = UserModel.create(userinfo)
             user.put()
+
+            owner = OwnerModel.create(user, 60)
+            owner.put()
 
         login_user(user)
         flash("Logged in!")
-        return redirect(url_for('home'))
+        return redirect('/loggedIn.html')
 
 
 class Logout(MethodView):
@@ -62,3 +66,34 @@ class Logout(MethodView):
         except KeyError:
             pass
         return redirect(url_for('home'))
+
+
+class User(MethodView):
+    @login_required
+    def get(self, oauth_id=None):
+        """
+        Gets current user information.
+        :param oauth_id:
+        :return: models/user/User plus owned_systems, secondary_systems
+        """
+        if oauth_id is None:
+            oauth_id = current_user.oauth_id
+
+        if current_user.oauth_id != oauth_id:
+            # TODO: Check for admin status here.
+            abort(403)
+
+        return jsonify(current_user.to_json())
+
+    @login_required
+    def update(self):
+        """
+        Keys sent must be a subset or equal to the keys in model/user/User
+        :return: model/user/User
+        """
+        data = request.get_json()
+        if data is None or not UserModel.valid_update_keys(data.keys()):
+            abort(401)
+
+        current_user.update_from(data)
+        return jsonify(current_user.to_json())
