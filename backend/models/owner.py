@@ -18,4 +18,6 @@ class Owner(ndb.Model):
             system_key=system.key
         )
 
-
+    @classmethod
+    def from_user(cls, user_obj):
+        return cls.query(cls.user_key == user_obj.key).get()
