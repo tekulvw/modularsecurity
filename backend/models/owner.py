@@ -9,12 +9,15 @@ class Owner(ndb.Model):
     system_key = ndb.KeyProperty(kind="System")
 
     @classmethod
-    def create(cls,oauth,grace):
-        user_key = User.from_oauth_id(oauth)
-        system_key = System.create(grace)
+    def create(cls, oauth, grace):
+        user = User.from_oauth_id(oauth)
+        system = System.create(grace)
+        system.put()
         return cls(
-            user_key=user_key,
-            system_key=system_key
+            user_key=user.key,
+            system_key=system.key
         )
 
-
+    @classmethod
+    def from_user(cls, user_obj):
+        return cls.query(cls.user_key == user_obj.key).get()

@@ -18,9 +18,10 @@ class System(ndb.Model):
         return sys_dict
 
     @classmethod
-    def create(cls,grace):
+    def create(cls, grace):
         grace_period = grace
         return cls(
+            ks_enabled=False,
             grace_period=grace_period
         )
 
@@ -52,8 +53,3 @@ class System(ndb.Model):
             if k not in System.VALID_UPDATE_ATTRS:
                 return False
         return True
-
-
-class Secondary(ndb.Model):
-    oauth_id = ndb.StringProperty(required=True)
-    system_id = ndb.StringProperty(required=True)

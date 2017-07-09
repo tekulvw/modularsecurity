@@ -6,6 +6,7 @@ from flask.views import MethodView
 from flask_login import login_user, logout_user, login_required, current_user
 
 from models.user import User as UserModel
+from models.owner import Owner as OwnerModel
 
 
 class AuthorizeUser(MethodView):
@@ -48,6 +49,9 @@ class Login(MethodView):
         if user is None:
             user = UserModel.create(userinfo)
             user.put()
+
+            owner = OwnerModel.create(user.oauth_id, 60)
+            owner.put()
 
         login_user(user)
         flash("Logged in!")
