@@ -3,7 +3,9 @@ from .device import Device  # This is bad.
 
 
 class System(ndb.Model):
-    VALID_UPDATE_ATTRS = ("grace_period", "alarm_count", "ks_enabled","create_date")
+    VALID_UPDATE_ATTRS = ("name", "grace_period", "alarm_count", "ks_enabled","create_date")
+
+    name = ndb.StringProperty()
     grace_period = ndb.IntegerProperty()
     alarm_count = ndb.IntegerProperty()
     ks_enabled = ndb.BooleanProperty(required=True)
