@@ -5,7 +5,7 @@ from flask import url_for, redirect, session, jsonify, flash, abort, request
 from flask.views import MethodView
 from flask_login import login_user, logout_user, login_required, current_user
 
-from models import User as UserModel
+from models.user import User as UserModel
 
 
 class AuthorizeUser(MethodView):
