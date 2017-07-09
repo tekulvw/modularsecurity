@@ -15,10 +15,8 @@ class Device(ndb.Model):
     def to_json(self):
         data = {
             "serial_num": self.serial_num,
-            "system_key": self.system_key,
             "name": self.name,
-            "is_connected": self.is_connected,
-            "device_type_key": self.device_type_key
+            "is_connected": self.is_connected
         }
         return data
 
@@ -29,10 +27,9 @@ class DeviceData(ndb.Model):
     device_key = ndb.KeyProperty(kind="Device")
 
     def to_json(self):
+        # TODO: serialize datetime
         data = {
-            "location": self.location,
-            "data_received": self.data_received,
-            "device_key": self.device_key,
+            "location": self.location
         }
         return data
 
