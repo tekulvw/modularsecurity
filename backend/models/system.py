@@ -20,7 +20,7 @@ class System(ndb.Model):
         )
 
     def to_json(self):
-        sys_dict = self.to_dict()
+        sys_dict = self.to_dict(exclude=['create_date', ])
         sys_dict['id'] = self.key.integer_id()
 
         devices = Device.from_system_key(self.key)

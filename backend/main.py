@@ -19,11 +19,13 @@ from flask_login import LoginManager
 
 import logging
 import uuid
+import os
 
 from models.user import User as UserModel
 
 from resources.user import AuthorizeUser, AuthorizedUser, UserInfo, Login, User
 from resources.user import Logout
+
 from resources.device import Device
 from resources.system import System
 
@@ -40,6 +42,9 @@ app.secret_key = str(uuid.uuid4())
 login_manager = LoginManager(app)
 app.config["LOGIN_MGR"] = login_manager
 
+if os.environ.get("TESTING"):
+    app.config["SERVER_NAME"] = 'localhost'
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -53,8 +58,13 @@ app.add_url_rule('/api/user/info', view_func=UserInfo.as_view('user.info'))
 app.add_url_rule('/api/login', view_func=Login.as_view('login'))
 app.add_url_rule('/api/logout', view_func=Logout.as_view('logout'))
 
-app.add_url_rule('/api/system', view_func=System.as_view('system'))
 app.add_url_rule('/api/device', view_func=Device.as_view('device'))
+
+system_view = System.as_view('system')
+app.add_url_rule('/api/system', methods=["POST", ], view_func=system_view)
+app.add_url_rule('/api/system/<int:system_id>',
+                 methods=["GET", "UPDATE"],
+                 view_func=system_view)
 
 auth = google.initialize(app)
 initialize_tokengetter(auth)

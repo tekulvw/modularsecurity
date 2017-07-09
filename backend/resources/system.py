@@ -6,17 +6,17 @@ from flask_login import login_required, current_user
 
 from models.owner import Owner as OwnerModel
 from models.user import User as UserModel
+from models.system import System as SystemModel
 
 
 class System(MethodView):
-    @login_required
+    # @login_required
     def get(self, system_id):
         """
         :param system_id:
         :return: is_connected, type_id, latest_data
         """
-        key = ndb.Key('System', system_id)
-        data = key.get()
+        data = SystemModel.get_by_id(system_id)
         return jsonify(data.to_json())
 
     @login_required
@@ -29,12 +29,15 @@ class System(MethodView):
         user = UserModel.from_oauth_id(oauth_id=oauth)
         entry = OwnerModel.create(user, grace)
         entry.put()
+        return jsonify({})
 
     @login_required
-    def update(self):
+    def update(self, system_id):
         data = request.get_json()
         if data is None:
             abort(401)
+
+        raise NotImplementedError()
 
         current_user.update_from(data)
         return jsonify(current_user.to_json())
