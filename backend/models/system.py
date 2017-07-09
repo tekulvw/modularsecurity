@@ -9,16 +9,6 @@ class System(ndb.Model):
     ks_enabled = ndb.BooleanProperty(required=True)
     create_date = ndb.DateTimeProperty(auto_now_add=True)
 
-<<<<<<< HEAD
-=======
-    @classmethod
-    def create(cls, grace):
-        grace_period = grace
-        return cls(
-            grace_period=grace_period
-        )
-
->>>>>>> 1633e94... Added resource file for system
     def to_json(self):
         sys_dict = self.to_dict()
         sys_dict['id'] = self.key.integer_id()

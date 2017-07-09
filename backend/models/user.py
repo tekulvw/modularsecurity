@@ -4,7 +4,6 @@ from flask_login import UserMixin
 import datetime
 import os
 
-from .owner import Owner
 from .secondary import Secondary
 
 # Property Information can be found here:
@@ -95,7 +94,8 @@ class User(ndb.Model, UserMixin):
         return True
 
     def owned_systems(self):
-        q = Owner.query(Owner.user_key == self.key)
+        q = ndb.Query(kind="Owner")
+        q.filter(ndb.GenericProperty("user_key") == self.key)
         count = q.count()
 
         owned = []
@@ -105,7 +105,8 @@ class User(ndb.Model, UserMixin):
         return [s.to_json() for s in owned]
 
     def secondary_systems(self):
-        q = Secondary.query(Secondary.user_key == self.key)
+        q = ndb.Query(kind="Secondary")
+        q.filter(ndb.GenericProperty("user_key") == self.key)
         count = q.count()
 
         secondary = []

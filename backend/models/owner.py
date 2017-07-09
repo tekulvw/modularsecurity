@@ -1,7 +1,7 @@
 from google.appengine.ext import ndb
 
-from models.system import System as SystemModel
-from models.user import User as UserModel
+from .system import System
+from .user import User
 
 
 class Owner(ndb.Model):
@@ -10,8 +10,8 @@ class Owner(ndb.Model):
 
     @classmethod
     def create(cls,oauth,grace):
-        user_key = UserModel.User.from_oauth_id(oauth)
-        system_key = SystemModel.System.create(grace)
+        user_key = User.from_oauth_id(oauth)
+        system_key = System.create(grace)
         return cls(
             user_key=user_key,
             system_key=system_key

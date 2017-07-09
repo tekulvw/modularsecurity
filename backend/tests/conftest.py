@@ -36,7 +36,7 @@ def app():
 
 @pytest.fixture
 def random_user():
-    from models import User
+    from models.user import User
     import uuid
     user = User(
         fname="FirstName",
