@@ -9,6 +9,10 @@ class Device(ndb.Model):
     device_type_key = ndb.IntegerProperty()
 
     @classmethod
+    def from_serial_number(cls, serial_number):
+        return cls.query(cls.serial_num == serial_number)
+
+    @classmethod
     def from_system_key(cls, system_key):
         """
         Returns a list of devices associated with a given system key.
@@ -31,8 +35,28 @@ class DeviceData(ndb.Model):
     location = ndb.StringProperty()
     data_received = ndb.DateTimeProperty(auto_now_add=True)
     device_key = ndb.KeyProperty(kind="Device")
-    grace_period = ndb.IntegerProperty()
+
+    def to_json(self):
+        # TODO: serialize datetime
+        data = {
+            "location": self.location
+        }
+        return data
+
+    @classmethod
+    def create(cls, key):
+        device_key = key
+
+        return cls(
+            device_key=device_key,
+        )
 
 
 class DeviceDataType(ndb.Model):
     type_name = ndb.StringProperty()
+
+    def to_json(self):
+        data = {
+            "type_name": self.type_name
+        }
+        return data
