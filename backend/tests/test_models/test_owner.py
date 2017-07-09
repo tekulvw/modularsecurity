@@ -1,12 +1,12 @@
 import pytest
+from models.owner import Owner
 
 
-@pytest.fixture
-def owner_cls():
-    from models.owner import Owner
-    return Owner
-
-
-def test_attrs(owner_cls):
+def test_attrs():
     attrs = ("user_key", "system_key")
-    assert all(hasattr(owner_cls, attr) for attr in attrs) is True
+    assert all(hasattr(Owner, attr) for attr in attrs) is True
+
+
+def test_owner_create(random_user):
+    owner = Owner.create(random_user.oauth_id, 60)
+    owner.put()

@@ -10,11 +10,12 @@ class Owner(ndb.Model):
 
     @classmethod
     def create(cls, oauth, grace):
-        user_key = User.from_oauth_id(oauth)
-        system_key = System.create(grace)
+        user = User.from_oauth_id(oauth)
+        system = System.create(grace)
+        system.put()
         return cls(
-            user_key=user_key,
-            system_key=system_key
+            user_key=user.key,
+            system_key=system.key
         )
 
 

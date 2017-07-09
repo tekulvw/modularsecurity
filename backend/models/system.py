@@ -18,9 +18,10 @@ class System(ndb.Model):
         return sys_dict
 
     @classmethod
-    def create(cls,grace):
+    def create(cls, grace):
         grace_period = grace
         return cls(
+            ks_enabled=False,
             grace_period=grace_period
         )
 
