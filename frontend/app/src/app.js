@@ -12,7 +12,7 @@ import GlobalController from 'src/GlobalController';
 
 export default angular.module( 'starter-app', [ 'ngMaterial' ] )
   .config(($mdIconProvider, $mdThemingProvider) => {
-    
+
     $mdIconProvider.fontSet('md', 'material-icons');
 
     $mdThemingProvider.theme('default')

@@ -5,6 +5,7 @@ function GlobalController($mdSidenav, $window) {
     url: "/api/user",
     success: function(data, status){
         self.userInfo = data;
+        console.log(self.userInfo);
       },
     async: false
   });
@@ -18,10 +19,12 @@ function GlobalController($mdSidenav, $window) {
   self.navToTab = function(i){
     self.currentTab = self.tabs[i];
   }
-  
+
   self.killSwitch = false;
-  self.currentSystem = "System 1";
-  self.availableSystems = ["System 1","System 2"];
+  self.availableSystems = self.userInfo.owned_systems.concat(
+                            self.userInfo.secondary_systems);
+  console.log(availableSystems);
+  self.currentSystem = self.availableSystems[0];
 
   var originatorEv;
 
@@ -29,6 +32,7 @@ function GlobalController($mdSidenav, $window) {
 	  originatorEv = ev;
     $mdMenu.open(ev);
   };
+
   self.selectSystem = function(s){
   	self.currentSystem = s;
   }
