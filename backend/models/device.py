@@ -9,7 +9,7 @@ class Device(ndb.Model):
     device_type_key = ndb.IntegerProperty()
 
     @classmethod
-    def from_device_serial_number(cls, serial_number):
+    def from_serial_number(cls, serial_number):
         return cls.query(cls.serial_num == serial_number)
 
     def to_json(self):
@@ -52,3 +52,4 @@ class DeviceDataType(ndb.Model):
         data = {
             "type_name": self.type_name
         }
+        return data
