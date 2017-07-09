@@ -9,21 +9,17 @@ import LoginController from 'src/LoginController';
 import MonitorController from 'src/MonitorController';
 import SettingsController from 'src/SettingsController';
 import GlobalController from 'src/GlobalController';
-import NavController from 'src/NavController';
 
 export default angular.module( 'starter-app', [ 'ngMaterial' ] )
   .config(($mdIconProvider, $mdThemingProvider) => {
-    // Register the user `avatar` icons
-    $mdIconProvider
-      .defaultIconSet("./assets/svg/avatars.svg", 128)
-      .icon("menu", "./assets/svg/menu.svg", 24)
+    
+    $mdIconProvider.fontSet('md', 'material-icons');
 
     $mdThemingProvider.theme('default')
-      .primaryPalette('brown')
-      .accentPalette('red');
+      .primaryPalette('blue-grey')
+      .accentPalette('orange');
   })
   .controller('LoginController', LoginController)
   .controller('MonitorController', MonitorController)
   .controller('SettingsController', SettingsController)
-  .controller('GlobalController', GlobalController)
-  .controller('NavController', NavController);
+  .controller('GlobalController', GlobalController);

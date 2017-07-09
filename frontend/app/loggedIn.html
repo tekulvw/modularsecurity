@@ -9,6 +9,7 @@
   <title>Modular Security</title>
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:400,700'>
   <link rel="stylesheet" href="./jspm_packages/github/angular/bower-material@master/angular-material.css"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="./assets/app.css"/>
 </head>
 
@@ -18,8 +19,8 @@
     <h1 flex=80>Modular Security</h1>
 
     <md-menu>
-      <md-button md-raised md-primry ng-click="global.openSystemMenu($mdMenu, $event)">
-        {{global.currentSystem}}
+      <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
+        {{global.currentSystem}} <md-icon class="material-icons">arrow_drop_down</md-icon>
       </md-button>
       <md-menu-content width = 2>
         <md-menu-item ng-repeat="s in global.availableSystems">
@@ -30,24 +31,42 @@
       </md-menu-content>
     </md-menu>
 
-    <md-switch md-invert ng-model="global.killSwitch">
+    <md-switch class="md-warn" md-invert ng-model="global.killSwitch">
       Kill Switch
     </md-switch>
 
   </md-toolbar>
 
-  <div flex layout="row" ng-controller="NavController as nav">
+  <md-toolbar hide-gt-sm>
+
+    <md-menu>
+      <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
+        {{global.currentTab.name}} <md-icon class="material-icons">arrow_drop_down</md-icon>
+      </md-button>
+      <md-menu-content width = 2>
+        <md-menu-item ng-repeat="t in global.tabs">
+          <md-button ng-click="global.navToTab(t.i)">
+           {{t.name}}
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+  </md-toolbar>
+
+  <div flex layout="row">
 
     <md-sidenav class="md-whiteframe-4dp" md-is-locked-open="$mdMedia('gt-sm')"
                 md-component-id="left">
 
-      <md-button ng-repeat="t in nav.tabs" ng-click="nav.navToTab(t.i)">
+      <md-button class="md-raised md-primary" 
+                 ng-repeat="t in global.tabs" 
+                 ng-click="global.navToTab(t.i)">
         {{t.name}}
       </md-button>
 
     </md-sidenav>
 
-    <div ng-include="nav.currentTab.url" layout-padding></div>
+    <div ng-include="global.currentTab.url" layout-padding></div>
 
   </div>
 
