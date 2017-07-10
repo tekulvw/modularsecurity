@@ -1,15 +1,12 @@
 import pytest
 
-from google.appengine.ext import ndb
-
 import sys
-
-from models.device import Device, DeviceData
-from models.system import System
-
 sys.path.insert(1, 'google_appengine')
 sys.path.insert(1, 'google_appengine/lib/yaml/lib')
 sys.path.insert(1, 'lib')
+
+from models.device import Device, DeviceData
+from models.system import System
 
 
 @pytest.fixture(autouse=True)
@@ -32,7 +29,7 @@ def init_datastore():
 
 
 @pytest.fixture(autouse=True)
-def app():
+def app(init_datastore):
     import main
     main.app.testing = True
     app_client = main.app.test_client()
