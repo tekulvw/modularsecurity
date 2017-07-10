@@ -21,7 +21,7 @@ def get_latest_data_location(device):
     try:
         filename = last_info.filename
     except AttributeError:
-        filename = base_path + "/0"
+        raise RuntimeError("There are no files in the storage.")
 
     return filename
 
@@ -32,8 +32,13 @@ def get_next_data_location(device):
     :param device: Device datastore object
     :return: string
     """
-    last = get_latest_data_location(device)
-    num = int(last[-1])
+    try:
+        last = get_latest_data_location(device)
+    except RuntimeError:
+        last = BUCKET_PREFIX.format(device.serial_num) + "/0"
+        num = -1
+    else:
+        num = int(last[-1])
 
     num += 1
 
