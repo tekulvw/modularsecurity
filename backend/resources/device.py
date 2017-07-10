@@ -14,14 +14,14 @@ class Device(MethodView):
 
         # Abort if None
         if data is None:
-            abort(401)
+            abort(400)
 
         # Gets serial number, then gets key from referencing serial number
         serial_number = data.get('serial_number')
         sensor_data = data.get('data')
 
         if serial_number is None or sensor_data is None:
-            abort(401)
+            abort(400)
         device = DeviceModel.from_serial_number(serial_number)
 
         data_loc = store_data(device, sensor_data)

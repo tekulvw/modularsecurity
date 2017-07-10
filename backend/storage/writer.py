@@ -1,3 +1,5 @@
+import json
+
 import cloudstorage as gcs
 import base64
 from storage.getter import get_next_data_location
@@ -17,12 +19,12 @@ def store_data(device, data):
     gcs_file = gcs.open(filename=filename,
                         mode='w',
                         content_type='text/plain',  # This will need to be changed?
-                        options= {
-                            'x-goog-meta-devid': dev_id
+                        options={
+                            'x-goog-meta-devid': str(dev_id)
                         },
                         retry_params=WRITE_RETRY)
 
-    b64_data = base64.b64encode(data)
+    b64_data = base64.b64encode(json.dumps(data))
 
     gcs_file.write(b64_data)
 

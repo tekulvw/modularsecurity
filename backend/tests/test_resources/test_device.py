@@ -3,7 +3,8 @@ import json
 
 def test_device_post(app, random_device):
     data = dict(
-        serial_number=random_device.serial_num
+        serial_number=random_device.serial_num,
+        data={}
     )
 
     with app:
