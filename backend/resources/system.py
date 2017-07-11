@@ -40,3 +40,22 @@ class System(MethodView):
         current_system = SystemModel.get_by_id(system_id)
         current_system.update_from(data)
         return jsonify(current_system.to_json())
+
+
+class KillSwitch(MethodView):
+    @login_required
+    def put(self, system_id):
+        data = request.get_json()
+        if data is None or not SystemModel.valid_update_keys(data.keys()):
+            abort(401)
+
+        ks_status = data.get("ks_enabled")
+        if ks_status is None:
+            abort(400)
+
+        current_system = SystemModel.get_by_id(system_id)
+
+        current_system.ks_enabled = ks_status
+        current_system.put()
+
+        return jsonify(current_system.to_json())
