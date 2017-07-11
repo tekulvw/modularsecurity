@@ -1,16 +1,32 @@
 import json
+import pytest
 
 
-def test_device_post(app, random_device):
-    data = dict(
-        serial_number=random_device.serial_num
+@pytest.fixture
+def device_test_data(random_device):
+    return dict(
+        serial_number=random_device.serial_num,
+        data={}
     )
 
+
+def test_device_post(app, random_device, device_test_data):
     with app:
-        resp = app.post('/api/device', data=json.dumps(data), headers={'content-type': 'application/json'})
+        resp = app.post('/api/device', data=json.dumps(device_test_data),
+                        headers={'content-type': 'application/json'})
 
     assert resp.status_code == 200
 
     # Check that a new device data entry is in the database
-    from models.device import Device
-    assert Device.from_serial_number(random_device.serial_num) is not None
+    from models.device import DeviceData
+    assert len(DeviceData.from_device(random_device)) != 0
+
+
+def test_device_post_nocontenttype(app, random_device, device_test_data):
+    with app:
+        resp = app.post('/api/device', data=json.dumps(device_test_data))
+
+    assert resp.status_code == 400
+
+    from models.device import DeviceData
+    assert len(DeviceData.from_device(random_device)) == 0

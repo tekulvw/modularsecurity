@@ -51,6 +51,19 @@ class DeviceData(ndb.Model):
             device_key=device_key,
         )
 
+    @classmethod
+    def from_device(cls, device):
+        """
+        Gets all data entries from the given device.
+        :param device: datastore object
+        :return: list
+        """
+        q = cls.query(cls.device_key == device.key)
+        count = q.count()
+        if count > 0:
+            return q.fetch(count)
+        return []
+
 
 class DeviceDataType(ndb.Model):
     type_name = ndb.StringProperty()
