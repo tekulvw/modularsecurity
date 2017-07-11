@@ -1,6 +1,6 @@
 import pytest
-
 import sys
+
 sys.path.insert(1, 'google_appengine')
 sys.path.insert(1, 'google_appengine/lib/yaml/lib')
 sys.path.insert(1, 'lib')
@@ -19,8 +19,11 @@ def init_datastore():
     # Then activate the testbed, which prepares the service stubs for use.
     testbed.activate()
     # Next, declare which service stubs you want to use.
+    testbed.init_app_identity_stub()
     testbed.init_datastore_v3_stub()
     testbed.init_memcache_stub()
+    testbed.init_blobstore_stub()
+    testbed.init_urlfetch_stub()
     # Clear ndb's in-context cache between tests.
     # This prevents data from leaking between tests.
     # Alternatively, you could disable caching by
@@ -86,3 +89,14 @@ def logged_in_app(app, random_user):
         sess['_fresh'] = True
     return app
 
+
+@pytest.fixture
+def random_system():
+    from models.system import System
+    system = System(
+        grace_period=60,
+        ks_enabled=True
+    )
+    system.put()
+    yield system
+    system.key.delete()
