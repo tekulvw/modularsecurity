@@ -34,7 +34,7 @@ class System(ndb.Model):
         :param data: dict
         :return:
         """
-        if not self.valid_update_keys(data.keys):
+        if not self.valid_update_keys(data.keys()):
             raise RuntimeError("Invalid update keys.")
 
         for k, v in data.items():

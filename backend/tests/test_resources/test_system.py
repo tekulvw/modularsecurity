@@ -24,9 +24,20 @@ def test_system_post(logged_in_app, random_system, random_user):
         grace_period=random_system.grace_period
     )
 
-
     with logged_in_app:
         resp = logged_in_app.post('/api/system', data=json.dumps(data), headers={'content-type': 'application/json'})
 
     assert resp.status_code == 200
+
+def test_system_put(logged_in_app, random_system):
+    update_data = {
+        "name": "ERIC"
+    }
+    with logged_in_app:
+        resp = logged_in_app.put('/api/system/%d' %random_system.key.integer_id(), data=json.dumps(update_data),
+                                 headers={'content-type': 'application/json'})
+
+    assert resp.status_code == 200
+    new_system = random_system.key.get()
+    assert new_system.name == "ERIC"
 

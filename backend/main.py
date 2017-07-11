@@ -63,7 +63,7 @@ app.add_url_rule('/api/device', view_func=Device.as_view('device'))
 system_view = System.as_view('system')
 app.add_url_rule('/api/system', methods=["POST", ], view_func=system_view)
 app.add_url_rule('/api/system/<int:system_id>',
-                 methods=["GET", "UPDATE"],
+                 methods=["GET","PUT"],
                  view_func=system_view)
 
 auth = google.initialize(app)

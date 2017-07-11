@@ -32,12 +32,11 @@ class System(MethodView):
         return jsonify({})
 
     @login_required
-    def update(self, system_id):
+    def put(self, system_id):
         data = request.get_json()
-        if data is None:
+        if data is None or not SystemModel.valid_update_keys(data.keys()):
             abort(401)
 
-        raise NotImplementedError()
-
-        current_user.update_from(data)
-        return jsonify(current_user.to_json())
+        current_system = SystemModel.get_by_id(system_id)
+        current_system.update_from(data)
+        return jsonify(current_system.to_json())
