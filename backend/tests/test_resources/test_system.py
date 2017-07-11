@@ -41,3 +41,13 @@ def test_system_put(logged_in_app, random_system):
     new_system = random_system.key.get()
     assert new_system.name == "ERIC"
 
+def test_killswitch_put(logged_in_app, random_system):
+    update_data = {
+        "ks_enabled": True
+    }
+    with logged_in_app:
+        resp = logged_in_app.put('/api/system/%d/killswitch' %random_system.key.integer_id(), data=json.dumps(update_data),
+                                 headers={'content-type':'application/json'})
+        assert resp.status_code == 200
+        new_system = random_system.key.get()
+        assert new_system.ks_enabled is True
