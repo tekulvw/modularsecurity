@@ -3,3 +3,4 @@ flask-login
 Flask-Oauthlib
 pytest>=3.0
 mock
+GoogleAppEngineCloudStorageClient
