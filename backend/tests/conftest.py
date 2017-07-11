@@ -5,6 +5,9 @@ sys.path.insert(1, 'google_appengine')
 sys.path.insert(1, 'google_appengine/lib/yaml/lib')
 sys.path.insert(1, 'lib')
 
+from models.device import Device, DeviceData
+from models.system import System
+
 
 @pytest.fixture(autouse=True)
 def init_datastore():
@@ -26,7 +29,7 @@ def init_datastore():
 
 
 @pytest.fixture(autouse=True)
-def app():
+def app(init_datastore):
     import main
     main.app.testing = True
     app_client = main.app.test_client()
@@ -50,8 +53,36 @@ def random_user():
 
 
 @pytest.fixture
+def random_system():
+    s = System.create(60)
+    s.put()
+    yield s
+    s.key.delete()
+
+
+@pytest.fixture
+def random_device(random_system):
+    dev = Device(
+        serial_num="DEADBEEF",
+        system_key=random_system.key
+    )
+    dev.put()
+    yield dev
+    dev.key.delete()
+
+@pytest.fixture
+def random_devicedata():
+    data = DeviceData(
+        location= "Somewhere"
+    )
+    data.put()
+    yield data
+    data.key.delete()
+
+@pytest.fixture
 def logged_in_app(app, random_user):
     with app.session_transaction() as sess:
         sess['user_id'] = random_user.oauth_id
         sess['_fresh'] = True
     return app
+

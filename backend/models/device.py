@@ -10,7 +10,7 @@ class Device(ndb.Model):
 
     @classmethod
     def from_serial_number(cls, serial_number):
-        return cls.query(cls.serial_num == serial_number)
+        return cls.query(cls.serial_num == serial_number).get()
 
     @classmethod
     def from_system_key(cls, system_key):
@@ -50,6 +50,19 @@ class DeviceData(ndb.Model):
         return cls(
             device_key=device_key,
         )
+
+    @classmethod
+    def from_device(cls, device):
+        """
+        Gets all data entries from the given device.
+        :param device: datastore object
+        :return: list
+        """
+        q = cls.query(cls.device_key == device.key)
+        count = q.count()
+        if count > 0:
+            return q.fetch(count)
+        return []
 
 
 class DeviceDataType(ndb.Model):
