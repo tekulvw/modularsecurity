@@ -1,4 +1,4 @@
-from flask import abort, request
+from flask import abort, request, jsonify
 from flask.views import MethodView
 
 from models.device import Device as DeviceModel
@@ -12,12 +12,17 @@ class Device(MethodView):
 
         # Abort if None
         if data is None:
-            abort(401)
+            abort(400)
 
         # Gets serial number, then gets key from referencing serial number
         serial_number = data.get('serial_number')
-        key = DeviceModel.from_serial_number(serial_number)
+        if serial_number is None:
+            abort(400)
+
+        key = DeviceModel.from_serial_number(serial_number).key
 
         # Creates a new entry for the data coming in then posts it
         entry = DeviceData.create(key)
         entry.put()
+
+        return jsonify({})
