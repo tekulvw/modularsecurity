@@ -1,13 +1,15 @@
-<div ng-controller="SettingsController as ctrl">
+<div ng-controller="SettingsController as ctrl" layout="column">
 	<h2>{{global.userInfo.fname}} {{global.userInfo.lname}}'s Settings</h2>
 
-    <md-switch ng-model="ctrl.switch">
-      A Switch
-    </md-switch>
-    <md-switch ng-model="ctrl.switch">
-      Another Switch
-    </md-switch>
-    <md-switch ng-model="ctrl.switch">
-      Holy shit another switch
-    </md-switch>
+    <md-input-container>
+      <md-icon class="material-icons">phone</md-icon>
+      <input ng-model="global.userInfo.phone_num" 
+      			type="text" 
+      			placeholder="Phone Number">
+    </md-input-container>
+
+    <md-button class="md-primary md-raised" 
+    			ng-click="ctrl.submitSettings(global.userInfo)">
+    	Save Changes
+    </md-button>
 </div>

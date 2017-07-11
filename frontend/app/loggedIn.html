@@ -15,24 +15,30 @@
 
 <body ng-cloak layout="column" ng-controller="GlobalController as global">
 
-  <md-toolbar layout="row" class="md-toolbar-tools">
+  <md-toolbar id='globalScope' layout="row" class="md-toolbar-tools">
     <h1 flex=80>Modular Security</h1>
 
     <md-menu>
       <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
-        {{global.currentSystem}} <md-icon class="material-icons">arrow_drop_down</md-icon>
+        {{global.currentSystem.name}} <md-icon class="material-icons">arrow_drop_down</md-icon>
       </md-button>
       <md-menu-content width = 2>
         <md-menu-item ng-repeat="s in global.availableSystems">
           <md-button ng-click="global.selectSystem(s)">
-           {{s}}
+           {{s.name}}
           </md-button>
         </md-menu-item>
       </md-menu-content>
     </md-menu>
 
-    <md-switch class="md-warn" md-invert ng-model="global.killSwitch">
-      Kill Switch
+    <md-switch class="md-warn" md-invert ng-model="global.currentSystem.ks_enabled">
+      <md-tooltip ng-show="global.currentSystem.ks_enabled" md-direction="bottom">
+        You will not be alerted in an emergency!
+      </md-tooltip>
+      <md-tooltip ng-hide="global.currentSystem.ks_enabled" md-direction="bottom">
+        You will be alerted in an emergency.
+      </md-tooltip>
+      Kill Switch 
     </md-switch>
 
   </md-toolbar>

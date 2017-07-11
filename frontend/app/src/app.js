@@ -7,6 +7,7 @@ import 'angular-material';
 
 import LoginController from 'src/LoginController';
 import MonitorController from 'src/MonitorController';
+import ManageController from 'src/ManageController';
 import SettingsController from 'src/SettingsController';
 import GlobalController from 'src/GlobalController';
 
@@ -21,5 +22,6 @@ export default angular.module( 'starter-app', [ 'ngMaterial' ] )
   })
   .controller('LoginController', LoginController)
   .controller('MonitorController', MonitorController)
+  .controller('ManageController', ManageController)
   .controller('SettingsController', SettingsController)
   .controller('GlobalController', GlobalController);
