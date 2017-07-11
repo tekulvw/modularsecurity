@@ -16,5 +16,5 @@ handlers:
   static_files: www/\1
   upload: www/(.*)
 
-env:
-- BUCKET_NAME: modular-security-system
+env_variables:
+  BUCKET_NAME: modular-security-system
