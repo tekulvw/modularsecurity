@@ -12,10 +12,12 @@ class Device(MethodView):
 
         # Abort if None
         if data is None:
-            abort(401)
+            abort(400)
 
         # Gets serial number, then gets key from referencing serial number
         serial_number = data.get('serial_number')
+        if serial_number is None:
+            abort(400)
 
         key = DeviceModel.from_serial_number(serial_number).key
 

@@ -30,3 +30,11 @@ def test_device_post_nocontenttype(app, random_device, device_test_data):
 
     from models.device import DeviceData
     assert len(DeviceData.from_device(random_device)) == 0
+
+
+def test_malformed_data(app):
+    with app:
+        resp = app.post('/api/device', data="{}",
+                        headers={"content-type": "application/json"})
+
+    assert resp.status_code == 400
