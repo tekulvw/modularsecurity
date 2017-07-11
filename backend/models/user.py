@@ -14,7 +14,7 @@ class User(ndb.Model, UserMixin):
 
     fname = ndb.StringProperty()
     lname = ndb.StringProperty()
-    phone_num = ndb.IntegerProperty()
+    phone_num = ndb.StringProperty()
 
     oauth_id = ndb.StringProperty(required=True)
     create_date = ndb.DateTimeProperty(auto_now_add=True)
