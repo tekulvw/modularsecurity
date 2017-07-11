@@ -47,7 +47,7 @@ def random_user():
     user = User(
         fname="FirstName",
         lname="LastName",
-        phone_num=0000000000,
+        phone_num="0000000000",
         oauth_id=str(uuid.uuid4())
     )
     user.put()
