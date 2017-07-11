@@ -73,6 +73,7 @@ def random_device(random_system):
     yield dev
     dev.key.delete()
 
+
 @pytest.fixture
 def random_devicedata():
     data = DeviceData(
@@ -82,10 +83,18 @@ def random_devicedata():
     yield data
     data.key.delete()
 
+
 @pytest.fixture
 def logged_in_app(app, random_user):
     with app.session_transaction() as sess:
         sess['user_id'] = random_user.oauth_id
         sess['_fresh'] = True
     return app
+
+
+@pytest.fixture
+def admin_app(logged_in_app, random_user):
+    random_user.is_admin = True
+    random_user.put()
+    return logged_in_app
 

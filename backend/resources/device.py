@@ -1,5 +1,6 @@
 from flask import abort, request, jsonify
 from flask.views import MethodView
+from flask_login import login_required, current_user
 
 from models.device import Device as DeviceModel
 from models.device import DeviceData
@@ -7,7 +8,23 @@ from models.device import DeviceData
 from storage import store_data
 
 
-class Device(MethodView):
+class DeviceCollectionResource(MethodView):
+    @login_required
+    def post(self):
+        if not current_user.is_admin:
+            abort(401)
+
+        data = request.get_json()
+        serial_number = data.get("serial_number")
+        if serial_number is None:
+            abort(400)
+
+        device = DeviceModel.create(serial_number)
+        device.put()
+        return jsonify(device.to_json())
+
+
+class DeviceResource(MethodView):
     def post(self):
         # Request post json data
         data = request.get_json()
