@@ -3,7 +3,6 @@ from flask import session, current_app
 from flask_login import UserMixin
 import datetime
 import os
-
 # Property Information can be found here:
 # https://cloud.google.com/appengine/docs/standard/python/ndb/entity-property-reference
 

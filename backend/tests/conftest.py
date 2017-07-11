@@ -89,3 +89,14 @@ def logged_in_app(app, random_user):
         sess['_fresh'] = True
     return app
 
+
+@pytest.fixture
+def random_system():
+    from models.system import System
+    system = System(
+        grace_period=60,
+        ks_enabled=True
+    )
+    system.put()
+    yield system
+    system.key.delete()
