@@ -18,6 +18,20 @@ def test_user_get(logged_in_app, random_user):
     assert json.loads(resp.data) == random_user.to_json()
 
 
+def test_user_update(logged_in_app, random_user):
+    update_data = {
+        "fname": "UPDATED"
+    }
+    with logged_in_app:
+        resp = logged_in_app.put('/api/user/', data=json.dumps(update_data),
+                                 headers={'content-type': 'application/json'})
+
+    assert resp.status_code == 200
+
+    from models.user import User
+    assert User.from_oauth_id(random_user.oauth_id).fname == "UPDATED"
+
+
 """
 @pytest.fixture
 def logged_in_user(random_user):

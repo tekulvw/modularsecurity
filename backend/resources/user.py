@@ -86,14 +86,14 @@ class User(MethodView):
         return jsonify(current_user.to_json())
 
     @login_required
-    def update(self):
+    def put(self):
         """
         Keys sent must be a subset or equal to the keys in model/user/User
         :return: model/user/User
         """
         data = request.get_json()
         if data is None or not UserModel.valid_update_keys(data.keys()):
-            abort(401)
+            abort(400)
 
         current_user.update_from(data)
         return jsonify(current_user.to_json())
