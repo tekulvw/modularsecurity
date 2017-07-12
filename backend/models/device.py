@@ -2,6 +2,7 @@ from google.appengine.ext import ndb
 
 
 class Device(ndb.Model):
+    enabled = ndb.BooleanProperty(default=True)
     serial_num = ndb.StringProperty()
     system_key = ndb.KeyProperty(kind="System")
     name = ndb.StringProperty(default="Default Device")
