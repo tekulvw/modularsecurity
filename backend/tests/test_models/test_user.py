@@ -17,3 +17,7 @@ def test_from_oauth_id(random_user):
     user = User.from_oauth_id(random_user.oauth_id)
     assert user is not None
     assert user.oauth_id == random_user.oauth_id
+
+
+def test_ensure_phone_string(random_user):
+    assert isinstance(random_user.phone_num, basestring)

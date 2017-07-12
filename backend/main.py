@@ -28,6 +28,7 @@ from resources.user import Logout
 
 from resources.device import Device
 from resources.system import System
+from resources.system import KillSwitch
 
 from auth import google, initialize_tokengetter, read_client_keys
 
@@ -65,6 +66,10 @@ app.add_url_rule('/api/system', methods=["POST", ], view_func=system_view)
 app.add_url_rule('/api/system/<int:system_id>',
                  methods=["GET","PUT"],
                  view_func=system_view)
+
+killswitch_view = KillSwitch.as_view('killswitch')
+app.add_url_rule('/api/system/<int:system_id>/killswitch', view_func=killswitch_view,
+                 methods=["PUT"])
 
 auth = google.initialize(app)
 initialize_tokengetter(auth)
