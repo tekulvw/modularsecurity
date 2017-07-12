@@ -21,7 +21,9 @@ class System(ndb.Model):
 
     @classmethod
     def from_system_id(cls, system_id):
-        return ndb.Key(cls.__name__, system_id).get()
+        if system_id:
+            return ndb.Key(cls.__name__, system_id).get()
+        return None
 
     def to_json(self):
         sys_dict = self.to_dict(exclude=['create_date', ])
