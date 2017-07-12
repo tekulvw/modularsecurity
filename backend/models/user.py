@@ -19,6 +19,7 @@ class User(ndb.Model, UserMixin):
     is_admin = ndb.BooleanProperty(default=False)
 
     oauth_id = ndb.StringProperty(required=True)
+    email = ndb.StringProperty(required=True)
     create_date = ndb.DateTimeProperty(auto_now_add=True)
 
     @classmethod
@@ -32,11 +33,13 @@ class User(ndb.Model, UserMixin):
         fname = data.get("given_name", "")
         lname = data.get("family_name", "")
         oauth_id = data.get("id", "")
+        email = data.get("email", "")
 
         return cls(
             fname=fname,
             lname=lname,
-            oauth_id=oauth_id
+            oauth_id=oauth_id,
+            email=email
         )
 
     @classmethod
