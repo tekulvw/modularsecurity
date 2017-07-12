@@ -3,7 +3,6 @@ from flask import session, current_app
 from flask_login import UserMixin
 import datetime
 import os
-
 # Property Information can be found here:
 # https://cloud.google.com/appengine/docs/standard/python/ndb/entity-property-reference
 
@@ -15,7 +14,9 @@ class User(ndb.Model, UserMixin):
 
     fname = ndb.StringProperty()
     lname = ndb.StringProperty()
-    phone_num = ndb.IntegerProperty()
+    phone_num = ndb.StringProperty()
+
+    is_admin = ndb.BooleanProperty(default=False)
 
     oauth_id = ndb.StringProperty(required=True)
     create_date = ndb.DateTimeProperty(auto_now_add=True)
@@ -63,13 +64,12 @@ class User(ndb.Model, UserMixin):
         self.put()
 
     def to_json(self):
-        data = {
-            "fname": self.fname,
-            "lname": self.lname,
-            "phone_num": self.phone_num,
+        data = self.to_dict(exclude=["oauth_id", "create_date"])
+        other = {
             "owned_systems": self.owned_systems(),
             "secondary_systems": self.secondary_systems()
         }
+        data.update(**other)
         return data
 
     def get_id(self):

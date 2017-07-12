@@ -5,17 +5,18 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from models.owner import Owner as OwnerModel
+from models.user import User as UserModel
+from models.system import System as SystemModel
 
 
 class System(MethodView):
-    @login_required
+    # @login_required
     def get(self, system_id):
         """
         :param system_id:
         :return: is_connected, type_id, latest_data
         """
-        key = ndb.Key('System', system_id)
-        data = key.get()
+        data = SystemModel.get_by_id(system_id)
         return jsonify(data.to_json())
 
     @login_required
@@ -25,14 +26,36 @@ class System(MethodView):
             abort(401)
         grace = data.get('grace_period')
         oauth = data.get('oauth_id')
-        entry = OwnerModel.create(oauth, grace)
+        user = UserModel.from_oauth_id(oauth_id=oauth)
+        entry = OwnerModel.create(user, grace)
         entry.put()
+        return jsonify({})
 
     @login_required
-    def update(self):
+    def put(self, system_id):
         data = request.get_json()
-        if data is None:
+        if data is None or not SystemModel.valid_update_keys(data.keys()):
             abort(401)
 
-        current_user.update_from(data)
-        return jsonify(current_user.to_json())
+        current_system = SystemModel.get_by_id(system_id)
+        current_system.update_from(data)
+        return jsonify(current_system.to_json())
+
+
+class KillSwitch(MethodView):
+    @login_required
+    def put(self, system_id):
+        data = request.get_json()
+        if data is None or not SystemModel.valid_update_keys(data.keys()):
+            abort(401)
+
+        ks_status = data.get("ks_enabled")
+        if ks_status is None:
+            abort(400)
+
+        current_system = SystemModel.get_by_id(system_id)
+
+        current_system.ks_enabled = ks_status
+        current_system.put()
+
+        return jsonify(current_system.to_json())

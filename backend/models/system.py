@@ -11,21 +11,21 @@ class System(ndb.Model):
     ks_enabled = ndb.BooleanProperty(required=True)
     create_date = ndb.DateTimeProperty(auto_now_add=True)
 
+    @classmethod
+    def create(cls, grace):
+        grace_period = grace
+        return cls(
+            grace_period=grace_period,
+            ks_enabled=False
+        )
+
     def to_json(self):
-        sys_dict = self.to_dict()
+        sys_dict = self.to_dict(exclude=['create_date', ])
         sys_dict['id'] = self.key.integer_id()
 
         devices = Device.from_system_key(self.key)
         sys_dict['devices'] = [d.to_json() for d in devices]
         return sys_dict
-
-    @classmethod
-    def create(cls, grace):
-        grace_period = grace
-        return cls(
-            ks_enabled=False,
-            grace_period=grace_period
-        )
 
     def update_from(self, data):
         """
@@ -34,7 +34,7 @@ class System(ndb.Model):
         :param data: dict
         :return:
         """
-        if not self.valid_update_keys(data.keys):
+        if not self.valid_update_keys(data.keys()):
             raise RuntimeError("Invalid update keys.")
 
         for k, v in data.items():

@@ -19,13 +19,15 @@ from flask_login import LoginManager
 
 import logging
 import uuid
+import os
 
 from models.user import User as UserModel
 
 from resources.user import AuthorizeUser, AuthorizedUser, UserInfo, Login, User
 from resources.user import Logout
-from resources.device import Device
+from resources.device import DeviceCollectionResource, DeviceResource
 from resources.system import System
+from resources.system import KillSwitch
 
 from auth import google, initialize_tokengetter, read_client_keys
 
@@ -40,6 +42,9 @@ app.secret_key = str(uuid.uuid4())
 login_manager = LoginManager(app)
 app.config["LOGIN_MGR"] = login_manager
 
+if os.environ.get("TESTING"):
+    app.config["SERVER_NAME"] = 'localhost'
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -53,8 +58,22 @@ app.add_url_rule('/api/user/info', view_func=UserInfo.as_view('user.info'))
 app.add_url_rule('/api/login', view_func=Login.as_view('login'))
 app.add_url_rule('/api/logout', view_func=Logout.as_view('logout'))
 
-app.add_url_rule('/api/system', view_func=System.as_view('system'))
-app.add_url_rule('/api/device', view_func=Device.as_view('device'))
+app.add_url_rule('/api/device', view_func=DeviceCollectionResource.as_view('device'),
+                 methods=["POST"])
+
+single_dev_view = DeviceResource.as_view('device.single')
+app.add_url_rule('/api/device/data', view_func=single_dev_view,
+                 methods=["POST"])
+
+system_view = System.as_view('system')
+app.add_url_rule('/api/system', methods=["POST", ], view_func=system_view)
+app.add_url_rule('/api/system/<int:system_id>',
+                 methods=["GET","PUT"],
+                 view_func=system_view)
+
+killswitch_view = KillSwitch.as_view('killswitch')
+app.add_url_rule('/api/system/<int:system_id>/killswitch', view_func=killswitch_view,
+                 methods=["PUT"])
 
 auth = google.initialize(app)
 initialize_tokengetter(auth)

@@ -1,7 +1,6 @@
 from google.appengine.ext import ndb
 
-from .system import System
-from .user import User
+from models.system import System
 
 
 class Owner(ndb.Model):
