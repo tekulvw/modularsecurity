@@ -33,7 +33,7 @@ class Device(ndb.Model):
         dev_keys = cls.query(cls.system_key == system_key)
         count = dev_keys.count()
         if count > 0:
-            return [d.get() for d in dev_keys.fetch(count)]
+            return dev_keys.fetch(count)
         return []
 
     def to_json(self):
