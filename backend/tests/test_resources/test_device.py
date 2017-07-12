@@ -76,6 +76,22 @@ def test_device_updating(logged_in_app, random_device):
     assert random_device.enabled == data["enabled"]
 
 
+def test_device_updating_badkeys(logged_in_app, random_device):
+    data = {
+        "serial_num": "fakeserial",
+        "system_key": "12345",
+        "is_connected": True,
+        "device_type_key": 100
+    }
+    url = "/api/device/{}".format(random_device.serial_num)
+    for k, v in data.items():
+        with logged_in_app:
+            resp = logged_in_app.put(url, data=json.dumps({k: v}),
+                                     headers={'content-type': 'application/json'})
+        assert resp.status_code != 200
+        assert getattr(random_device, k) != v
+
+
 def test_system_association(logged_in_app, random_system, random_device_nosystem):
     data = {
         'system_id': random_system.key.integer_id()
