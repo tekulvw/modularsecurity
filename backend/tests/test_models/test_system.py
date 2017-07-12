@@ -15,3 +15,8 @@ def test_real_json(random_system):
 def test_system_from_id(random_system):
     from models.system import System
     assert random_system == System.from_system_id(random_system.key.integer_id())
+
+
+def test_system_from_id_none():
+    from models.system import System
+    assert System.from_system_id(None) is None
