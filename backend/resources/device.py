@@ -53,9 +53,8 @@ class DeviceResource(MethodView):
 
         return jsonify({})
 
-    @login_required
-    def put(self, serial_number):
-        system_id = request.get_json().get("system_id")
+    def update_device_association(self, serial_number, req_data):
+        system_id = req_data.get("system_id")
         system = System.from_system_id(system_id)
         device = DeviceModel.from_serial_number(serial_number)
 
@@ -79,3 +78,19 @@ class DeviceResource(MethodView):
         device.put()
         return jsonify(device.to_json())
 
+    @login_required
+    def put(self, serial_number):
+        data = request.get_json()
+        if "system_id" in data:
+            return self.update_device_association(serial_number, data)
+        else:
+            device = DeviceModel.from_serial_number(serial_number)
+            if device is None:
+                abort(400)
+
+            try:
+                device.update_from(data)
+            except RuntimeError:
+                abort(400)
+
+            return jsonify(device.to_json())

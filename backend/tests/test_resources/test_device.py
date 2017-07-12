@@ -58,6 +58,40 @@ def test_device_creation(admin_app):
     assert Device.from_serial_number(serial_number) is not None
 
 
+def test_device_updating(logged_in_app, random_device):
+    data = {
+        "name": "somethingnew",
+        "enabled": not random_device.enabled
+    }
+    url = "/api/device/{}".format(random_device.serial_num)
+
+    assert random_device.name != data["name"]
+
+    with logged_in_app:
+        resp = logged_in_app.put(url, data=json.dumps(data),
+                                 headers={'content-type': 'application/json'})
+    assert resp.status_code == 200
+
+    assert random_device.name == "somethingnew"
+    assert random_device.enabled == data["enabled"]
+
+
+def test_device_updating_badkeys(logged_in_app, random_device):
+    data = {
+        "serial_num": "fakeserial",
+        "system_key": "12345",
+        "is_connected": True,
+        "device_type_key": 100
+    }
+    url = "/api/device/{}".format(random_device.serial_num)
+    for k, v in data.items():
+        with logged_in_app:
+            resp = logged_in_app.put(url, data=json.dumps({k: v}),
+                                     headers={'content-type': 'application/json'})
+        assert resp.status_code != 200
+        assert getattr(random_device, k) != v
+
+
 def test_system_association(logged_in_app, random_system, random_device_nosystem,
                             random_owner):
     data = {
@@ -65,13 +99,14 @@ def test_system_association(logged_in_app, random_system, random_device_nosystem
     }
     url = "/api/device/{}".format(random_device_nosystem.serial_num)
 
+    assert random_device_nosystem.system_key is None
+
     with logged_in_app:
         resp = logged_in_app.put(url, data=json.dumps(data),
                                  headers={"content-type": "application/json"})
     assert resp.status_code == 200
 
-    new_device = random_device_nosystem.key.get()
-    assert new_device.system_key == random_system.key
+    assert random_device_nosystem.system_key == random_system.key
 
 
 def test_system_disassociation(logged_in_app, random_system, random_device,
