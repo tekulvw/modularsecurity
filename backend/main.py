@@ -25,8 +25,7 @@ from models.user import User as UserModel
 
 from resources.user import AuthorizeUser, AuthorizedUser, UserInfo, Login, User
 from resources.user import Logout
-
-from resources.device import Device
+from resources.device import DeviceCollectionResource, DeviceResource
 from resources.system import System
 from resources.system import KillSwitch
 
@@ -59,7 +58,12 @@ app.add_url_rule('/api/user/info', view_func=UserInfo.as_view('user.info'))
 app.add_url_rule('/api/login', view_func=Login.as_view('login'))
 app.add_url_rule('/api/logout', view_func=Logout.as_view('logout'))
 
-app.add_url_rule('/api/device', view_func=Device.as_view('device'))
+app.add_url_rule('/api/device', view_func=DeviceCollectionResource.as_view('device'),
+                 methods=["POST"])
+
+single_dev_view = DeviceResource.as_view('device.single')
+app.add_url_rule('/api/device/data', view_func=single_dev_view,
+                 methods=["POST"])
 
 system_view = System.as_view('system')
 app.add_url_rule('/api/system', methods=["POST", ], view_func=system_view)
