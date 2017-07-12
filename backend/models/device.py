@@ -69,7 +69,7 @@ class Device(ndb.Model):
         :return: bool
         """
         valid_keys = self.to_dict(exclude=["system_key", "device_type_key",
-                                           "is_connected"]).keys()
+                                           "is_connected", "serial_num"]).keys()
         for k in keys:
             if k not in valid_keys:
                 return False
