@@ -4,9 +4,20 @@ from google.appengine.ext import ndb
 class Device(ndb.Model):
     serial_num = ndb.StringProperty()
     system_key = ndb.KeyProperty(kind="System")
-    name = ndb.StringProperty()
+    name = ndb.StringProperty(default="Default Device")
     is_connected = ndb.BooleanProperty()
     device_type_key = ndb.IntegerProperty()
+
+    @classmethod
+    def create(cls, serial_number):
+        """
+        Create a new unassociated device in the datastore.
+        :param serial_number: Device serial number
+        :return:
+        """
+        return cls(
+            serial_num=serial_number
+        )
 
     @classmethod
     def from_serial_number(cls, serial_number):
@@ -27,7 +38,10 @@ class Device(ndb.Model):
 
     def to_json(self):
         device_dict = self.to_dict(exclude=['system_key', 'device_type_key'])
-        device_dict['system_id'] = self.system_key.integer_id()
+        if self.system_key:
+            device_dict['system_id'] = self.system_key.integer_id()
+        else:
+            device_dict['system_id'] = None
         return device_dict
 
 

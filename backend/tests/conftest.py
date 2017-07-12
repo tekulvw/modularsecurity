@@ -73,6 +73,7 @@ def random_device(random_system):
     yield dev
     dev.key.delete()
 
+
 @pytest.fixture
 def random_devicedata():
     data = DeviceData(
@@ -81,6 +82,7 @@ def random_devicedata():
     data.put()
     yield data
     data.key.delete()
+
 
 @pytest.fixture
 def logged_in_app(app, random_user):
@@ -91,12 +93,7 @@ def logged_in_app(app, random_user):
 
 
 @pytest.fixture
-def random_system():
-    from models.system import System
-    system = System(
-        grace_period=60,
-        ks_enabled=True
-    )
-    system.put()
-    yield system
-    system.key.delete()
+def admin_app(logged_in_app, random_user):
+    random_user.is_admin = True
+    random_user.put()
+    return logged_in_app
