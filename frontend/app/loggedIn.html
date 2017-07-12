@@ -31,7 +31,7 @@
       </md-menu-content>
     </md-menu>
 
-    <md-switch class="md-warn" md-invert ng-model="global.currentSystem.ks_enabled">
+    <md-switch class="md-warn" md-invert ng-model="global.currentSystem.ks_enabled" ng-click="global.ks()">
       <md-tooltip ng-show="global.currentSystem.ks_enabled" md-direction="bottom">
         You will not be alerted in an emergency!
       </md-tooltip>

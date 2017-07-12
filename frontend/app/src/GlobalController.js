@@ -22,13 +22,22 @@ function GlobalController($mdSidenav, $window) {
     self.currentTab = self.tabs[i];
   }
 
-  self.killSwitch = false;
   self.availableSystems = self.userInfo.owned_systems.concat(
                             self.userInfo.secondary_systems);
   
   self.currentSystem = self.availableSystems[0];
 
   var originatorEv;
+
+  self.ks = function(){
+    $.ajax({
+        url: "/api/system/" + self.currentSystem.id + "/killswitch",
+        type: "PUT",
+        data: JSON.stringify({'ks_enabled': !self.currentSystem.ks_enabled}),
+        dataType: 'json',
+        contentType: 'application/json'
+    });
+  }
 
   self.openMenu = function($mdMenu, ev){
 	  originatorEv = ev;

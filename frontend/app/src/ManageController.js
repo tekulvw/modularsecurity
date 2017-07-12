@@ -1,7 +1,20 @@
 function ManageController($mdDialog) {
   var self = this;
+  self.submitSettings = function(system){
+	  $.ajax({
+	  	  url: "/api/system/" + system.id,
+	  	  type: "PUT",
+	  	  success: function(data){
+	        self.userInfo = data;
+	      },
+	      data: JSON.stringify({'name': system.name,
+	  							'grace_period': system.grace_period}),
+	      dataType: 'json',
+	      contentType: 'application/json'
+	  });
+  }
+  
   self.addDevice = function(ev) {
-    // Appending dialog to document.body to cover sidenav in docs app
     var confirm = $mdDialog.prompt()
       .title('Enter Device Serial Number')
       .placeholder('Serial Number')
@@ -16,7 +29,6 @@ function ManageController($mdDialog) {
   };
 
   self.addSecondary = function(ev) {
-    // Appending dialog to document.body to cover sidenav in docs app
     var confirm = $mdDialog.prompt()
       .title('Enter Email Address To Add')
       .placeholder('email@host.tld')

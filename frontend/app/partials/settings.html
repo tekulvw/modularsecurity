@@ -9,7 +9,11 @@
     </md-input-container>
 
     <md-button class="md-primary md-raised" 
-    			ng-click="ctrl.submitSettings(global.userInfo)">
+    			ng-click="ctrl.submitSettings(global.userInfo.phone_num)">
     	Save Changes
+    </md-button>
+
+    <md-button ng-if="global.userInfo.is_admin" class="md-primary md-raised" ng-click="ctrl.createDevice()">
+    	Create Device
     </md-button>
 </div>
