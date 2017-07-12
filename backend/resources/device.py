@@ -6,6 +6,8 @@ from models.device import Device as DeviceModel
 from models.device import DeviceData
 from models.system import System
 
+from models.owner import Owner
+
 from storage import store_data
 
 
@@ -57,13 +59,23 @@ class DeviceResource(MethodView):
         system = System.from_system_id(system_id)
         device = DeviceModel.from_serial_number(serial_number)
 
-        if system is None or device is None:
+        if device is None:
             abort(400)
 
-        if device.system_key is not None:
+        try:
+            curr_system = device.system_key.get()
+        except AttributeError:
+            curr_system = None
+
+        if not any(Owner.is_owner_of(current_user, s)
+                   for s in (system, curr_system)):
             abort(403)
 
-        device.system_key = system.key
+        try:
+            device.system_key = system.key
+        except AttributeError:
+            device.system_key = None
+
         device.put()
         return jsonify(device.to_json())
 

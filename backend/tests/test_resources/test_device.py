@@ -58,7 +58,8 @@ def test_device_creation(admin_app):
     assert Device.from_serial_number(serial_number) is not None
 
 
-def test_system_association(logged_in_app, random_system, random_device_nosystem):
+def test_system_association(logged_in_app, random_system, random_device_nosystem,
+                            random_owner):
     data = {
         'system_id': random_system.key.integer_id()
     }

@@ -7,6 +7,7 @@ sys.path.insert(1, 'lib')
 
 from models.device import Device, DeviceData
 from models.system import System
+from models.owner import Owner
 
 
 @pytest.fixture(autouse=True)
@@ -61,6 +62,15 @@ def random_system():
     s.put()
     yield s
     s.key.delete()
+
+
+@pytest.fixture
+def random_owner(random_user, random_system):
+    owner = Owner(user_key=random_user.key,
+                  system_key=random_system.key)
+    owner.put()
+    yield owner
+    owner.key.delete()
 
 
 @pytest.fixture
