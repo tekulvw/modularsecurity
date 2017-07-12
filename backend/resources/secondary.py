@@ -15,12 +15,12 @@ class Secondary(MethodView):
         data = request.get_json()
 
         system_id = data.get('system_id')
-        user_id = data.get('user_id')
-        if None in (system_id, user_id):
+        user_email = data.get('user_email')
+        if None in (system_id, user_email):
             abort(400)
 
         system = System.from_system_id(system_id)
-        user = User.from_oauth_id(user_id)
+        user = User.from_email(user_email)
 
         if not Owner.is_owner_of(current_user, system):
             abort(401)

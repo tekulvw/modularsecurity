@@ -51,6 +51,15 @@ class User(ndb.Model, UserMixin):
         """
         return cls.query(cls.oauth_id == oauth_id).get()
 
+    @classmethod
+    def from_email(cls, email_addr):
+        """
+        Finds a user from the given email address
+        :param email_addr:
+        :return: User object or None
+        """
+        return cls.query(cls.email == email_addr).get()
+
     def update_from(self, data):
         """
         Updates this user with the given data. Data keys must be in
