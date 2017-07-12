@@ -1,1 +1,68 @@
-You're on the management screen
+<div ng-controller="ManageController as ctrl" layout="column">
+  <md-list>
+
+  <md-subheader>System Info</md-subheader>
+
+    <md-list-item>
+      <md-input-container>
+        <md-icon class="material-icons">info</md-icon>
+        <input ng-model="global.currentSystem.name" 
+              type="text" 
+              placeholder="System Name">
+      </md-input-container>
+    </md-list-item>
+
+    <md-list-item>
+      <md-input-container>
+        <md-icon class="material-icons">timer</md-icon>
+        <input ng-model="global.currentSystem.grace_period" 
+              type="text" 
+              placeholder="Grace Period">
+      </md-input-container>
+    </md-list-item>
+
+    <md-list-item>
+      <md-button ng-click="ctrl.submitSettings(global.currentSystem)" 
+                  class="md-raised">
+        Save Changes
+      </md-button>
+    </md-list-item>
+
+    <md-divider></md-divider>
+
+    <md-subheader>Devices</md-subheader>
+
+    <md-list-item ng-repeat="d in global.currentSystem.devices">
+      <md-switch md-invert ng-model="d.enabled">
+        {{d.name}}
+      </md-switch>
+      <md-button>
+        <md-icon class="material-icons">delete</md-icon>
+      </md-button>
+    </md-list-item>
+
+    <md-list-item>
+      <md-button class="md-raised" ng-click="ctrl.addDevice()">
+        Add Device
+      </md-button>
+    </md-list-item>
+
+    <md-divider></md-divider>
+
+    <md-subheader>Secondary Users</md-subheader>
+
+    <md-list-item class="secondary-button-padding">
+      {{global.userInfo.fname}} {{global.userInfo.lname}}
+      <md-button>
+        <md-icon class="material-icons">delete</md-icon>
+      </md-button>
+    </md-list-item>
+
+    <md-list-item>
+      <md-button class="md-raised" ng-click="ctrl.addSecondary()">
+        Add User
+      </md-button>
+    </md-list-item>
+  </md-list>
+
+</div>

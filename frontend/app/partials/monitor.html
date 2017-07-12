@@ -1,1 +1,5 @@
-You're on the monitor screen
+<div ng-controller="MonitorController as ctrl" layout="column">
+	<h2 ng-if="global.currentSystem.devices.length == 0">
+		You have no devices to monitor. If you have a device, add it in the Management tab.
+	</h2>
+</div>
