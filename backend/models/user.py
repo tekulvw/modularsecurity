@@ -3,7 +3,6 @@ from flask import session, current_app
 from flask_login import UserMixin
 import datetime
 import os
-
 # Property Information can be found here:
 # https://cloud.google.com/appengine/docs/standard/python/ndb/entity-property-reference
 
@@ -15,7 +14,7 @@ class User(ndb.Model, UserMixin):
 
     fname = ndb.StringProperty()
     lname = ndb.StringProperty()
-    phone_num = ndb.IntegerProperty()
+    phone_num = ndb.StringProperty()
 
     is_admin = ndb.BooleanProperty(default=False)
 
