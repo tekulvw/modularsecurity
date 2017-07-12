@@ -64,10 +64,9 @@ def random_system():
 
 
 @pytest.fixture
-def random_device(random_system):
+def random_device_nosystem():
     dev = Device(
-        serial_num="DEADBEEF",
-        system_key=random_system.key
+        serial_num="DEADBEEF"
     )
     dev.put()
     yield dev
@@ -75,9 +74,17 @@ def random_device(random_system):
 
 
 @pytest.fixture
+def random_device(random_device_nosystem, random_system):
+    dev = random_device_nosystem
+    dev.system_key = random_system.key
+    dev.put()
+    return dev
+
+
+@pytest.fixture
 def random_devicedata():
     data = DeviceData(
-        location= "Somewhere"
+        location="Somewhere"
     )
     data.put()
     yield data

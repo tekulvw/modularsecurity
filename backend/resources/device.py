@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 
 from models.device import Device as DeviceModel
 from models.device import DeviceData
+from models.system import System
 
 from storage import store_data
 
@@ -49,3 +50,20 @@ class DeviceResource(MethodView):
         entry.put()
 
         return jsonify({})
+
+    @login_required
+    def put(self, serial_number):
+        system_id = request.get_json().get("system_id")
+        system = System.from_system_id(system_id)
+        device = DeviceModel.from_serial_number(serial_number)
+
+        if system is None or device is None:
+            abort(400)
+
+        if device.system_key is not None:
+            abort(403)
+
+        device.system_key = system.key
+        device.put()
+        return jsonify(device.to_json())
+

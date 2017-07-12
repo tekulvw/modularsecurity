@@ -19,6 +19,10 @@ class System(ndb.Model):
             ks_enabled=False
         )
 
+    @classmethod
+    def from_system_id(cls, system_id):
+        return ndb.Key(cls, system_id).get()
+
     def to_json(self):
         sys_dict = self.to_dict(exclude=['create_date', ])
         sys_dict['id'] = self.key.integer_id()
