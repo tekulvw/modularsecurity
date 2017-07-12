@@ -27,6 +27,6 @@ class Secondary(MethodView):
 
         sec_obj = SecondaryModel.create(user, system)
         sec_obj.put()
-        return jsonify(sec_obj.to_json())
+        return jsonify(current_user.to_json())
 
 

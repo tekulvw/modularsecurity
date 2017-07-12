@@ -34,10 +34,3 @@ class Secondary(ndb.Model):
                             Secondary.user_key == user.key)
         secondary = q.get()
         return secondary is not None, secondary
-
-    def to_json(self):
-        sec_dict = {
-            'system': self.system_key.get().to_json(),
-            'user': self.user_key.get().to_json()
-        }
-        return sec_dict
