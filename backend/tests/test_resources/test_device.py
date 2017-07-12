@@ -92,7 +92,8 @@ def test_device_updating_badkeys(logged_in_app, random_device):
         assert getattr(random_device, k) != v
 
 
-def test_system_association(logged_in_app, random_system, random_device_nosystem):
+def test_system_association(logged_in_app, random_system, random_device_nosystem,
+                            random_owner):
     data = {
         'system_id': random_system.key.integer_id()
     }
@@ -106,4 +107,22 @@ def test_system_association(logged_in_app, random_system, random_device_nosystem
     assert resp.status_code == 200
 
     assert random_device_nosystem.system_key == random_system.key
+
+
+def test_system_disassociation(logged_in_app, random_system, random_device,
+                               random_owner):
+    data = {
+        'system_id': None
+    }
+    url = "/api/device/{}".format(random_device.serial_num)
+
+    assert random_device.system_key == random_system.key
+
+    with logged_in_app:
+        resp = logged_in_app.put(url, data=json.dumps(data),
+                                 headers={'content-type': 'application/json'})
+    assert resp.status_code == 200
+
+    new_device = random_device.key.get()
+    assert new_device.system_key is None
 
