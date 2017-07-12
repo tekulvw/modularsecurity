@@ -21,3 +21,7 @@ def test_from_oauth_id(random_user):
 
 def test_ensure_phone_string(random_user):
     assert isinstance(random_user.phone_num, basestring)
+
+
+def test_ensure_adminflag_in_json(random_user):
+    assert random_user.to_json().get("is_admin") is not None

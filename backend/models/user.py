@@ -64,13 +64,12 @@ class User(ndb.Model, UserMixin):
         self.put()
 
     def to_json(self):
-        data = {
-            "fname": self.fname,
-            "lname": self.lname,
-            "phone_num": self.phone_num,
+        data = self.to_dict(exclude=["oauth_id", "create_date"])
+        other = {
             "owned_systems": self.owned_systems(),
             "secondary_systems": self.secondary_systems()
         }
+        data.update(**other)
         return data
 
     def get_id(self):
