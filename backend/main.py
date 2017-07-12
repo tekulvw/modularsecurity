@@ -62,6 +62,8 @@ app.add_url_rule('/api/device', view_func=DeviceCollectionResource.as_view('devi
                  methods=["POST"])
 
 single_dev_view = DeviceResource.as_view('device.single')
+app.add_url_rule('/api/device/<str:serial_number>', view_func=single_dev_view,
+                 methods=["PUT"])
 app.add_url_rule('/api/device/data', view_func=single_dev_view,
                  methods=["POST"])
 
