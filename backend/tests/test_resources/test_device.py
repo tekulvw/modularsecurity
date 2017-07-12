@@ -56,3 +56,19 @@ def test_device_creation(admin_app):
 
     from models.device import Device
     assert Device.from_serial_number(serial_number) is not None
+
+
+def test_system_association(logged_in_app, random_system, random_device_nosystem):
+    data = {
+        'system_id': random_system.key.integer_id()
+    }
+    url = "/api/device/{}".format(random_device_nosystem.serial_num)
+
+    with logged_in_app:
+        resp = logged_in_app.put(url, data=json.dumps(data),
+                                 headers={"content-type": "application/json"})
+    assert resp.status_code == 200
+
+    new_device = random_device_nosystem.key.get()
+    assert new_device.system_key == random_system.key
+
