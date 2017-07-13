@@ -1,10 +1,9 @@
-from google.appengine.ext import ndb
-
 from flask import jsonify, abort, request
 from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from models.owner import Owner as OwnerModel
+from models.secondary import Secondary as SecondaryModel
 from models.user import User as UserModel
 from models.system import System as SystemModel
 
@@ -57,6 +56,12 @@ class KillSwitch(MethodView):
             abort(400)
 
         current_system = SystemModel.get_by_id(system_id)
+
+        owner = OwnerModel.is_owner_of(current_user, current_system)
+        is_sec, _ = SecondaryModel.is_secondary_of(current_user, current_system)
+
+        if not (owner or is_sec):
+            abort(401)
 
         current_system.ks_enabled = ks_status
         current_system.put()
