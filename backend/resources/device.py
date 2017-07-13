@@ -9,7 +9,6 @@ from models.system import System
 from models.owner import Owner
 
 from storage import store_data
-from pubsub.tasks import get_all_system_topic
 
 
 class DeviceCollectionResource(MethodView):
@@ -51,10 +50,6 @@ class DeviceResource(MethodView):
         entry = DeviceData.create(device.key)
         entry.location = data_loc
         entry.put()
-
-        # PubSub
-        topic = get_all_system_topic()
-        topic.publish(jsonify(entry.to_json()))
 
         return jsonify({})
 
