@@ -8,6 +8,7 @@ sys.path.insert(1, 'lib')
 from models.device import Device, DeviceData
 from models.system import System
 from models.owner import Owner
+from models.secondary import Secondary
 
 
 @pytest.fixture(autouse=True)
@@ -42,18 +43,28 @@ def app(init_datastore):
 
 
 @pytest.fixture
-def random_user():
-    from models.user import User
-    import uuid
-    user = User(
-        fname="FirstName",
-        lname="LastName",
-        phone_num="0000000000",
-        oauth_id=str(uuid.uuid4())
-    )
-    user.put()
-    yield user
-    user.key.delete()
+def user_factory(request):
+    class UserFactory:
+        def get(self):
+            from models.user import User
+            import uuid
+            oauth_id = str(uuid.uuid4())
+            user = User(
+                fname="FirstName",
+                lname="LastName",
+                phone_num="0000000000",
+                oauth_id=oauth_id,
+                email="{}@email.com".format(oauth_id)
+            )
+            user.put()
+            request.addfinalizer(user.key.delete)
+            return user
+    return UserFactory()
+
+
+@pytest.fixture
+def random_user(user_factory):
+    return user_factory.get()
 
 
 @pytest.fixture
@@ -71,6 +82,14 @@ def random_owner(random_user, random_system):
     owner.put()
     yield owner
     owner.key.delete()
+
+
+@pytest.fixture
+def random_secondary(random_user, random_system):
+    secondary = Secondary.create(random_user, random_system)
+    secondary.put()
+    yield secondary
+    secondary.key.delete()
 
 
 @pytest.fixture
