@@ -18,3 +18,4 @@ handlers:
 
 env_variables:
   BUCKET_NAME: modular-security-system
+  PUBSUB_URL: https://pubsub-dot-modular-security-system.appspot.com/pubsub/datareceived
