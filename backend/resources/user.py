@@ -89,8 +89,9 @@ class User(MethodView):
         try:
             owned_data = owned.system_key.get().to_json()
         except AttributeError:
-            owned_data = {}
-        data['owned_systems'] = [owned_data, ]
+            data['owned_systems'] = []
+        else:
+            data['owned_systems'] = [owned_data, ]
 
         secondary = Secondary.from_user(current_user)
         secondary_data = [s.system_key.get().to_json() for s in secondary]

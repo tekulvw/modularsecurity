@@ -15,7 +15,14 @@ def test_random_user_in_db(random_user):
 def test_user_get(logged_in_app, random_user):
     with logged_in_app:
         resp = logged_in_app.get('/api/user', follow_redirects=True)
-    assert json.loads(resp.data) == random_user.to_json()
+    data = json.loads(resp.data)
+    assert data['owned_systems'] == []
+    assert data['secondary_systems'] == []
+
+    del data['owned_systems']
+    del data['secondary_systems']
+
+    assert data == random_user.to_json()
 
 
 def test_user_update(logged_in_app, random_user):
