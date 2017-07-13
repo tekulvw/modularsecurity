@@ -38,6 +38,9 @@ class System(MethodView):
             abort(401)
 
         current_system = SystemModel.get_by_id(system_id)
+        if not OwnerModel.is_owner_of(current_user, current_system):
+            abort(401)
+
         current_system.update_from(data)
         return jsonify(current_system.to_json())
 

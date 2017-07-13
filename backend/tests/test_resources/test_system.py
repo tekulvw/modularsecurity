@@ -1,4 +1,6 @@
 import json
+
+import pytest
 from flask import url_for
 
 
@@ -29,7 +31,8 @@ def test_system_post(logged_in_app, random_system, random_user):
 
     assert resp.status_code == 200
 
-def test_system_put(logged_in_app, random_system):
+
+def test_system_put(logged_in_app, random_owner, random_system):
     update_data = {
         "name": "ERIC"
     }
@@ -40,6 +43,12 @@ def test_system_put(logged_in_app, random_system):
     assert resp.status_code == 200
     new_system = random_system.key.get()
     assert new_system.name == "ERIC"
+
+
+@pytest.mark.skip(reason="Requires PR#101 in order to test.")
+def test_system_put_nonowner():
+    pass
+
 
 def test_killswitch_put(logged_in_app, random_system):
     update_data = {
