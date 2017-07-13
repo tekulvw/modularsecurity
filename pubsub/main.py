@@ -46,8 +46,13 @@ def pubsub_datareceived():
     if system_id is None:
         return abort(400)
 
+    to_publish = request.data.encode('utf-8')
+
     all_system_topic = current_app.config['ALL_SYSTEM_CONFIG']
-    all_system_topic.publish(envelope)
+    all_system_topic.publish(
+        to_publish,
+        extra=current_app.app_context
+    )
 
     system_topic = get_system_topic(system_id)
     system_topic.publish(envelope)

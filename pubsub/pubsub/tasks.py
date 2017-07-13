@@ -1,4 +1,3 @@
-from google.appengine.api.app_identity import get_application_id
 from flask import current_app
 
 from google.cloud import pubsub
@@ -13,22 +12,22 @@ __all__ = [
 
 client = None
 
-TOPIC_FMT = "system/{}"
+TOPIC_FMT = "system.{}"
 
 
-def create_client(project=None) -> pubsub.Client:
+def create_client(project: str) -> pubsub.Client:
     """
     Creates Google PubSub client.
     :param project:
     :return:
     """
-    project = project or get_application_id()
     global client
     client = pubsub.Client(project)
     return client
 
 
-def create_pushsub(topic, sub_name, endpoint) -> pubsub.Subscription:
+def create_pushsub(topic: pubsub.Topic, sub_name: str,
+                   endpoint: str) -> pubsub.Subscription:
     """
     Creates a push sub of topic to endpoint.
     :param sub_name: Name of subscriber
@@ -36,7 +35,10 @@ def create_pushsub(topic, sub_name, endpoint) -> pubsub.Subscription:
     :param endpoint: URL endpoint to hit.
     :return: Subscription object
     """
-    sub = topic.subscription(sub_name, push_endpoint=endpoint)
+    sub = topic.subscription(
+        sub_name,
+        push_endpoint=endpoint
+    )
     if not sub.exists():
         sub.create()
     return sub
