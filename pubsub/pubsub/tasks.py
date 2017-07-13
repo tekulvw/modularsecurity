@@ -16,7 +16,7 @@ client = None
 TOPIC_FMT = "system/{}"
 
 
-def create_client(project=None):
+def create_client(project=None) -> pubsub.Client:
     """
     Creates Google PubSub client.
     :param project:
@@ -28,7 +28,7 @@ def create_client(project=None):
     return client
 
 
-def create_pushsub(topic, sub_name, endpoint):
+def create_pushsub(topic, sub_name, endpoint) -> pubsub.Subscription:
     """
     Creates a push sub of topic to endpoint.
     :param sub_name: Name of subscriber
@@ -42,7 +42,7 @@ def create_pushsub(topic, sub_name, endpoint):
     return sub
 
 
-def get_all_system_pushsub(endpoint):
+def get_all_system_pushsub(endpoint: str) -> pubsub.Subscription:
     """
     Gets a pushsub that subscribes to all data input.
     :param endpoint: URL endpoint to hit.
@@ -52,7 +52,7 @@ def get_all_system_pushsub(endpoint):
     return create_pushsub(topic, "ALL_SYSTEM", endpoint)
 
 
-def get_all_system_topic():
+def get_all_system_topic() -> pubsub.Topic:
     """
     Returns the topic that receives all device data.
     :return:
@@ -64,13 +64,13 @@ def get_all_system_topic():
     return topic
 
 
-def get_system_topic(system):
+def get_system_topic(system_id: str) -> pubsub.Topic:
     """
     Gets the topic for a given system.
-    :param system: Datastore object
+    :param system_id: system ID
     :return: topic object
     """
-    topic_name = TOPIC_FMT.format(system.key.integer_id())
+    topic_name = TOPIC_FMT.format(system_id)
     topic = client.topic(topic_name)
     if not topic.exists():
         topic.create()

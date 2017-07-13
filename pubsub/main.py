@@ -18,8 +18,8 @@ import json
 import logging
 import os
 
-from flask import current_app, Flask, render_template, request
-from google.cloud import pubsub
+from flask import current_app, Flask, jsonify, request, abort
+from pubsub.tasks import get_system_topic, get_all_system_topic
 
 
 app = Flask(__name__)
@@ -29,43 +29,30 @@ app = Flask(__name__)
 # pubsub and originated from a trusted source.
 app.config['PUBSUB_VERIFICATION_TOKEN'] = \
     os.environ['PUBSUB_VERIFICATION_TOKEN']
-app.config['PUBSUB_TOPIC'] = os.environ['PUBSUB_TOPIC']
 
-
-# Global list to storage messages received by this instance.
-MESSAGES = []
-
-
-# [START index]
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'GET':
-        return render_template('index.html', messages=MESSAGES)
-
-    ps = pubsub.Client()
-    topic = ps.topic(current_app.config['PUBSUB_TOPIC'])
-
-    topic.publish(
-        request.form.get('payload', 'Example payload').encode('utf-8'))
-
-    return 'OK', 200
-# [END index]
+app.config['ALL_SYSTEM_TOPIC'] = get_all_system_topic()
 
 
 # [START push]
-@app.route('/pubsub/push', methods=['POST'])
-def pubsub_push():
+@app.route('/pubsub/datareceived', methods=['POST'])
+def pubsub_datareceived():
     if (request.args.get('token', '') !=
             current_app.config['PUBSUB_VERIFICATION_TOKEN']):
         return 'Invalid request', 400
 
     envelope = json.loads(request.data.decode('utf-8'))
-    payload = base64.b64decode(envelope['message']['data'])
+    system_id = envelope.get('system_id')
 
-    MESSAGES.append(payload)
+    if system_id is None:
+        return abort(400)
 
-    # Returning any 2xx status indicates successful receipt of the message.
-    return 'OK', 200
+    all_system_topic = current_app.config['ALL_SYSTEM_CONFIG']
+    all_system_topic.publish(envelope)
+
+    system_topic = get_system_topic(system_id)
+    system_topic.publish(envelope)
+
+    return jsonify({})
 # [END push]
 
 
