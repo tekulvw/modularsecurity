@@ -32,4 +32,24 @@ class Secondary(MethodView):
         sec_obj.put()
         return jsonify(current_user.to_json())
 
+    @login_required
+    def delete(self, system_id):
+        data = request.get_json()
+        user_email = data.get('user_email')
 
+        system = System.from_system_id(system_id)
+        user = User.from_email(user_email)
+
+        if None in (system, user):
+            abort(400)
+
+        if not Owner.is_owner_of(current_user, system):
+            abort(401)
+
+        secondary = SecondaryModel.from_system_user(system, user)
+        try:
+            secondary.key.delete()
+        except AttributeError:
+            pass
+
+        return jsonify({})

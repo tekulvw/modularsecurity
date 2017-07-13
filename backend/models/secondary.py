@@ -22,6 +22,17 @@ class Secondary(ndb.Model):
             user_key=user.key
         )
 
+    @classmethod
+    def from_system_user(cls, system, user):
+        """
+        Tries to find a secondary entry from system and user objects
+        :param system: Datastore object
+        :param user: Datastore object
+        :return: Secondary object or None
+        """
+        return cls.query(cls.system_key == system.key,
+                         cls.user_key == user.key).get()
+
     @staticmethod
     def is_secondary_of(user, system):
         """

@@ -8,6 +8,7 @@ sys.path.insert(1, 'lib')
 from models.device import Device, DeviceData
 from models.system import System
 from models.owner import Owner
+from models.secondary import Secondary
 
 
 @pytest.fixture(autouse=True)
@@ -81,6 +82,14 @@ def random_owner(random_user, random_system):
     owner.put()
     yield owner
     owner.key.delete()
+
+
+@pytest.fixture
+def random_secondary(random_user, random_system):
+    secondary = Secondary.create(random_user, random_system)
+    secondary.put()
+    yield secondary
+    secondary.key.delete()
 
 
 @pytest.fixture
