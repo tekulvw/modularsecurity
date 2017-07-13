@@ -22,6 +22,9 @@ class Secondary(MethodView):
         system = System.from_system_id(system_id)
         user = User.from_email(user_email)
 
+        if current_user == user:
+            abort(400)
+
         if not Owner.is_owner_of(current_user, system):
             abort(401)
 

@@ -47,12 +47,13 @@ def user_factory(request):
         def get(self):
             from models.user import User
             import uuid
+            oauth_id = str(uuid.uuid4())
             user = User(
                 fname="FirstName",
                 lname="LastName",
                 phone_num="0000000000",
-                oauth_id=str(uuid.uuid4()),
-                email="email@email.com"
+                oauth_id=oauth_id,
+                email="{}@email.com".format(oauth_id)
             )
             user.put()
             request.addfinalizer(user.key.delete)
