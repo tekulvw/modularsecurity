@@ -91,7 +91,8 @@ class DeviceData(ndb.Model):
 
         data = {
             "location": self.location,
-            "system_id": system_id
+            "system_id": system_id,
+            "device_id": self.device_key.integer_id()
         }
         return data
 
