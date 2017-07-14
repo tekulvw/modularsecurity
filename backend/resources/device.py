@@ -1,6 +1,8 @@
-from flask import abort, request, jsonify
+from flask import abort, request, jsonify, current_app
 from flask.views import MethodView
 from flask_login import login_required, current_user
+
+import requests
 
 from models.device import Device as DeviceModel
 from models.device import DeviceData
@@ -50,6 +52,12 @@ class DeviceResource(MethodView):
         entry = DeviceData.create(device.key)
         entry.location = data_loc
         entry.put()
+
+        # PubSub stuff
+        data = entry.to_json()
+        pubsub_url = current_app.config['PUBSUB_URL']
+        requests.post(pubsub_url, json=data,
+                      headers={'content-type': 'application/json'})
 
         return jsonify({})
 
