@@ -10,3 +10,4 @@ env_variables:
     # This token is used to verify that requests originate from your
     # application. It can be any sufficiently random string.
     PUBSUB_VERIFICATION_TOKEN: 1234abc
+    BASE_URL: https://pubsub-dot-modular-security-system.appspot.com

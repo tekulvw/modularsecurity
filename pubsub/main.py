@@ -20,6 +20,7 @@ import os
 
 from flask import current_app, Flask, jsonify, request, abort
 from pubsub.tasks import get_system_topic, get_all_system_topic
+from monitor import data_event_handler
 
 
 app = Flask(__name__)
@@ -30,7 +31,22 @@ app = Flask(__name__)
 app.config['PUBSUB_VERIFICATION_TOKEN'] = \
     os.environ['PUBSUB_VERIFICATION_TOKEN']
 
-app.config['ALL_SYSTEM_TOPIC'] = get_all_system_topic()
+all_sys_topic = get_all_system_topic()
+app.config['ALL_SYSTEM_TOPIC'] = all_sys_topic
+
+app.add_url_rule("/pubsub/push-handler", methods=["POST"],
+                 endpoint="push_handler",
+                 view_func=data_event_handler)
+
+base_url = os.environ.get("BASE_URL")
+all_sys_sub = all_sys_topic.subscription(
+    "monitor",
+    ack_deadline=10,
+    push_endpoint=base_url + "/pubsub/push-handler"
+)
+
+if not all_sys_sub.exists():
+    all_sys_sub.create()
 
 
 # [START push]
@@ -46,16 +62,19 @@ def pubsub_datareceived():
     if system_id is None:
         return abort(400)
 
-    to_publish = request.data.encode('utf-8')
+    to_publish = base64.b64encode(request.data)
 
-    all_system_topic = current_app.config['ALL_SYSTEM_CONFIG']
+    all_system_topic = current_app.config['ALL_SYSTEM_TOPIC']
     all_system_topic.publish(
         to_publish,
         extra=current_app.app_context
     )
 
     system_topic = get_system_topic(system_id)
-    system_topic.publish(envelope)
+    system_topic.publish(
+        to_publish,
+        extra=current_app.app_context
+    )
 
     return jsonify({})
 # [END push]

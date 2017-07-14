@@ -83,8 +83,15 @@ class DeviceData(ndb.Model):
 
     def to_json(self):
         # TODO: serialize datetime
+        device = self.device_key.get()
+        try:
+            system_id = device.system_key.integer_id()
+        except AttributeError:
+            system_id = None
+
         data = {
-            "location": self.location
+            "location": self.location,
+            "system_id": system_id
         }
         return data
 
