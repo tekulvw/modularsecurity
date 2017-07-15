@@ -16,10 +16,10 @@ def store_data(device, data, type, extension):
     :param device: The device object from datastore
     :param data: raw data from device, should be json or binary data
     :param type: DeviceDataType object from datastore
-    :param extension: file extension for data - string
+    :param extension: file extension for data WITHOUT PERIOD - string
     :return: string of location
     """
-    filename = get_next_data_location(device, ext=extension)
+    filename = get_next_data_location(device) + "." + extension
     dev_id = device.key.integer_id()
 
     if type.is_binary:

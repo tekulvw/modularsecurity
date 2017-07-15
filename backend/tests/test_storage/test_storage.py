@@ -1,10 +1,12 @@
+import os
+
 import pytest
 
 
 @pytest.fixture
-def device_data_location(random_device):
+def device_data_location(random_device, datatype_json):
     from storage.writer import store_data
-    return store_data(random_device, {})
+    return store_data(random_device, {}, datatype_json, "json")
 
 
 def test_starting_location_no_files(random_device):
@@ -21,11 +23,17 @@ def test_last_location_no_files(random_device):
         get_latest_data_location(device=random_device)
 
 
-def test_with_files(random_device, device_data_location):
-    assert device_data_location.endswith("0")
+def test_with_files(random_device, device_data_location,
+                    datatype_json):
+    filepath, ext = os.path.splitext(device_data_location)
+    assert filepath.endswith("0")
 
     from storage.writer import store_data
-    next_location = store_data(random_device, {"hi": "world"})
+    next_location = store_data(random_device, {"hi": "world"},
+                               type=datatype_json,
+                               extension="json")
 
-    assert next_location.endswith("1")
+    filepath, ext = os.path.splitext(next_location)
+
+    assert filepath.endswith("1")
 

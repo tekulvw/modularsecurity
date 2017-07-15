@@ -5,7 +5,7 @@ sys.path.insert(1, 'google_appengine')
 sys.path.insert(1, 'google_appengine/lib/yaml/lib')
 sys.path.insert(1, 'lib')
 
-from models.device import Device, DeviceData
+from models.device import Device, DeviceData, DeviceDataType
 from models.system import System
 from models.owner import Owner
 from models.secondary import Secondary
@@ -118,6 +118,18 @@ def random_devicedata():
     data.put()
     yield data
     data.key.delete()
+
+
+@pytest.fixture
+def datatype_json():
+    datatype = DeviceDataType(
+        type_name="json",
+        is_binary=False,
+        mime_type="application/json"
+    )
+    datatype.put()
+    yield datatype
+    datatype.key.delete()
 
 
 @pytest.fixture
