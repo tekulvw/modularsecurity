@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 from models.device import Device as DeviceModel
-from models.device import DeviceData
+from models.device import DeviceData, DeviceDataType
 from models.system import System
 
 from models.owner import Owner
@@ -34,17 +34,24 @@ class DeviceResource(MethodView):
 
         # Abort if None
         if data is None:
-            abort(400)
+            abort(400, "Missing required data.")
 
         # Gets serial number, then gets key from referencing serial number
         serial_number = data.get('serial_number')
         sensor_data = data.get('data')
+        ext = data.get('ext')
+        type_ = data.get('type')
 
-        if serial_number is None or sensor_data is None:
-            abort(400)
+        if None in (serial_number, sensor_data, ext, type_):
+            abort(400, "Missing required data field.")
+
         device = DeviceModel.from_serial_number(serial_number)
+        data_type = DeviceDataType.from_name(type_)
 
-        data_loc = store_data(device, sensor_data)
+        if None in (device, data_type):
+            abort(400, "No matching device or type in datastore.")
+
+        data_loc = store_data(device, sensor_data, data_type, ext)
 
         # Creates a new entry for the data coming in then posts it
         entry = DeviceData.create(device.key)

@@ -1,6 +1,8 @@
 import cloudstorage as gcs
 from storage import BUCKET_PREFIX
 
+from models.device import Device
+
 READ_RETRY = gcs.RetryParams(backoff_factor=1.1)
 
 
@@ -26,12 +28,16 @@ def get_latest_data_location(device):
     return filename
 
 
-def get_next_data_location(device):
+def get_next_data_location(device, ext=None):
+    # type: (Device, str) -> str
     """
     Gets an unused url for the next data entry from a given device.
     :param device: Device datastore object
+    :param ext:
     :return: string
     """
+    raise NotImplementedError("Need to use os.path manipulations here.")
+
     try:
         last = get_latest_data_location(device)
     except RuntimeError:
@@ -42,4 +48,4 @@ def get_next_data_location(device):
 
     num += 1
 
-    return last[:-1] + str(num)
+    return last[:-1] + str(num) + ".{}".format(ext) if ext else ""
