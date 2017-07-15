@@ -18,12 +18,15 @@ import json
 import logging
 import os
 
+from google.cloud.datastore import Client
 from flask import current_app, Flask, jsonify, request, abort
 from pubsub.tasks import get_system_topic, get_all_system_topic
 from monitor import data_event_handler
 
 
 app = Flask(__name__)
+
+app.config['DATASTORE_CLIENT'] = Client()
 
 # Configure the following environment variables via app.yaml
 # This is used in the push request handler to veirfy that the request came from
