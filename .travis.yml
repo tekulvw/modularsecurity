@@ -26,3 +26,4 @@ deploy:
   keyfile: backend/modular-security-system.json
   project: modular-security-system
   config: backend/app.yaml
+  skip_cleanup: true
