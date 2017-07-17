@@ -19,4 +19,9 @@ before_script:
 - SDK_URL=https://storage.googleapis.com/appengine-sdks/featured/google_appengine_$SDK_VERSION.zip
 - wget $SDK_URL -nv
 - unzip -q google_appengine_$SDK_VERSION.zip
-script: py.test --ignore=lib --ignore=google_appengine
+script: py.test --ignore=backend/lib --ignore=google_appengine
+deploy:
+  provider: gae
+  keyfile: backend/modular-security-system.json
+  project: modular-security-system
+  config: backend/app.yaml
