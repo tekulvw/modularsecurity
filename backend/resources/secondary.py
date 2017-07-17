@@ -41,7 +41,7 @@ class Secondary(MethodView):
         if system is None or current_user.key != system.user_key:
             abort(400)
 
-        secondaries = SecondaryModel.
+        return jsonify(SecondaryModel.from_system(system))
 
     @login_required
     def delete(self, system_id):
