@@ -57,10 +57,11 @@ class Secondary(MethodView):
         if not Owner.is_owner_of(current_user, system):
             abort(401)
 
-        if not SecondaryModel.is_secondary_of(user, system):
+        is_sec, secondary = SecondaryModel.is_secondary_of(user, system)
+
+        if not is_sec:
             abort(400, "User is not secondary of that system.")
 
-        secondary = SecondaryModel.from_system_user(system, user)
         try:
             secondary.key.delete()
         except AttributeError:
