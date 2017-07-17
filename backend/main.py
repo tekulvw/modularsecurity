@@ -32,6 +32,8 @@ from resources.secondary import Secondary
 
 from auth import google, initialize_tokengetter, read_client_keys
 
+from sentry import load_sentry
+
 app = Flask(__name__)
 
 client_id, client_secret = read_client_keys()
@@ -86,6 +88,8 @@ app.add_url_rule('/api/secondary/<int:system_id>', view_func=secondary_view,
 
 auth = google.initialize(app)
 initialize_tokengetter(auth)
+
+load_sentry(app)
 
 
 @app.errorhandler(500)
