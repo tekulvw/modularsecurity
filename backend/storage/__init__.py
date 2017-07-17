@@ -5,6 +5,6 @@ __all__ = ["store_data", ]
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME", app_identity.get_default_gcs_bucket_name())
 
-BUCKET_PREFIX = "/devicedata/{}"
+BUCKET_PREFIX = "/" + BUCKET_NAME + "/devicedata/{}"
 
 from .writer import store_data
