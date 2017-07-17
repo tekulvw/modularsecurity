@@ -52,10 +52,13 @@ class Secondary(MethodView):
         user = User.from_email(user_email)
 
         if None in (system, user):
-            abort(400)
+            abort(400, "Bad system or user.")
 
         if not Owner.is_owner_of(current_user, system):
             abort(401)
+
+        if not SecondaryModel.is_secondary_of(user, system):
+            abort(400, "User is not secondary of that system.")
 
         secondary = SecondaryModel.from_system_user(system, user)
         try:
