@@ -12,6 +12,7 @@ before_install:
 install:
 - mkdir backend/lib
 - pip install -t backend/lib -r backend/requirements.txt
+- export PYTHONPATH=$PYTHONPATH:backend/lib
 - cp -r frontend/app backend/www
 before_script:
 - SDK_VERSION=$(curl -s $API_CHECK | awk -F '\"' '/release/ {print $2}')
