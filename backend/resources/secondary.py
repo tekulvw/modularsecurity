@@ -38,7 +38,7 @@ class Secondary(MethodView):
     @login_required
     def get(self, system_id):
         system = System.from_system_id(system_id)
-        if system is None or current_user.key != system.user_key:
+        if system is None or not Owner.is_owner_of(current_user, system):
             abort(400)
 
         return jsonify(SecondaryModel.from_system(system))
