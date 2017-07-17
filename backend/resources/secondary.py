@@ -22,6 +22,9 @@ class Secondary(MethodView):
         system = System.from_system_id(system_id)
         user = User.from_email(user_email)
 
+        if None in (system, user):
+            abort(400)
+
         if current_user == user:
             abort(400)
 
@@ -31,6 +34,14 @@ class Secondary(MethodView):
         sec_obj = SecondaryModel.create(user, system)
         sec_obj.put()
         return jsonify(current_user.to_json())
+
+    @login_required
+    def get(self, system_id):
+        system = System.from_system_id(system_id)
+        if system is None or current_user.key != system.user_key:
+            abort(400)
+
+        secondaries = SecondaryModel.
 
     @login_required
     def delete(self, system_id):

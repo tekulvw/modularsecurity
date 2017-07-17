@@ -36,6 +36,16 @@ class Secondary(ndb.Model):
         )
 
     @classmethod
+    def from_system(cls, system):
+        q = cls.query(cls.system_key == system.key)
+        count = q.count()
+        if count > 0:
+            secondaries = q.fetch(count)
+            users = [s.user_key.get() for s in secondaries]
+            return [u.to_json() for u in users]
+        return []
+
+    @classmethod
     def from_system_user(cls, system, user):
         """
         Tries to find a secondary entry from system and user objects
