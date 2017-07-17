@@ -5,10 +5,12 @@ import pytest
 
 
 @pytest.fixture
-def device_test_data(random_device):
+def device_test_data(random_device, datatype_json):
     return dict(
         serial_number=random_device.serial_num,
-        data={}
+        data={},
+        type=datatype_json.type_name,
+        ext="json"
     )
 
 

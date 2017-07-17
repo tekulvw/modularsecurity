@@ -120,9 +120,20 @@ class DeviceData(ndb.Model):
 
 class DeviceDataType(ndb.Model):
     type_name = ndb.StringProperty()
+    is_binary = ndb.BooleanProperty(required=True)
+
+    mime_type = ndb.StringProperty(required=True)
 
     def to_json(self):
-        data = {
-            "type_name": self.type_name
-        }
+        # type: () -> dict
+        data = self.to_dict()
         return data
+
+    @classmethod
+    def from_name(cls, type_name):
+        """
+        Gets Data Type object from the given name.
+        :param type_name:
+        :return: Datastore object or None
+        """
+        return cls.query(cls.type_name == type_name).get()

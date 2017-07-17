@@ -1,4 +1,6 @@
 import json
+
+import pytest
 from flask import url_for
 
 
@@ -29,7 +31,8 @@ def test_system_post(logged_in_app, random_system, random_user):
 
     assert resp.status_code == 200
 
-def test_system_put(logged_in_app, random_system):
+
+def test_system_put(logged_in_app, random_owner, random_system):
     update_data = {
         "name": "ERIC"
     }
@@ -41,13 +44,45 @@ def test_system_put(logged_in_app, random_system):
     new_system = random_system.key.get()
     assert new_system.name == "ERIC"
 
-def test_killswitch_put(logged_in_app, random_system):
+
+def test_system_put_nonowner(logged_in_app, random_system):
+    update_data = {
+        "name": "notdefault"
+    }
+    assert random_system.name != update_data['name']
+    with logged_in_app.application.app_context():
+        resp = logged_in_app.put(
+            url_for('system', system_id=random_system.key.integer_id()),
+            data=json.dumps(update_data),
+            headers={'content-type': 'application/json'}
+        )
+    assert resp.status_code == 401
+    assert random_system.name != update_data['name']
+
+
+def test_killswitch_put(logged_in_app, random_system, random_owner):
     update_data = {
         "ks_enabled": True
     }
     with logged_in_app:
-        resp = logged_in_app.put('/api/system/%d/killswitch' %random_system.key.integer_id(), data=json.dumps(update_data),
-                                 headers={'content-type':'application/json'})
-        assert resp.status_code == 200
-        new_system = random_system.key.get()
-        assert new_system.ks_enabled is True
+        resp = logged_in_app.put('/api/system/%d/killswitch' % random_system.key.integer_id(),
+                                 data=json.dumps(update_data),
+                                 headers={'content-type': 'application/json'})
+    assert resp.status_code == 200
+    new_system = random_system.key.get()
+    assert new_system.ks_enabled is True
+
+
+def test_killswitch_put_nonowner(logged_in_app, random_system):
+    update_data = {
+        "ks_enabled": True
+    }
+
+    assert random_system.ks_enabled is False
+
+    with logged_in_app.application.app_context():
+        resp = logged_in_app.put(url_for('killswitch', system_id=random_system.key.integer_id(),
+                                         data=json.dumps(update_data),
+                                         headers={'content-type': 'application/json'}))
+    assert resp.status_code == 401
+    assert random_system.ks_enabled is False
