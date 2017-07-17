@@ -44,23 +44,13 @@ class Secondary(MethodView):
         return jsonify(SecondaryModel.from_system(system))
 
     @login_required
-    def delete(self, system_id):
-        data = request.get_json()
-        user_email = data.get('user_email')
+    def delete(self, secondary_id):
+        secondary = SecondaryModel.from_id(secondary_id)
+        if secondary is None:
+            abort(400, "That secondary does not exist.")
 
-        system = System.from_system_id(system_id)
-        user = User.from_email(user_email)
-
-        if None in (system, user):
-            abort(400, "Bad system or user.")
-
-        if not Owner.is_owner_of(current_user, system):
+        if not Owner.is_owner_of(current_user, secondary.system_key.get()):
             abort(401)
-
-        is_sec, secondary = SecondaryModel.is_secondary_of(user, system)
-
-        if not is_sec:
-            abort(400, "User is not secondary of that system.")
 
         try:
             secondary.key.delete()

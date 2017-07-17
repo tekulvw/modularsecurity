@@ -76,7 +76,7 @@ class User(ndb.Model, UserMixin):
         self.put()
 
     def to_json(self):
-        data = self.to_dict(exclude=["oauth_id", "create_date"])
+        data = self.to_dict(exclude=["create_date"])
         return data
 
     def get_id(self):

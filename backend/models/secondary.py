@@ -41,9 +41,15 @@ class Secondary(ndb.Model):
         count = q.count()
         if count > 0:
             secondaries = q.fetch(count)
-            users = [s.user_key.get() for s in secondaries]
-            return [u.to_json() for u in users]
-        return []
+            users = {s.key.integer_id(): s.user_key.get() for s in secondaries}
+            return {s_id: u.to_json() for s_id, u in users.items()}
+        return {}
+
+    @classmethod
+    def from_id(cls, secondary_id):
+        if secondary_id:
+            return ndb.Key(cls, secondary_id).get()
+        return None
 
     @classmethod
     def from_system_user(cls, system, user):
