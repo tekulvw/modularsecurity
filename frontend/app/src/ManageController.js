@@ -14,7 +14,7 @@ function ManageController($mdDialog) {
 	  });
   }
   
-  self.addDevice = function(ev) {
+  self.addDevice = function(ev, system) {
     var confirm = $mdDialog.prompt()
       .title('Enter Device Serial Number')
       .placeholder('Serial Number')
@@ -23,10 +23,40 @@ function ManageController($mdDialog) {
       .cancel('Cancel');
 
     $mdDialog.show(confirm).then(function(result) {
-      console.log("Device Set: "+ result);
+      $.ajax({
+	  	  url: "/api/device/" + result,
+	  	  type: "PUT",
+	  	  success: function(data){},
+	      data: JSON.stringify({'system_id': system.id}),
+	      dataType: 'json',
+	      contentType: 'application/json'
+	  });
     }, function() {
     });
   };
+
+  self.saveDevice = function(ev, device){
+  	$.ajax({
+	  	  url: "/api/device/" + device.serial_num,
+	  	  type: "PUT",
+	  	  success: function(data){},
+	      data: JSON.stringify({'name': device.name,
+	  							'enabled': device.enabled}),
+	      dataType: 'json',
+	      contentType: 'application/json'
+	  });
+  }
+
+  self.deleteDevice = function(ev, device){
+  	$.ajax({
+	  	  url: "/api/device/" + device.serial_num,
+	  	  type: "PUT",
+	  	  success: function(data){},
+	      data: JSON.stringify({'system_id': null}),
+	      dataType: 'json',
+	      contentType: 'application/json'
+	  });
+  }
 
   self.addSecondary = function(ev) {
     var confirm = $mdDialog.prompt()

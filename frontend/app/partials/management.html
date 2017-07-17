@@ -32,17 +32,25 @@
 
     <md-subheader>Devices</md-subheader>
 
-    <md-list-item ng-repeat="d in global.currentSystem.devices">
-      <md-switch md-invert ng-model="d.enabled">
-        {{d.name}}
+    <md-list-item ng-repeat="d in global.currentSystem.devices" class="md-no-proxy">
+      <md-switch class="md-primary" ng-model="d.enabled">
       </md-switch>
-      <md-button>
+
+      <md-input-container>
+        <input ng-model="d.name"
+                type="text"
+                placeholder="{{d.serial_num}}">
+      </md-input-container>
+      <md-button class='md-icon-button' ng-click="ctrl.saveDevice($event, d)">
+        <md-icon class="material-icons">save</md-icon>
+      </md-button>
+      <md-button class='md-icon-button' ng-click="ctrl.deleteDevice($event, d)">
         <md-icon class="material-icons">delete</md-icon>
       </md-button>
     </md-list-item>
 
     <md-list-item>
-      <md-button class="md-raised" ng-click="ctrl.addDevice()">
+      <md-button class="md-raised" ng-click="ctrl.addDevice($event, global.currentSystem)">
         Add Device
       </md-button>
     </md-list-item>
@@ -53,7 +61,7 @@
 
     <md-list-item class="secondary-button-padding">
       {{global.userInfo.fname}} {{global.userInfo.lname}}
-      <md-button>
+      <md-button class='md-icon-button'>
         <md-icon class="material-icons">delete</md-icon>
       </md-button>
     </md-list-item>
