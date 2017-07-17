@@ -5,8 +5,10 @@ sys.path.insert(1, 'google_appengine')
 sys.path.insert(1, 'google_appengine/lib/yaml/lib')
 sys.path.insert(1, 'lib')
 
-from models.device import Device, DeviceData
+from models.device import Device, DeviceData, DeviceDataType
 from models.system import System
+from models.owner import Owner
+from models.secondary import Secondary
 
 
 @pytest.fixture(autouse=True)
@@ -41,18 +43,28 @@ def app(init_datastore):
 
 
 @pytest.fixture
-def random_user():
-    from models.user import User
-    import uuid
-    user = User(
-        fname="FirstName",
-        lname="LastName",
-        phone_num="0000000000",
-        oauth_id=str(uuid.uuid4())
-    )
-    user.put()
-    yield user
-    user.key.delete()
+def user_factory(request):
+    class UserFactory:
+        def get(self):
+            from models.user import User
+            import uuid
+            oauth_id = str(uuid.uuid4())
+            user = User(
+                fname="FirstName",
+                lname="LastName",
+                phone_num="0000000000",
+                oauth_id=oauth_id,
+                email="{}@email.com".format(oauth_id)
+            )
+            user.put()
+            request.addfinalizer(user.key.delete)
+            return user
+    return UserFactory()
+
+
+@pytest.fixture
+def random_user(user_factory):
+    return user_factory.get()
 
 
 @pytest.fixture
@@ -64,10 +76,26 @@ def random_system():
 
 
 @pytest.fixture
-def random_device(random_system):
+def random_owner(random_user, random_system):
+    owner = Owner(user_key=random_user.key,
+                  system_key=random_system.key)
+    owner.put()
+    yield owner
+    owner.key.delete()
+
+
+@pytest.fixture
+def random_secondary(random_user, random_system):
+    secondary = Secondary.create(random_user, random_system)
+    secondary.put()
+    yield secondary
+    secondary.key.delete()
+
+
+@pytest.fixture
+def random_device_nosystem():
     dev = Device(
-        serial_num="DEADBEEF",
-        system_key=random_system.key
+        serial_num="DEADBEEF"
     )
     dev.put()
     yield dev
@@ -75,13 +103,33 @@ def random_device(random_system):
 
 
 @pytest.fixture
+def random_device(random_device_nosystem, random_system):
+    dev = random_device_nosystem
+    dev.system_key = random_system.key
+    dev.put()
+    return dev
+
+
+@pytest.fixture
 def random_devicedata():
     data = DeviceData(
-        location= "Somewhere"
+        location="Somewhere"
     )
     data.put()
     yield data
     data.key.delete()
+
+
+@pytest.fixture
+def datatype_json():
+    datatype = DeviceDataType(
+        type_name="json",
+        is_binary=False,
+        mime_type="application/json"
+    )
+    datatype.put()
+    yield datatype
+    datatype.key.delete()
 
 
 @pytest.fixture

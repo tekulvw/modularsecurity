@@ -1,21 +1,30 @@
 language: python
 python:
-  - "2.7"
-
+- '2.7'
 env:
   global:
   - API_CHECK=https://appengine.google.com/api/updatecheck
   - TESTING=1
+before_install:
+- openssl aes-256-cbc -K $encrypted_5e351169b63e_key -iv $encrypted_5e351169b63e_iv
+  -in backend/secrets.tar.enc -out backend/secrets.tar -d
+- tar xvf backend/secrets.tar -C backend/
+install:
+- mkdir lib
+- pip install -r backend/requirements.txt
 before_script:
-# Idea from https://blog.bekt.net/p/gae-sdk/
 - SDK_VERSION=$(curl -s $API_CHECK | awk -F '\"' '/release/ {print $2}')
 - SDK_URL=https://storage.googleapis.com/appengine-sdks/featured/google_appengine_$SDK_VERSION.zip
 - wget $SDK_URL -nv
 - unzip -q google_appengine_$SDK_VERSION.zip
-
-install:
-  # Needed to satisfy appengine_config.py
-  - mkdir lib
-  - pip install -r backend/requirements.txt
-
-script: py.test --ignore=lib --ignore=google_appengine
+script: py.test --ignore=backend/lib --ignore=google_appengine
+before_deploy:
+- mkdir backend/lib
+- pip install -t backend/lib -r backend/requirements.txt
+- cp -r frontend/app backend/www
+deploy:
+  provider: gae
+  keyfile: backend/modular-security-system.json
+  project: modular-security-system
+  config: backend/app.yaml
+  skip_cleanup: true

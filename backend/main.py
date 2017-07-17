@@ -28,8 +28,11 @@ from resources.user import Logout
 from resources.device import DeviceCollectionResource, DeviceResource
 from resources.system import System
 from resources.system import KillSwitch
+from resources.secondary import Secondary
 
 from auth import google, initialize_tokengetter, read_client_keys
+
+from sentry import load_sentry
 
 app = Flask(__name__)
 
@@ -62,6 +65,8 @@ app.add_url_rule('/api/device', view_func=DeviceCollectionResource.as_view('devi
                  methods=["POST"])
 
 single_dev_view = DeviceResource.as_view('device.single')
+app.add_url_rule('/api/device/<serial_number>', view_func=single_dev_view,
+                 methods=["PUT"])
 app.add_url_rule('/api/device/data', view_func=single_dev_view,
                  methods=["POST"])
 
@@ -75,8 +80,16 @@ killswitch_view = KillSwitch.as_view('killswitch')
 app.add_url_rule('/api/system/<int:system_id>/killswitch', view_func=killswitch_view,
                  methods=["PUT"])
 
+secondary_view = Secondary.as_view('secondary')
+app.add_url_rule('/api/secondary', view_func=secondary_view,
+                 methods=["POST"])
+app.add_url_rule('/api/secondary/<int:system_id>', view_func=secondary_view,
+                 methods=["DELETE"])
+
 auth = google.initialize(app)
 initialize_tokengetter(auth)
+
+load_sentry(app)
 
 
 @app.errorhandler(500)
