@@ -18,6 +18,10 @@
   <md-toolbar id='globalScope' layout="row" class="md-toolbar-tools">
     <h1 flex=80>Modular Security</h1>
 
+    <md-button id="refresh" class="md-icon-button" ng-click="global.refreshData()">
+      <md-icon class="material-icons">refresh</md-icon>
+    </md-button>
+
     <md-menu hide show-gt-sm>
       <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
         {{global.currentSystem.name}} <md-icon class="material-icons">arrow_drop_down</md-icon>

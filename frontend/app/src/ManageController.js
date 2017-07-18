@@ -1,4 +1,4 @@
-function ManageController($mdDialog) {
+function ManageController($mdDialog, $timeout) {
   var self = this;
   self.submitSettings = function(system){
 	  $.ajax({
@@ -14,7 +14,7 @@ function ManageController($mdDialog) {
 	  });
   }
   
-  self.addDevice = function(ev, system) {
+  self.addDevice = function(ev, system, refresh) {
     var confirm = $mdDialog.prompt()
       .title('Enter Device Serial Number')
       .placeholder('Serial Number')
@@ -26,7 +26,9 @@ function ManageController($mdDialog) {
       $.ajax({
 	  	  url: "/api/device/" + result,
 	  	  type: "PUT",
-	  	  success: function(data){},
+	  	  success: function(data){
+	  	  	refresh(data);
+	  	  },
 	      data: JSON.stringify({'system_id': system.id}),
 	      dataType: 'json',
 	      contentType: 'application/json'
@@ -47,18 +49,20 @@ function ManageController($mdDialog) {
 	  });
   }
 
-  self.deleteDevice = function(ev, device){
+  self.deleteDevice = function(ev, device, refresh){
   	$.ajax({
 	  	  url: "/api/device/" + device.serial_num,
 	  	  type: "PUT",
-	  	  success: function(data){},
+	  	  success: function(data){
+	  	  	refresh(data);
+	  	  },
 	      data: JSON.stringify({'system_id': null}),
 	      dataType: 'json',
 	      contentType: 'application/json'
 	  });
   }
 
-  self.addSecondary = function(ev) {
+  self.addSecondary = function(ev, system, refresh) {
     var confirm = $mdDialog.prompt()
       .title('Enter Email Address To Add')
       .placeholder('email@host.tld')
@@ -67,9 +71,29 @@ function ManageController($mdDialog) {
       .cancel('Cancel');
 
     $mdDialog.show(confirm).then(function(result) {
-      console.log("User Added: "+ result);
+      $.ajax({
+	  	  url: "/api/secondary",
+	  	  type: "POST",
+	  	  success: function(data){
+	  	  	refresh(data);
+	  	  },
+	      data: JSON.stringify({'system_id': system.id,
+	  							'user_email': result}),
+	      dataType: 'json',
+	      contentType: 'application/json'
+	  });
     }, function() {
     });
   };
+
+  self.removeSecondary = function(ev, key, refresh) {
+    $.ajax({
+	  	  url: "/api/secondary/" + key,
+	  	  type: "DELETE",
+	  	  success: function(data){
+	  	  	refresh(data);
+	  	  }
+	  });
+  };
 };
-export default [ '$mdDialog', ManageController ];
+export default [ '$mdDialog', '$timeout', ManageController ];

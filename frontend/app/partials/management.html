@@ -33,7 +33,7 @@
     <md-subheader>Devices</md-subheader>
 
     <md-list-item ng-repeat="d in global.currentSystem.devices" class="md-no-proxy">
-      <md-switch class="md-primary" ng-model="d.enabled">
+      <md-switch class="md-primary" ng-model="d.enabled" aria-label="{{d.value.name}} enabled {{d.value.enabled}}">
       </md-switch>
 
       <md-input-container>
@@ -44,13 +44,13 @@
       <md-button class='md-icon-button' ng-click="ctrl.saveDevice($event, d)">
         <md-icon class="material-icons">save</md-icon>
       </md-button>
-      <md-button class='md-icon-button' ng-click="ctrl.deleteDevice($event, d)">
+      <md-button class='md-icon-button' ng-click="ctrl.deleteDevice($event, d, global.selectSystemAndApply)">
         <md-icon class="material-icons">delete</md-icon>
       </md-button>
     </md-list-item>
 
     <md-list-item>
-      <md-button class="md-raised" ng-click="ctrl.addDevice($event, global.currentSystem)">
+      <md-button class="md-raised" ng-click="ctrl.addDevice($event, global.currentSystem, global.selectSystemAndApply)">
         Add Device
       </md-button>
     </md-list-item>
@@ -59,15 +59,15 @@
 
     <md-subheader>Secondary Users</md-subheader>
 
-    <md-list-item class="secondary-button-padding">
-      {{global.userInfo.fname}} {{global.userInfo.lname}}
-      <md-button class='md-icon-button'>
+    <md-list-item ng-repeat="(key, s) in global.secondaries"class="secondary-button-padding">
+      {{s.fname}} {{s.lname}}
+      <md-button class='md-icon-button' ng-click="ctrl.removeSecondary($event, key, global.refreshSecondaries)">
         <md-icon class="material-icons">delete</md-icon>
       </md-button>
     </md-list-item>
 
     <md-list-item>
-      <md-button class="md-raised" ng-click="ctrl.addSecondary()">
+      <md-button class="md-raised" ng-click="ctrl.addSecondary($event, global.currentSystem, global.refreshSecondaries)">
         Add User
       </md-button>
     </md-list-item>
