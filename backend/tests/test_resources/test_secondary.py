@@ -17,6 +17,8 @@ def test_secondary_post(random_owner, logged_in_app,
 
     assert resp.status_code == 200
 
+    assert len(json.loads(resp.data)) > 0
+
     is_secondary, model = Secondary.is_secondary_of(
         other_user, random_owner.system_key.get()
     )
