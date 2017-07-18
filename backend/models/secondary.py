@@ -97,6 +97,25 @@ class Secondary(ndb.Model):
                          cls.user_key == user.key).get()
 
     @staticmethod
+    def get_all_secondary_users(system):
+        """
+        Returns a list of all secondary users of a given system.
+            THERE WILL BE NO NONES IN THIS LIST.
+        :param system: System datatore object
+        :return:
+        """
+        secondaries = Secondary.from_system(system)
+        users = []
+        for sec in secondaries:
+            try:
+                user = sec.user_key.get()
+            except AttributeError:
+                pass
+            else:
+                users.append(user)
+        return users
+
+    @staticmethod
     def is_secondary_of(user, system):
         """
         Determines if a user is a secondary of a system.
