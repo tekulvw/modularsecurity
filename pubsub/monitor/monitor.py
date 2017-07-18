@@ -5,6 +5,8 @@ from flask import current_app, request
 from storage.getter import get_data
 from datastore import devicedatatype
 
+from twilio_util import notify_number
+
 
 def data_event_handler():
     data = request.get_json()
@@ -31,7 +33,7 @@ def handle_door(data: dict):
     curr_json = json.loads(curr_data)
 
     if curr_json.get('open'):
-        raise_alarm()
+        raise_alarm(system_id)
 
 
 def raise_alarm(system_id: int):
