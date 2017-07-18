@@ -1,4 +1,5 @@
 # gcloud datastore create-indexes index.yaml
+indexes:
 - kind: DeviceData
   properties:
   - name: device_key
