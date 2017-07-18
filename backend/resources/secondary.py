@@ -10,6 +10,12 @@ from models.system import System
 
 
 class Secondary(MethodView):
+    def get_response_map_from_secondaries(self, secondaries):
+        ret = {}
+        for s in secondaries:
+            ret[s.key.integer_id()] = s.user_key.get().to_json()
+        return ret
+
     @login_required
     def post(self):
         data = request.get_json()
@@ -34,10 +40,11 @@ class Secondary(MethodView):
         sec_obj = SecondaryModel.create(user, system)
         sec_obj.put()
 
-        sec_users = SecondaryModel.get_all_secondary_users(system)
-        if user not in sec_users:
-            sec_users.append(user)
-        return jsonify([u.to_json() for u in sec_users])
+        secondaries = SecondaryModel.from_system(system)
+        if sec_obj not in secondaries:
+            secondaries.append(sec_obj)
+        ret = self.get_response_map_from_secondaries(secondaries)
+        return jsonify(ret)
 
     @login_required
     def get(self, system_id):
@@ -46,11 +53,7 @@ class Secondary(MethodView):
             abort(400)
 
         secondaries = SecondaryModel.from_system(system)
-
-        ret = {}
-        for s in secondaries:
-            ret[s.key.integer_id()] = s.user_key.get().to_json()
-
+        ret = self.get_response_map_from_secondaries(secondaries)
         return jsonify(ret)
 
     @login_required
@@ -59,12 +62,19 @@ class Secondary(MethodView):
         if secondary is None:
             abort(400, "That secondary does not exist.")
 
-        if not Owner.is_owner_of(current_user, secondary.system_key.get()):
+        system = secondary.system_key.get()
+
+        if not Owner.is_owner_of(current_user, system):
             abort(401)
+
+        secondaries = SecondaryModel.from_system(system)
+        if secondary in secondaries:
+            secondaries.remove(secondary)
+        ret = self.get_response_map_from_secondaries(secondaries)
 
         try:
             secondary.key.delete()
         except AttributeError:
             pass
 
-        return jsonify({})
+        return jsonify(ret)
