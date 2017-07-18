@@ -9,6 +9,9 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_5e351169b63e_key -iv $encrypted_5e351169b63e_iv
   -in backend/secrets.tar.enc -out backend/secrets.tar -d
 - tar xvf backend/secrets.tar -C backend/
+- mkdir -p backend/lib
+- pip install -t backend/lib -r backend/requirements.txt
+- cp -r frontend/app backend/www
 install:
 - mkdir lib
 - pip install -r backend/requirements.txt
@@ -18,10 +21,6 @@ before_script:
 - wget $SDK_URL -nv
 - unzip -q google_appengine_$SDK_VERSION.zip
 script: py.test --ignore=backend/lib --ignore=google_appengine
-before_deploy:
-- mkdir backend/lib
-- pip install -t backend/lib -r backend/requirements.txt
-- cp -r frontend/app backend/www
 deploy:
   - provider: gae
     keyfile: backend/modular-security-system.json
