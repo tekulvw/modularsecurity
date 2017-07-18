@@ -1,4 +1,5 @@
 import json
+from typing import Collection
 
 from flask import current_app, request
 
@@ -20,6 +21,7 @@ def data_event_handler():
 def handle_door(data: dict):
     system_id = data['system_id']
     curr_location = data['location']
+    phones = data['phones']
 
     prev_frames = data['previous']
     prev_locations = [f['location']
@@ -33,8 +35,11 @@ def handle_door(data: dict):
     curr_json = json.loads(curr_data)
 
     if curr_json.get('open'):
-        raise_alarm(system_id)
+        raise_alarm(phones)
 
 
-def raise_alarm(system_id: int):
-    pass
+def raise_alarm(numbers: Collection[str]):
+    for num in numbers:
+        notify_number(num)
+
+    # TODO: make use of grace period etc
