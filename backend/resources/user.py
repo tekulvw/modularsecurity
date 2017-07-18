@@ -46,7 +46,11 @@ class Login(MethodView):
             return redirect(url_for('authorize'))
 
         userinfo = auth.get('userinfo')
-        user = UserModel.from_oauth_id(userinfo.data['id'])
+        try:
+            user = UserModel.from_oauth_id(userinfo.data['id'])
+        except (AttributeError, KeyError):
+            return redirect('logout')
+
         if user is None:
             user = UserModel.create(userinfo)
             user.put()
