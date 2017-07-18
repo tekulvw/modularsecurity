@@ -31,7 +31,7 @@ def get_latest_data_location(device):
     split_filenames = [os.path.splitext(f) for f in filenames]
 
     with_index = [(int(os.path.split(f[0])[1]), f) for f in split_filenames]
-    sorted_filenames = sorted(with_index, key=lambda e: e[0])
+    sorted_filenames = sorted(with_index, key=lambda e: e[0], reverse=True)
 
     try:
         index, split_filename = sorted_filenames[0]
