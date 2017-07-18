@@ -95,7 +95,7 @@ class DeviceData(ndb.Model):
     data_received = ndb.DateTimeProperty(auto_now_add=True)
     device_key = ndb.KeyProperty(kind="Device")
 
-    def to_json(self, with_previous=True):
+    def to_json(self):
         # TODO: serialize datetime
         device = self.device_key.get()
         try:
@@ -108,16 +108,6 @@ class DeviceData(ndb.Model):
             "system_id": system_id,
             "device_id": self.device_key.integer_id()
         }
-
-        if with_previous:
-            previous_5 = self.get_last(device, n=6)
-            try:
-                previous_5.remove(self)
-            except ValueError:
-                pass
-
-            data['previous'] = [prev.to_json(with_previous=False)
-                                for prev in previous_5]
 
         return data
 

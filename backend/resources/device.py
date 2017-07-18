@@ -9,6 +9,7 @@ from models.device import DeviceData, DeviceDataType
 from models.system import System
 
 from models.owner import Owner
+from models.secondary import Secondary
 
 from storage import store_data
 
@@ -30,6 +31,35 @@ class DeviceCollectionResource(MethodView):
 
 
 class DeviceResource(MethodView):
+    def get_pubsub_data(self, devicedata_entry):
+        # type: (DeviceData) -> dict
+        data = devicedata_entry.to_json()
+
+        # Previous locations
+        device = devicedata_entry.device_key.get()
+        previous_5 = devicedata_entry.get_last(device, n=6)
+        try:
+            previous_5.remove(devicedata_entry)
+        except ValueError:
+            pass
+
+        data['previous'] = [prev.to_json()
+                            for prev in previous_5]
+
+        system = device.system_key.get()
+        owned = Owner.from_system(system)
+        phone_numbers = []
+        try:
+            owner_user = owned.user_key.get()
+        except AttributeError:
+            pass
+        else:
+            phone_numbers.append(owner_user.phone_num)
+
+        secondaries = Secondary.from_system(system)
+
+        return data
+
     def post(self):
         # Request post json data
         data = request.get_json()
@@ -63,7 +93,7 @@ class DeviceResource(MethodView):
         entry.put()
 
         # PubSub stuff
-        data = entry.to_json()
+        data = self.get_pubsub_data(entry)
         pubsub_url = current_app.config['PUBSUB_URL']
         requests.post(pubsub_url, json=data,
                       headers={'content-type': 'application/json'})

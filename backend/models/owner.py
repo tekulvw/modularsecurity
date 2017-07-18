@@ -20,6 +20,10 @@ class Owner(ndb.Model):
     def from_user(cls, user_obj):
         return cls.query(cls.user_key == user_obj.key).get()
 
+    @classmethod
+    def from_system(cls, system_obj):
+        return cls.query(cls.system_key == system_obj.key).get()
+
     @staticmethod
     def is_owner_of(user, system):
         if system is None:

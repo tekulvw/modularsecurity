@@ -16,3 +16,7 @@ def test_owner_create(random_user):
 
     system = owner.system_key.get()
     assert system.grace_period == 60
+
+
+def test_owner_from_system(random_owner, random_system):
+    assert Owner.from_system(random_system) == random_owner
