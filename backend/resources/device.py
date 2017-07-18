@@ -73,9 +73,13 @@ class DeviceResource(MethodView):
         except AttributeError:
             curr_system = None
 
-        if not any(Owner.is_owner_of(current_user, s)
-                   for s in (system, curr_system)):
-            abort(403)
+        if system is None and curr_system is None:
+            abort(400, 'No valid systems.')
+
+        if not all(Owner.is_owner_of(current_user, s)
+                   for s in (system, curr_system)
+                   if s is not None):
+            abort(401)
 
         try:
             device.system_key = system.key
@@ -83,7 +87,7 @@ class DeviceResource(MethodView):
             device.system_key = None
 
         device.put()
-        return jsonify(device.to_json())
+        return jsonify((curr_system or system).to_json())
 
     @login_required
     def put(self, serial_number):
@@ -100,4 +104,5 @@ class DeviceResource(MethodView):
             except RuntimeError:
                 abort(400)
 
-            return jsonify(device.to_json())
+            system = device.system_key.get()
+            return jsonify(system.to_json())
