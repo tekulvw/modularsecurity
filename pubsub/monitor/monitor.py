@@ -1,5 +1,5 @@
 import json
-from typing import Collection
+from typing import List
 
 from flask import current_app, request
 
@@ -38,7 +38,7 @@ def handle_door(data: dict):
         raise_alarm(phones)
 
 
-def raise_alarm(numbers: Collection[str]):
+def raise_alarm(numbers: List[str]):
     for num in numbers:
         notify_number(num)
 

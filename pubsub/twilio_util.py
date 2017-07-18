@@ -8,8 +8,8 @@ CLIENT = None
 
 
 def get_client():
+    global CLIENT
     if CLIENT is None:
-        global CLIENT
         CLIENT = Client(*load_twilio_creds())
     return CLIENT
 

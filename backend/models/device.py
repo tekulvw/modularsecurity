@@ -10,14 +10,17 @@ class Device(ndb.Model):
     device_type_key = ndb.KeyProperty(kind="DeviceDataType")
 
     @classmethod
-    def create(cls, serial_number):
+    def create(cls, serial_number, type_=None):
         """
         Create a new unassociated device in the datastore.
         :param serial_number: Device serial number
+        :param type_: DeviceDataType instance or None
         :return:
         """
+        type_ = type_ or DeviceDataType.default_type()
         return cls(
-            serial_num=serial_number
+            serial_num=serial_number,
+            device_type_key=type_.key
         )
 
     @classmethod
@@ -159,6 +162,18 @@ class DeviceDataType(ndb.Model):
         # type: () -> dict
         data = self.to_dict()
         return data
+
+    @classmethod
+    def default_type(cls):
+        default = cls.from_name("default")
+        if default is None:
+            default = DeviceDataType(
+                type_name="default",
+                is_binary=False,
+                mime_type="application/json"
+            )
+            default.put()
+        return default
 
     @classmethod
     def from_name(cls, type_name):
