@@ -33,7 +33,9 @@ class Secondary(MethodView):
 
         sec_obj = SecondaryModel.create(user, system)
         sec_obj.put()
-        return jsonify(current_user.to_json())
+
+        sec_users = SecondaryModel.get_all_secondary_users(system)
+        return jsonify([u.to_json() for u in sec_users])
 
     @login_required
     def get(self, system_id):
