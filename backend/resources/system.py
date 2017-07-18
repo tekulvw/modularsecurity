@@ -44,6 +44,23 @@ class System(MethodView):
         return jsonify(current_system.to_json())
 
 
+class LatestDataFrame(MethodView):
+    @login_required
+    def get(self, system_id):
+        system = SystemModel.from_system_id(system_id)
+
+        is_owner = OwnerModel.is_owner_of(current_user, system)
+        is_sec, _ = SecondaryModel.is_secondary_of(current_user, system)
+
+        if not is_owner or is_sec:
+            abort(401)
+
+        frames = system.get_latest_data_frames()
+
+        devid_loc = {f.device_key.integer_id(): f.location for f in frames}
+        return jsonify(devid_loc)
+
+
 class KillSwitch(MethodView):
     @login_required
     def put(self, system_id):

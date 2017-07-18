@@ -4,4 +4,5 @@ Flask-Oauthlib
 pytest>=3.0
 mock
 GoogleAppEngineCloudStorageClient
+requests
 raven[flask]

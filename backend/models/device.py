@@ -7,17 +7,20 @@ class Device(ndb.Model):
     system_key = ndb.KeyProperty(kind="System")
     name = ndb.StringProperty(default="Default Device")
     is_connected = ndb.BooleanProperty()
-    device_type_key = ndb.IntegerProperty()
+    device_type_key = ndb.KeyProperty(kind="DeviceDataType")
 
     @classmethod
-    def create(cls, serial_number):
+    def create(cls, serial_number, type_=None):
         """
         Create a new unassociated device in the datastore.
         :param serial_number: Device serial number
+        :param type_: DeviceDataType instance or None
         :return:
         """
+        type_ = type_ or DeviceDataType.default_type()
         return cls(
-            serial_num=serial_number
+            serial_num=serial_number,
+            device_type_key=type_.key
         )
 
     @classmethod
@@ -44,6 +47,20 @@ class Device(ndb.Model):
         else:
             device_dict['system_id'] = None
         return device_dict
+
+    def update_type(self, data_type):
+        """
+        Maybe updates the devices data type based on the given DeviceDataType
+            object.
+        :param data_type:
+        :return:
+        """
+        # If we ever allow single Pi's to have multiple sensors we must put
+        # this information into DeviceData which, tbh, makes sense to have
+        # there now but oh well.
+        if self.device_type_key != data_type.key:
+            self.device_type_key = data_type.key
+            self.put()
 
     def update_from(self, data):
         """
@@ -83,9 +100,18 @@ class DeviceData(ndb.Model):
 
     def to_json(self):
         # TODO: serialize datetime
+        device = self.device_key.get()
+        try:
+            system_id = device.system_key.integer_id()
+        except AttributeError:
+            system_id = None
+
         data = {
-            "location": self.location
+            "location": self.location,
+            "system_id": system_id,
+            "device_id": self.device_key.integer_id()
         }
+
         return data
 
     @classmethod
@@ -109,6 +135,22 @@ class DeviceData(ndb.Model):
             return q.fetch(count)
         return []
 
+    @classmethod
+    def get_last(cls, device, n=1):
+        """
+        Gets last n data frames from given device.
+        :param device:
+        :param n:
+        :return:
+        """
+        q = cls.query(cls.device_key == device.key)
+        # noinspection PyUnresolvedReferences
+        q = q.order(-cls.data_received)
+        count = min(n, q.count())
+        if count > 0:
+            return q.fetch(count)
+        return []
+
 
 class DeviceDataType(ndb.Model):
     type_name = ndb.StringProperty()
@@ -120,6 +162,18 @@ class DeviceDataType(ndb.Model):
         # type: () -> dict
         data = self.to_dict()
         return data
+
+    @classmethod
+    def default_type(cls):
+        default = cls.from_name("default")
+        if default is None:
+            default = DeviceDataType(
+                type_name="default",
+                is_binary=False,
+                mime_type="application/json"
+            )
+            default.put()
+        return default
 
     @classmethod
     def from_name(cls, type_name):

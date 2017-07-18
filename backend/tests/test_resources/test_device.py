@@ -14,6 +14,12 @@ def device_test_data(random_device, datatype_json):
     )
 
 
+@pytest.fixture(autouse=True)
+def mock_pubsub_request(monkeypatch):
+    import mock
+    monkeypatch.setattr('requests.post', mock.MagicMock())
+
+
 def test_device_post(app, random_device, device_test_data):
     with app:
         resp = app.post('/api/device/data', data=json.dumps(device_test_data),
@@ -24,6 +30,16 @@ def test_device_post(app, random_device, device_test_data):
     # Check that a new device data entry is in the database
     from models.device import DeviceData
     assert len(DeviceData.from_device(random_device)) != 0
+
+
+def test_device_post_callspubsub(app, device_test_data, random_owner):
+    import requests
+    with app.application.app_context():
+        resp = app.post('/api/device/data', data=json.dumps(device_test_data),
+                        headers={'content-type': 'application/json'})
+
+    # noinspection PyUnresolvedReferences
+    assert requests.post.called
 
 
 def test_device_post_nocontenttype(app, random_device, device_test_data):

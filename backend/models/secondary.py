@@ -52,23 +52,6 @@ class Secondary(ndb.Model):
             return secondaries
         return []
 
-    @classmethod
-    def from_id(cls, secondary_id):
-        if secondary_id:
-            return ndb.Key(cls, secondary_id).get()
-        return None
-
-    @classmethod
-    def from_system_user(cls, system, user):
-        """
-        Tries to find a secondary entry from system and user objects
-        :param system: Datastore object
-        :param user: Datastore object
-        :return: Secondary object or None
-        """
-        return cls.query(cls.system_key == system.key,
-                         cls.user_key == user.key).get()
-
     @staticmethod
     def get_all_secondary_users(system):
         """
@@ -87,6 +70,31 @@ class Secondary(ndb.Model):
             else:
                 users.append(user)
         return users
+
+    @staticmethod
+    def get_all_contact_numbers(system):
+        secondary_users = Secondary.get_all_secondary_users(system)
+        nums = []
+        for u in secondary_users:
+            nums.append(u.phone_num)
+        return nums
+
+    @classmethod
+    def from_id(cls, secondary_id):
+        if secondary_id:
+            return ndb.Key(cls, secondary_id).get()
+        return None
+
+    @classmethod
+    def from_system_user(cls, system, user):
+        """
+        Tries to find a secondary entry from system and user objects
+        :param system: Datastore object
+        :param user: Datastore object
+        :return: Secondary object or None
+        """
+        return cls.query(cls.system_key == system.key,
+                         cls.user_key == user.key).get()
 
     @staticmethod
     def is_secondary_of(user, system):
