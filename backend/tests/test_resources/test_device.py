@@ -32,7 +32,7 @@ def test_device_post(app, random_device, device_test_data):
     assert len(DeviceData.from_device(random_device)) != 0
 
 
-def test_device_post_callspubsub(app, device_test_data):
+def test_device_post_callspubsub(app, device_test_data, random_owner):
     import requests
     with app.application.app_context():
         resp = app.post('/api/device/data', data=json.dumps(device_test_data),

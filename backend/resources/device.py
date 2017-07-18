@@ -54,7 +54,7 @@ class DeviceResource(MethodView):
         try:
             phone_numbers = [owned.get_contact_number()] + secondary_nums
         except AttributeError:
-            phone_numbers = []
+            raise LookupError("No system owner.")
 
         data['phones'] = phone_numbers
 
@@ -93,10 +93,14 @@ class DeviceResource(MethodView):
         entry.put()
 
         # PubSub stuff
-        data = self.get_pubsub_data(entry)
-        pubsub_url = current_app.config['PUBSUB_URL']
-        requests.post(pubsub_url, json=data,
-                      headers={'content-type': 'application/json'})
+        try:
+            data = self.get_pubsub_data(entry)
+        except LookupError:
+            pass
+        else:
+            pubsub_url = current_app.config['PUBSUB_URL']
+            requests.post(pubsub_url, json=data,
+                          headers={'content-type': 'application/json'})
 
         return jsonify({})
 
