@@ -24,6 +24,25 @@ def test_secondary_post(random_owner, logged_in_app,
     assert is_secondary is True
 
 
+def test_secondary_get(random_owner, random_system, logged_in_app, user_factory):
+    other_user = user_factory.get()
+    sec = Secondary.create(other_user, random_system)
+    sec.put()
+
+    with logged_in_app.application.app_context():
+        resp = logged_in_app.get(
+            url_for('secondary', system_id=random_system.key.integer_id())
+        )
+
+    assert resp.status_code == 200
+
+    data = json.loads(resp.data)
+
+    for k, v in data.items():
+        assert k == str(sec.key.integer_id())
+        assert v == other_user.to_json()
+
+
 def test_secondary_delete(random_owner, user_factory, logged_in_app):
     other_user = user_factory.get()
     sec = Secondary.create(other_user, random_owner.system_key.get())

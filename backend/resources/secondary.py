@@ -41,7 +41,13 @@ class Secondary(MethodView):
         if system is None or not Owner.is_owner_of(current_user, system):
             abort(400)
 
-        return jsonify(SecondaryModel.from_system(system))
+        secondaries = SecondaryModel.from_system(system)
+
+        ret = {}
+        for s in secondaries:
+            ret[s.key.integer_id()] = s.user_key.get().to_json()
+
+        return jsonify(ret)
 
     @login_required
     def delete(self, secondary_id):

@@ -5,6 +5,9 @@ class Secondary(ndb.Model):
     system_key = ndb.KeyProperty(kind="System")
     user_key = ndb.KeyProperty(kind="User")
 
+    # All of these from_* methods are doing different things
+    # right now, eventually they should be standardized.
+
     @classmethod
     def from_user(cls, user):
         """
@@ -37,13 +40,17 @@ class Secondary(ndb.Model):
 
     @classmethod
     def from_system(cls, system):
+        """
+        List of all secondaries associated with a given system.
+        :param system:
+        :return:
+        """
         q = cls.query(cls.system_key == system.key)
         count = q.count()
         if count > 0:
             secondaries = q.fetch(count)
-            users = {s.key.integer_id(): s.user_key.get() for s in secondaries}
-            return {s_id: u.to_json() for s_id, u in users.items()}
-        return {}
+            return secondaries
+        return []
 
     @classmethod
     def from_id(cls, secondary_id):
