@@ -111,8 +111,9 @@ def random_device(random_device_nosystem, random_system):
 
 
 @pytest.fixture
-def random_devicedata():
+def random_devicedata(random_device):
     data = DeviceData(
+        device_key=random_device.key,
         location="Somewhere"
     )
     data.put()

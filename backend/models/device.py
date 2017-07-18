@@ -109,6 +109,22 @@ class DeviceData(ndb.Model):
             return q.fetch(count)
         return []
 
+    @classmethod
+    def get_last(cls, device, n=1):
+        """
+        Gets last n data frames from given device.
+        :param device:
+        :param n:
+        :return:
+        """
+        q = cls.query(cls.device_key == device.key)
+        # noinspection PyUnresolvedReferences
+        q = q.order(-cls.data_received)
+        count = min(n, q.count())
+        if count > 0:
+            return q.fetch(count)
+        return []
+
 
 class DeviceDataType(ndb.Model):
     type_name = ndb.StringProperty()
