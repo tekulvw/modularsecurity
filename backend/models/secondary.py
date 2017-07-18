@@ -56,6 +56,7 @@ class Secondary(ndb.Model):
     def get_all_secondary_users(system):
         """
         Returns a list of all secondary users of a given system.
+            THERE WILL BE NO NONES IN THIS LIST.
         :param system: System datatore object
         :return:
         """
@@ -69,6 +70,14 @@ class Secondary(ndb.Model):
             else:
                 users.append(user)
         return users
+
+    @staticmethod
+    def get_all_contact_numbers(system):
+        secondary_users = Secondary.get_all_secondary_users(system)
+        nums = []
+        for u in secondary_users:
+            nums.append(u.phone_num)
+        return nums
 
     @classmethod
     def from_id(cls, secondary_id):

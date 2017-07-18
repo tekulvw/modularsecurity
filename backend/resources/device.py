@@ -49,17 +49,12 @@ class DeviceResource(MethodView):
         # Phone data
         system = device.system_key.get()
         owned = Owner.from_system(system)
-        phone_numbers = []
-        try:
-            owner_user = owned.user_key.get()
-        except AttributeError:
-            pass
-        else:
-            phone_numbers.append(owner_user.phone_num)
+        secondary_nums = Secondary.get_all_contact_numbers(system)
 
-        secondary_users = Secondary.get_all_secondary_users(system)
-        for user in secondary_users:
-            phone_numbers.append(user.phone_num)
+        try:
+            phone_numbers = [owned.get_contact_number()] + secondary_nums
+        except AttributeError:
+            phone_numbers = []
 
         data['phones'] = phone_numbers
 

@@ -35,3 +35,9 @@ class Owner(ndb.Model):
         elif owner.system_key == system.key:
             return True
         return False
+
+    def get_contact_number(self):
+        user = self.user_key.get()
+        if user:
+            return user.phone_num
+        return None
