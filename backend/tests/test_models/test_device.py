@@ -35,6 +35,13 @@ def test_devicedata_get_last_counting(random_device):
     assert len(frames) == 0
 
 
+def test_devicedata_tojson(random_devicedata):
+    data = random_devicedata.to_json()
+
+    assert 'previous' in data
+    assert len(data['previous']) == 0
+
+
 def test_devicedatatype_attrs():
     attrs = ("type_name", )
     assert all(hasattr(DeviceDataType, attr) for attr in attrs) is True

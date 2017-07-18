@@ -1,15 +1,9 @@
-from google.cloud import storage
 from storage import client
 
 from pathlib import Path
-import json
 
 
-def get_previous_location(current_location: str) -> str:
-    pass
-
-
-def get_data(location: str) -> object:
+def get_data(location: str) -> str:
     """
     Location needs to be in form /bucket_name/path/to/blob.txt
     :param location:
@@ -24,4 +18,4 @@ def get_data(location: str) -> object:
     blob = bucket.get_blob(blob_path)
 
     data = blob.download_as_string()
-    return json.loads(data)
+    return data

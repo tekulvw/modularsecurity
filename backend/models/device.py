@@ -7,7 +7,7 @@ class Device(ndb.Model):
     system_key = ndb.KeyProperty(kind="System")
     name = ndb.StringProperty(default="Default Device")
     is_connected = ndb.BooleanProperty()
-    device_type_key = ndb.IntegerProperty()
+    device_type_key = ndb.KeyProperty(kind="DeviceDataType")
 
     @classmethod
     def create(cls, serial_number):
@@ -45,6 +45,20 @@ class Device(ndb.Model):
             device_dict['system_id'] = None
         return device_dict
 
+    def update_type(self, data_type):
+        """
+        Maybe updates the devices data type based on the given DeviceDataType
+            object.
+        :param data_type:
+        :return:
+        """
+        # If we ever allow single Pi's to have multiple sensors we must put
+        # this information into DeviceData which, tbh, makes sense to have
+        # there now but oh well.
+        if self.device_type_key != data_type.key:
+            self.device_type_key = data_type.key
+            self.put()
+
     def update_from(self, data):
         """
         Updates this user with the given data. Data keys must be in
@@ -81,7 +95,7 @@ class DeviceData(ndb.Model):
     data_received = ndb.DateTimeProperty(auto_now_add=True)
     device_key = ndb.KeyProperty(kind="Device")
 
-    def to_json(self):
+    def to_json(self, with_previous=True):
         # TODO: serialize datetime
         device = self.device_key.get()
         try:
@@ -94,6 +108,17 @@ class DeviceData(ndb.Model):
             "system_id": system_id,
             "device_id": self.device_key.integer_id()
         }
+
+        if with_previous:
+            previous_5 = self.get_last(device, n=6)
+            try:
+                previous_5.remove(self)
+            except ValueError:
+                pass
+
+            data['previous'] = [prev.to_json(with_previous=False)
+                                for prev in previous_5]
+
         return data
 
     @classmethod

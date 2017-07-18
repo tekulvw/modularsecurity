@@ -53,6 +53,8 @@ class DeviceResource(MethodView):
         if None in (device, data_type):
             abort(400, "No matching device or type in datastore.")
 
+        device.update_type(data_type)
+
         data_loc = store_data(device, sensor_data, data_type, ext)
 
         # Creates a new entry for the data coming in then posts it
