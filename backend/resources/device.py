@@ -89,9 +89,7 @@ class DeviceResource(MethodView):
         if curr_system is not None:
             abort(401, 'Device already associated.')
 
-        if not all(Owner.is_owner_of(current_user, s)
-                   for s in (system, curr_system)
-                   if s is not None):
+        if not Owner.is_owner_of(current_user, system):
             abort(401)
 
         device.system_key = system.key
