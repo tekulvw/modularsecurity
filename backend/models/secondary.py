@@ -52,6 +52,24 @@ class Secondary(ndb.Model):
             return secondaries
         return []
 
+    @staticmethod
+    def get_all_secondary_users(system):
+        """
+        Returns a list of all secondary users of a given system.
+        :param system: System datatore object
+        :return:
+        """
+        secondaries = Secondary.from_system(system)
+        users = []
+        for sec in secondaries:
+            try:
+                user = sec.user_key.get()
+            except AttributeError:
+                pass
+            else:
+                users.append(user)
+        return users
+
     @classmethod
     def from_id(cls, secondary_id):
         if secondary_id:

@@ -46,6 +46,7 @@ class DeviceResource(MethodView):
         data['previous'] = [prev.to_json()
                             for prev in previous_5]
 
+        # Phone data
         system = device.system_key.get()
         owned = Owner.from_system(system)
         phone_numbers = []
@@ -56,7 +57,11 @@ class DeviceResource(MethodView):
         else:
             phone_numbers.append(owner_user.phone_num)
 
-        secondaries = Secondary.from_system(system)
+        secondary_users = Secondary.get_all_secondary_users(system)
+        for user in secondary_users:
+            phone_numbers.append(user.phone_num)
+
+        data['phones'] = phone_numbers
 
         return data
 
