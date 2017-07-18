@@ -66,7 +66,7 @@ class Logout(MethodView):
             del session['authorization']
         except KeyError:
             pass
-        return redirect(url_for('home'))
+        return redirect('/')
 
 
 class User(MethodView):
