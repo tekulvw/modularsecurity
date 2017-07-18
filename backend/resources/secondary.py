@@ -22,6 +22,9 @@ class Secondary(MethodView):
         system = System.from_system_id(system_id)
         user = User.from_email(user_email)
 
+        if None in (system, user):
+            abort(400)
+
         if current_user == user:
             abort(400)
 
@@ -33,20 +36,28 @@ class Secondary(MethodView):
         return jsonify(current_user.to_json())
 
     @login_required
-    def delete(self, system_id):
-        data = request.get_json()
-        user_email = data.get('user_email')
-
+    def get(self, system_id):
         system = System.from_system_id(system_id)
-        user = User.from_email(user_email)
-
-        if None in (system, user):
+        if system is None or not Owner.is_owner_of(current_user, system):
             abort(400)
 
-        if not Owner.is_owner_of(current_user, system):
+        secondaries = SecondaryModel.from_system(system)
+
+        ret = {}
+        for s in secondaries:
+            ret[s.key.integer_id()] = s.user_key.get().to_json()
+
+        return jsonify(ret)
+
+    @login_required
+    def delete(self, secondary_id):
+        secondary = SecondaryModel.from_id(secondary_id)
+        if secondary is None:
+            abort(400, "That secondary does not exist.")
+
+        if not Owner.is_owner_of(current_user, secondary.system_key.get()):
             abort(401)
 
-        secondary = SecondaryModel.from_system_user(system, user)
         try:
             secondary.key.delete()
         except AttributeError:
