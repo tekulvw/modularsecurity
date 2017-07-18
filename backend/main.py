@@ -26,8 +26,7 @@ from models.user import User as UserModel
 from resources.user import AuthorizeUser, AuthorizedUser, UserInfo, Login, User
 from resources.user import Logout
 from resources.device import DeviceCollectionResource, DeviceResource
-from resources.system import System
-from resources.system import KillSwitch
+from resources.system import System, LatestDataFrame, KillSwitch
 from resources.secondary import Secondary
 
 from auth import google, initialize_tokengetter, read_client_keys
@@ -75,8 +74,13 @@ app.add_url_rule('/api/device/data', view_func=single_dev_view,
 system_view = System.as_view('system')
 app.add_url_rule('/api/system', methods=["POST", ], view_func=system_view)
 app.add_url_rule('/api/system/<int:system_id>',
-                 methods=["GET","PUT"],
+                 methods=["GET", "PUT"],
                  view_func=system_view)
+
+dataframe_view = LatestDataFrame.as_view('dataframe')
+app.add_url_rule('/api/system/<int:system_id>/dataframes',
+                 view_func=dataframe_view,
+                 methods=["GET"])
 
 killswitch_view = KillSwitch.as_view('killswitch')
 app.add_url_rule('/api/system/<int:system_id>/killswitch', view_func=killswitch_view,

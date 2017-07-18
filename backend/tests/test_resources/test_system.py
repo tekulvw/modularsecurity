@@ -60,6 +60,16 @@ def test_system_put_nonowner(logged_in_app, random_system):
     assert random_system.name != update_data['name']
 
 
+def test_dataframes_get(logged_in_app, random_owner, random_devicedata):
+    system_key = random_owner.system_key
+    with logged_in_app.application.app_context():
+        resp = logged_in_app.get(
+            url_for('dataframe', system_id=system_key.integer_id())
+        )
+
+    assert resp.status_code == 200
+
+
 def test_killswitch_put(logged_in_app, random_system, random_owner):
     update_data = {
         "ks_enabled": True

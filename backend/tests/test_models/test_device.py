@@ -22,6 +22,19 @@ def test_devicedata_real_json(random_devicedata):
     assert random_devicedata.to_json() == json.loads(json.dumps(random_devicedata.to_json()))
 
 
+def test_devicedata_get_last(random_device, random_devicedata):
+    frames = DeviceData.get_last(random_device)
+    assert random_devicedata in frames
+
+
+def test_devicedata_get_last_counting(random_device):
+    frames = DeviceData.get_last(random_device)
+    assert len(frames) == 0
+
+    frames = DeviceData.get_last(random_device, n=100)
+    assert len(frames) == 0
+
+
 def test_devicedatatype_attrs():
     attrs = ("type_name", )
     assert all(hasattr(DeviceDataType, attr) for attr in attrs) is True

@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 from .device import Device  # This is bad.
+from models.device import DeviceData
 
 
 class System(ndb.Model):
@@ -61,3 +62,12 @@ class System(ndb.Model):
             if k not in System.VALID_UPDATE_ATTRS:
                 return False
         return True
+
+    def get_latest_data_frames(self):
+        """
+        Gets the most recent DeviceData frames from all connected devices.
+        :return:
+        """
+        devices = Device.from_system_key(self.key)
+        frames = [f for d in devices for f in DeviceData.get_last(d)]
+        return frames
