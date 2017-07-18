@@ -23,8 +23,13 @@ before_deploy:
 - pip install -t backend/lib -r backend/requirements.txt
 - cp -r frontend/app backend/www
 deploy:
-  provider: gae
-  keyfile: backend/modular-security-system.json
-  project: modular-security-system
-  config: backend/app.yaml pubsub/app.yaml
-  skip_cleanup: true
+  - provider: gae
+    keyfile: backend/modular-security-system.json
+    project: modular-security-system
+    config: backend/app.yaml
+    skip_cleanup: true
+  - provider: gae
+    keyfile: backend/modular-security-system.json
+    project: modular-security-system
+    config: pubsub/app.yaml
+    skip_cleanup: true
