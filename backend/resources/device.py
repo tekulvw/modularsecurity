@@ -113,7 +113,8 @@ class DeviceResource(MethodView):
         data, devices = self.get_system_info(system)
         if device in devices:
             devices.remove(device)
-        devices.append(device)
+        if "system_id" not in data or data.get("system_id") is not None:
+            devices.append(device)
         data['devices'] = [d.to_json()
                            for d in devices]
         return jsonify(data)
