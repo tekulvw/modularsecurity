@@ -28,6 +28,11 @@ class DeviceCollectionResource(MethodView):
 
 
 class DeviceResource(MethodView):
+    def get_system_info(self, system, modified=None):
+        data = system.to_json()
+        devices = DeviceModel.from_system_key(system.key)
+        return data, devices
+
     def post(self):
         # Request post json data
         data = request.get_json()
@@ -87,7 +92,12 @@ class DeviceResource(MethodView):
             device.system_key = None
 
         device.put()
-        return jsonify((curr_system or system).to_json())
+        data, devices = self.get_system_info(curr_system or system)
+        if device not in devices:
+            devices.append(device)
+            data['devices'] = [d.to_json()
+                               for d in devices]
+        return jsonify(data)
 
     @login_required
     def put(self, serial_number):
@@ -105,4 +115,10 @@ class DeviceResource(MethodView):
                 abort(400)
 
             system = device.system_key.get()
-            return jsonify(system.to_json())
+            data, devices = self.get_system_info(system)
+            if device in devices:
+                devices.remove(device)
+                devices.append(device)
+                data['devices'] = [d.to_json()
+                                   for d in devices]
+            return jsonify(data)
