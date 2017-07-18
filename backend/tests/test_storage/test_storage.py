@@ -29,11 +29,12 @@ def test_with_files(random_device, device_data_location,
     assert filepath.endswith("0")
 
     from storage.writer import store_data
-    next_location = store_data(random_device, {"hi": "world"},
-                               type=datatype_json,
-                               extension="json")
+    for i in range(1, 5):
+        next_location = store_data(random_device, {"hi": "world"},
+                                   type=datatype_json,
+                                   extension="json")
 
-    filepath, ext = os.path.splitext(next_location)
+        filepath, ext = os.path.splitext(next_location)
 
-    assert filepath.endswith("1")
+        assert filepath.endswith(str(i))
 
