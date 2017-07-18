@@ -28,6 +28,11 @@ class DeviceCollectionResource(MethodView):
 
 
 class DeviceResource(MethodView):
+    def get_system_info(self, system, modified=None):
+        data = system.to_json()
+        devices = DeviceModel.from_system_key(system.key)
+        return data, devices
+
     def post(self):
         # Request post json data
         data = request.get_json()
@@ -62,9 +67,14 @@ class DeviceResource(MethodView):
 
     def update_device_association(self, serial_number, req_data):
         system_id = req_data.get("system_id")
-        system = System.from_system_id(system_id)
         device = DeviceModel.from_serial_number(serial_number)
+        if system_id is not None:
+            system = System.from_system_id(system_id)
+            return self.associate_device(device, system)
+        else:
+            return self.disassociate_device(device)
 
+    def associate_device(self, device, system):
         if device is None:
             abort(400)
 
@@ -73,23 +83,44 @@ class DeviceResource(MethodView):
         except AttributeError:
             curr_system = None
 
-        if not any(Owner.is_owner_of(current_user, s)
-                   for s in (system, curr_system)):
-            abort(403)
+        if system is None:
+            abort(400, 'Invalid system.')
 
-        try:
-            device.system_key = system.key
-        except AttributeError:
-            device.system_key = None
+        if curr_system is not None:
+            abort(401, 'Device already associated.')
 
+        if not Owner.is_owner_of(current_user, system):
+            abort(401)
+
+        device.system_key = system.key
         device.put()
-        return jsonify(device.to_json())
+
+        devices = DeviceModel.from_system_key(system.key)
+        if device not in devices:
+            devices.append(device)
+        return system, devices
+
+    def disassociate_device(self, device):
+        if device.system_key is None:
+            abort(400, 'Device already disassociated.')
+
+        system = device.system_key.get()
+
+        if not Owner.is_owner_of(current_user, system):
+            abort(401)
+
+        devices = DeviceModel.from_system_key(device.system_key)
+        devices.remove(device)
+
+        device.system_key = None
+        device.put()
+        return system, devices
 
     @login_required
     def put(self, serial_number):
         data = request.get_json()
         if "system_id" in data:
-            return self.update_device_association(serial_number, data)
+            system, devices = self.update_device_association(serial_number, data)
         else:
             device = DeviceModel.from_serial_number(serial_number)
             if device is None:
@@ -100,4 +131,10 @@ class DeviceResource(MethodView):
             except RuntimeError:
                 abort(400)
 
-            return jsonify(device.to_json())
+            system = device.system_key.get()
+            devices = DeviceModel.from_system_key(system.key)
+
+        data, _ = self.get_system_info(system)
+        data['devices'] = [d.to_json()
+                           for d in devices]
+        return jsonify(data)

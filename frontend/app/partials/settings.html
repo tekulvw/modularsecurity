@@ -13,6 +13,11 @@
     	Save Changes
     </md-button>
 
+    <md-button class="md-primary md-raised" 
+    			ng-click="ctrl.logout()">
+    	Log Out
+    </md-button>
+
     <md-button ng-if="global.userInfo.is_admin" class="md-primary md-raised" ng-click="ctrl.createDevice()">
     	Create Device
     </md-button>

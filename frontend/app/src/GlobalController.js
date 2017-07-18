@@ -1,31 +1,31 @@
-function GlobalController($mdSidenav, $window) {
+function GlobalController($mdSidenav, $window, $interval, $scope) {
   var self = this;
  
-  $.ajax({
-    url: "/api/user",
-    success: function(data, status){
-        self.userInfo = data;
-      },
-    error: function(){
-        $window.location.href = "/"
-      },
-    async: false
-  });
+  self.refreshData = function(s){
+    $.ajax({
+      url: "/api/user",
+      success: function(data, status){
+          self.userInfo = data;
+          self.availableSystems = self.userInfo.owned_systems.concat(
+                                  self.userInfo.secondary_systems);
+          self.selectSystem(self.availableSystems[0]);
+        },
+      error: function(){
+          $window.location.href = "/"
+        },
+      async: false
+    });
+  }
 
-  self.tabs = [{i: 0, name: 'Monitor', url: 'partials/monitor.html'},
-              {i: 1, name: 'Management', url: 'partials/management.html'},
-              {i: 2, name: 'Account Settings', url: 'partials/settings.html'}];
+  self.refreshSecondaries = function(s){
+    self.secondaries = s;
+    $scope.$apply();
+  }
 
-  self.currentTab = self.tabs[0];
 
   self.navToTab = function(i){
     self.currentTab = self.tabs[i];
   }
-
-  self.availableSystems = self.userInfo.owned_systems.concat(
-                            self.userInfo.secondary_systems);
-  
-  self.currentSystem = self.availableSystems[0];
 
   var originatorEv;
 
@@ -46,8 +46,19 @@ function GlobalController($mdSidenav, $window) {
 
   self.selectSystem = function(s){
   	self.currentSystem = s;
+    $.ajax({
+      url: "/api/secondary/" + s.id,
+      success: function(data, status){
+          self.secondaries = data;
+        }
+    });
     self.updateTabs();
-    console.log(s);
+  }
+
+  self.selectSystemAndApply= function(s){
+    self.userInfo.owned_systems[0] = s;
+    self.selectSystem(s);
+    $scope.$apply();
   }
 
   self.updateTabs = function(){
@@ -55,12 +66,27 @@ function GlobalController($mdSidenav, $window) {
       self.tabs = [{i: 0, name: 'Monitor', url: 'partials/monitor.html'},
                   {i: 1, name: 'Management', url: 'partials/management.html'},
                   {i: 2, name: 'Account Settings', url: 'partials/settings.html'}];
+      if(!self.currentTab){
+        self.currentTab = self.tabs[0];
+      }
+      else{
+        self.currentTab = self.tabs[self.currentTab.i];
+      }
     }
     else{
       self.tabs = [{i: 0, name: 'Monitor', url: 'partials/monitor.html'},
-                  {i: 2, name: 'Account Settings', url: 'partials/settings.html'}];
+                  {i: 1, name: 'Account Settings', url: 'partials/settings.html'}];
+      if(!self.currentTab || self.currentTab.i != 2){
+        self.currentTab = self.tabs[0];
+      }
+      else{
+        self.currentTab = self.tabs[1];
+      }
     }
   }
+
+  self.refreshData();
+  //$interval(self.refreshData, 1000)
 }
 
-export default [ '$mdSidenav', '$window', GlobalController ];
+export default [ '$mdSidenav', '$window', '$interval', '$scope', GlobalController ];

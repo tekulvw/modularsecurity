@@ -5,6 +5,22 @@ class Secondary(ndb.Model):
     system_key = ndb.KeyProperty(kind="System")
     user_key = ndb.KeyProperty(kind="User")
 
+    # All of these from_* methods are doing different things
+    # right now, eventually they should be standardized.
+
+    @classmethod
+    def from_user(cls, user):
+        """
+        Returns a list of Secondaries from a given user.
+        :param user: Datastore object
+        :return: list of datastore objects
+        """
+        q = cls.query(cls.user_key == user.key)
+        count = q.count()
+        if count > 0:
+            return q.fetch(count)
+        return []
+
     @classmethod
     def create(cls, user, system):
         """
@@ -23,6 +39,26 @@ class Secondary(ndb.Model):
         )
 
     @classmethod
+    def from_system(cls, system):
+        """
+        List of all secondaries associated with a given system.
+        :param system:
+        :return:
+        """
+        q = cls.query(cls.system_key == system.key)
+        count = q.count()
+        if count > 0:
+            secondaries = q.fetch(count)
+            return secondaries
+        return []
+
+    @classmethod
+    def from_id(cls, secondary_id):
+        if secondary_id:
+            return ndb.Key(cls, secondary_id).get()
+        return None
+
+    @classmethod
     def from_system_user(cls, system, user):
         """
         Tries to find a secondary entry from system and user objects
@@ -32,6 +68,25 @@ class Secondary(ndb.Model):
         """
         return cls.query(cls.system_key == system.key,
                          cls.user_key == user.key).get()
+
+    @staticmethod
+    def get_all_secondary_users(system):
+        """
+        Returns a list of all secondary users of a given system.
+            THERE WILL BE NO NONES IN THIS LIST.
+        :param system: System datatore object
+        :return:
+        """
+        secondaries = Secondary.from_system(system)
+        users = []
+        for sec in secondaries:
+            try:
+                user = sec.user_key.get()
+            except AttributeError:
+                pass
+            else:
+                users.append(user)
+        return users
 
     @staticmethod
     def is_secondary_of(user, system):

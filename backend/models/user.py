@@ -76,12 +76,7 @@ class User(ndb.Model, UserMixin):
         self.put()
 
     def to_json(self):
-        data = self.to_dict(exclude=["oauth_id", "create_date"])
-        other = {
-            "owned_systems": self.owned_systems(),
-            "secondary_systems": self.secondary_systems()
-        }
-        data.update(**other)
+        data = self.to_dict(exclude=["create_date"])
         return data
 
     def get_id(self):
@@ -102,28 +97,6 @@ class User(ndb.Model, UserMixin):
             login_manager = current_app.config.get("LOGIN_MGR")
             return login_manager.needs_refresh()
         return True
-
-    def owned_systems(self):
-        q = ndb.Query(kind="Owner")
-        q.filter(ndb.GenericProperty("user_key") == self.key)
-        count = q.count()
-
-        owned = []
-        if count > 0:
-            owned = [o.system_key.get() for o in q.fetch(count)]
-
-        return [s.to_json() for s in owned]
-
-    def secondary_systems(self):
-        q = ndb.Query(kind="Secondary")
-        q.filter(ndb.GenericProperty("user_key") == self.key)
-        count = q.count()
-
-        secondary = []
-        if count > 0:
-            secondary = [s.system_key.get() for s in q.fetch(count)]
-
-        return [s.to_json() for s in secondary]
 
     @staticmethod
     def valid_update_keys(keys):

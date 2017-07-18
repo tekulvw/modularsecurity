@@ -7,6 +7,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 
 from models.user import User as UserModel
 from models.owner import Owner as OwnerModel
+from models.secondary import Secondary
 
 
 class AuthorizeUser(MethodView):
@@ -45,7 +46,11 @@ class Login(MethodView):
             return redirect(url_for('authorize'))
 
         userinfo = auth.get('userinfo')
-        user = UserModel.from_oauth_id(userinfo.data['id'])
+        try:
+            user = UserModel.from_oauth_id(userinfo.data['id'])
+        except (AttributeError, KeyError):
+            return redirect('logout')
+
         if user is None:
             user = UserModel.create(userinfo)
             user.put()
@@ -65,7 +70,7 @@ class Logout(MethodView):
             del session['authorization']
         except KeyError:
             pass
-        return redirect(url_for('home'))
+        return redirect('/')
 
 
 class User(MethodView):
@@ -83,7 +88,20 @@ class User(MethodView):
             # TODO: Check for admin status here.
             abort(403)
 
-        return jsonify(current_user.to_json())
+        data = current_user.to_json()
+        owned = OwnerModel.from_user(current_user)
+        try:
+            owned_data = owned.system_key.get().to_json()
+        except AttributeError:
+            data['owned_systems'] = []
+        else:
+            data['owned_systems'] = [owned_data, ]
+
+        secondary = Secondary.from_user(current_user)
+        secondary_data = [s.system_key.get().to_json() for s in secondary]
+        data['secondary_systems'] = secondary_data
+
+        return jsonify(data)
 
     @login_required
     def put(self):
