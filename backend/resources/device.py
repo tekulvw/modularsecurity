@@ -92,18 +92,13 @@ class DeviceResource(MethodView):
             device.system_key = None
 
         device.put()
-        data, devices = self.get_system_info(curr_system or system)
-        if device not in devices:
-            devices.append(device)
-            data['devices'] = [d.to_json()
-                               for d in devices]
-        return jsonify(data)
+        return (curr_system or system), device
 
     @login_required
     def put(self, serial_number):
         data = request.get_json()
         if "system_id" in data:
-            return self.update_device_association(serial_number, data)
+            system, device = self.update_device_association(serial_number, data)
         else:
             device = DeviceModel.from_serial_number(serial_number)
             if device is None:
@@ -115,10 +110,10 @@ class DeviceResource(MethodView):
                 abort(400)
 
             system = device.system_key.get()
-            data, devices = self.get_system_info(system)
-            if device in devices:
-                devices.remove(device)
-                devices.append(device)
-                data['devices'] = [d.to_json()
-                                   for d in devices]
-            return jsonify(data)
+        data, devices = self.get_system_info(system)
+        if device in devices:
+            devices.remove(device)
+        devices.append(device)
+        data['devices'] = [d.to_json()
+                           for d in devices]
+        return jsonify(data)
