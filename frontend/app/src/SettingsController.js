@@ -1,4 +1,4 @@
-function SettingsController($mdDialog) {
+function SettingsController($mdDialog, $window) {
   var self = this;
   self.submitSettings = function(info){
 	  $.ajax({
@@ -12,6 +12,17 @@ function SettingsController($mdDialog) {
 	      contentType: 'application/json'
 	  });
   }
+
+  self.logout = function(){
+  	$.ajax({
+	  	  url: "/api/logout",
+	  	  success: function(data){
+	  	  	$window.location.href = "/";
+	      }
+	  });
+  }
+
+  	
   
   self.createDevice = function(ev) {
     var confirm = $mdDialog.prompt()
@@ -33,4 +44,4 @@ function SettingsController($mdDialog) {
     });
   };
 };
-export default [ '$mdDialog', SettingsController ];
+export default [ '$mdDialog', '$window', SettingsController ];
