@@ -1,12 +1,15 @@
-from flask import abort, request, jsonify
+from flask import abort, request, jsonify, current_app
 from flask.views import MethodView
 from flask_login import login_required, current_user
+
+import requests
 
 from models.device import Device as DeviceModel
 from models.device import DeviceData, DeviceDataType
 from models.system import System
 
 from models.owner import Owner
+from models.secondary import Secondary
 
 from storage import store_data
 
@@ -28,6 +31,35 @@ class DeviceCollectionResource(MethodView):
 
 
 class DeviceResource(MethodView):
+    def get_pubsub_data(self, devicedata_entry):
+        # type: (DeviceData) -> dict
+        data = devicedata_entry.to_json()
+
+        # Previous locations
+        device = devicedata_entry.device_key.get()
+        previous_5 = devicedata_entry.get_last(device, n=6)
+        try:
+            previous_5.remove(devicedata_entry)
+        except ValueError:
+            pass
+
+        data['previous'] = [prev.to_json()
+                            for prev in previous_5]
+
+        # Phone data
+        system = device.system_key.get()
+        owned = Owner.from_system(system)
+        secondary_nums = Secondary.get_all_contact_numbers(system)
+
+        try:
+            phone_numbers = [owned.get_contact_number()] + secondary_nums
+        except AttributeError:
+            raise LookupError("No system owner.")
+
+        data['phones'] = phone_numbers
+
+        return data
+
     def get_system_info(self, system, modified=None):
         data = system.to_json()
         devices = DeviceModel.from_system_key(system.key)
@@ -56,12 +88,24 @@ class DeviceResource(MethodView):
         if None in (device, data_type):
             abort(400, "No matching device or type in datastore.")
 
+        device.update_type(data_type)
+
         data_loc = store_data(device, sensor_data, data_type, ext)
 
         # Creates a new entry for the data coming in then posts it
         entry = DeviceData.create(device.key)
         entry.location = data_loc
         entry.put()
+
+        # PubSub stuff
+        try:
+            data = self.get_pubsub_data(entry)
+        except LookupError:
+            pass
+        else:
+            pubsub_url = current_app.config['PUBSUB_URL']
+            requests.post(pubsub_url, json=data,
+                          headers={'content-type': 'application/json'})
 
         return jsonify({})
 

@@ -1,0 +1,7 @@
+flask
+google-cloud-pubsub
+google-cloud-datastore
+google-cloud-storage
+gunicorn
+raven[flask]
+twilio

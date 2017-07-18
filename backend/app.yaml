@@ -22,4 +22,5 @@ handlers:
 
 env_variables:
   BUCKET_NAME: modular-security-system
+  PUBSUB_URL: https://pubsub-dot-modular-security-system.appspot.com/pubsub/datareceived
   SENTRY_DSN: https://8c56117152634659884a65d282a48dea:70c7004fed644254a1f4ab367556d473@sentry.io/192183

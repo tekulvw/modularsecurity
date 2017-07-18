@@ -1,5 +1,6 @@
 import pytest
 import sys
+import mock  # has to happen before we patch sys path
 
 sys.path.insert(1, 'google_appengine')
 sys.path.insert(1, 'google_appengine/lib/yaml/lib')
@@ -9,6 +10,11 @@ from models.device import Device, DeviceData, DeviceDataType
 from models.system import System
 from models.owner import Owner
 from models.secondary import Secondary
+
+
+@pytest.fixture(autouse=True)
+def no_requests(monkeypatch):
+    monkeypatch.delattr("requests.sessions.Session.request")
 
 
 @pytest.fixture(autouse=True)
@@ -111,8 +117,9 @@ def random_device(random_device_nosystem, random_system):
 
 
 @pytest.fixture
-def random_devicedata():
+def random_devicedata(random_device):
     data = DeviceData(
+        device_key=random_device.key,
         location="Somewhere"
     )
     data.put()
