@@ -11,3 +11,4 @@ env_variables:
     # application. It can be any sufficiently random string.
     PUBSUB_VERIFICATION_TOKEN: 1234abc
     BASE_URL: https://pubsub-dot-modular-security-system.appspot.com
+    SENTRY_DSN: https://8c56117152634659884a65d282a48dea:70c7004fed644254a1f4ab367556d473@sentry.io/192183
