@@ -35,8 +35,8 @@ class Secondary(MethodView):
         sec_obj.put()
 
         sec_users = SecondaryModel.get_all_secondary_users(system)
-        if sec_obj not in sec_users:
-            sec_users.append(sec_obj)
+        if user not in sec_users:
+            sec_users.append(user)
         return jsonify([u.to_json() for u in sec_users])
 
     @login_required
