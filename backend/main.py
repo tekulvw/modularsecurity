@@ -90,7 +90,9 @@ secondary_view = Secondary.as_view('secondary')
 app.add_url_rule('/api/secondary', view_func=secondary_view,
                  methods=["POST"])
 app.add_url_rule('/api/secondary/<int:system_id>', view_func=secondary_view,
-                 methods=["DELETE"])
+                 methods=["GET"])
+app.add_url_rule('/api/secondary/<int:secondary_id>',
+                 view_func=secondary_view, methods=["DELETE"])
 
 auth = google.initialize(app)
 initialize_tokengetter(auth)
