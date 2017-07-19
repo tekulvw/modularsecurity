@@ -23,7 +23,7 @@ def from_device_id(device_id: int) -> Union[datastore.Entity, None]:
     :param device_id:
     :return:
     """
-    key = datastore.Key('Device', device_id)
+    key = datastore.Key('Device', device_id, project='modular-security-system')
     device = client.get(key)
 
     try:

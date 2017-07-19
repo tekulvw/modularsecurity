@@ -3,6 +3,7 @@ from flask.views import MethodView
 from flask_login import login_required, current_user
 
 import requests
+import requests_toolbelt.adapters.appengine as appengine
 
 from models.device import Device as DeviceModel
 from models.device import DeviceData, DeviceDataType
@@ -12,6 +13,8 @@ from models.owner import Owner
 from models.secondary import Secondary
 
 from storage import store_data
+
+appengine.monkeypatch()
 
 
 class DeviceCollectionResource(MethodView):
