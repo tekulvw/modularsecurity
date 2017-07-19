@@ -2,6 +2,8 @@ from storage import client
 
 from pathlib import Path
 
+from flask import current_app
+
 
 def get_data(location: str) -> str:
     """
@@ -10,12 +12,15 @@ def get_data(location: str) -> str:
     :return: data
     """
     location = Path(location)
-    bucket_name, blob_parts = location.parts[0], location.parts[1:]
+    bucket_name, blob_parts = location.parts[1], location.parts[2:]
 
     blob_path = '/' + '/'.join(blob_parts)
 
     bucket = client.bucket(bucket_name=bucket_name)
-    blob = bucket.get_blob(blob_path)
+    if not current_app.config.get('TESTING'):
+        blob = bucket.get_blob(blob_path)
 
-    data = blob.download_as_string()
+        data = blob.download_as_string()
+    else:
+        data = '{"open": "1"}'
     return data

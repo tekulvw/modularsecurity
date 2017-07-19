@@ -3,7 +3,7 @@ from google.cloud.datastore import Key, Entity
 
 
 def from_device_id(device_id: int) -> Entity:
-    key = Key("Device", device_id)
+    key = Key("Device", device_id, project='modular-security-system')
     entity = client.get(key)
     if entity is None:
         raise RuntimeError("No such device with id {}".format(device_id))

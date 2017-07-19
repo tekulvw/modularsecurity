@@ -1,6 +1,7 @@
 import json
 import os
 from twilio.rest import Client
+from flask import current_app
 
 import functools
 
@@ -33,9 +34,10 @@ def load_twilio_creds() -> (str, str):
 
 
 def notify_number(phone_number: str):
+    my_num = current_app.config.get('TWILIO_NUMBER')
     client = get_client()
     client.messages.create(
         to=phone_number,
-        from_=phone_number,
+        from_=my_num,
         body="ALARM ALARM ALARM"
     )
