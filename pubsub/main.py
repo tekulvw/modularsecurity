@@ -27,6 +27,10 @@ from sentry import load_sentry
 
 app = Flask(__name__)
 
+app.config['TESTING'] = bool(os.environ.get('TESTING', False))
+
+app.config['TWILIO_NUMBER'] = os.environ.get('TWILIO_NUMBER', '')
+
 app.config['DATASTORE_CLIENT'] = Client()
 
 # Configure the following environment variables via app.yaml
@@ -58,8 +62,9 @@ load_sentry(app)
 # [START push]
 @app.route('/pubsub/datareceived', methods=['POST'])
 def pubsub_datareceived():
-    if (request.args.get('token', '') !=
-            current_app.config['PUBSUB_VERIFICATION_TOKEN']):
+    token = request.args.get('token', '')
+    curr_verification_token = current_app.config['PUBSUB_VERIFICATION_TOKEN']
+    if token != curr_verification_token:
         return 'Invalid request', 400
 
     envelope = json.loads(request.data.decode('utf-8'))
@@ -68,18 +73,16 @@ def pubsub_datareceived():
     if system_id is None:
         return abort(400)
 
-    to_publish = base64.b64encode(request.data)
+    to_publish = request.data  # base64.b64encode(request.data)
 
     all_system_topic = current_app.config['ALL_SYSTEM_TOPIC']
     all_system_topic.publish(
-        to_publish,
-        extra=current_app.app_context
+        to_publish
     )
 
     system_topic = get_system_topic(system_id)
     system_topic.publish(
-        to_publish,
-        extra=current_app.app_context
+        to_publish
     )
 
     return jsonify({})
@@ -98,5 +101,5 @@ def server_error(e):
 if __name__ == '__main__':
     # This is used when running locally. Gunicorn is used to run the
     # application on Google App Engine. See entrypoint in app.yaml.
-    app.run(host='127.0.0.1', port=8081, debug=True)
+    app.run(host='127.0.0.1', port=8082, debug=True)
 # [END app]
