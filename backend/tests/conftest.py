@@ -99,9 +99,10 @@ def random_secondary(random_user, random_system):
 
 
 @pytest.fixture
-def random_device_nosystem():
+def random_device_nosystem(datatype_json):
     dev = Device(
-        serial_num="DEADBEEF"
+        serial_num="DEADBEEF",
+        device_type_key=datatype_json.key
     )
     dev.put()
     yield dev

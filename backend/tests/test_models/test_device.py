@@ -12,6 +12,12 @@ def test_device_real_json(random_device):
     assert random_device.to_json() == json.loads(json.dumps(random_device.to_json()))
 
 
+def test_device_type_serialization(random_device):
+    type_ = random_device.device_type_key.get()
+
+    assert random_device.to_json()['type'] == type_.to_json()
+
+
 def test_devicedata_attrs():
     attrs = ("location", "data_received", "device_key")
     assert all(hasattr(DeviceData, attr) for attr in attrs) is True

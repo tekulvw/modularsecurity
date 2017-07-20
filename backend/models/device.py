@@ -43,9 +43,17 @@ class Device(ndb.Model):
     def to_json(self):
         device_dict = self.to_dict(exclude=['system_key', 'device_type_key'])
         if self.system_key:
-            device_dict['system_id'] = self.system_key.integer_id()
+            system_id = self.system_key.integer_id()
         else:
-            device_dict['system_id'] = None
+            system_id = None
+        device_dict['system_id'] = system_id
+
+        if self.device_type_key:
+            type_data = self.device_type_key.get().to_json()
+        else:
+            type_data = {}
+        device_dict['type'] = type_data
+
         return device_dict
 
     def update_type(self, data_type):
