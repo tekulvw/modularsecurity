@@ -1,3 +1,4 @@
+import pytest
 from models.system import System
 import json
 
@@ -27,3 +28,28 @@ def test_system_dataframes_empty(random_system):
 def test_system_dataframes_notempty(random_system, random_devicedata):
     frames = random_system.get_latest_data_frames()
     assert len(frames) > 0
+
+
+def test_updatefrom_grace_baddata(random_system):
+    # type: (System) -> None
+    data = {
+        "grace_period": "abcdef"
+    }
+    with pytest.raises(ValueError):
+        random_system.update_from(data)
+
+
+def test_updatefrom_str_grace(random_system):
+    # type: (System) -> None
+    data = dict(grace_period="20")
+    random_system.update_from(data)
+
+    assert random_system.grace_period == 20
+
+
+def test_updatefrom_int_grace(random_system):
+    # type: (System) -> None
+    data = dict(grace_period=20)
+    random_system.update_from(data)
+
+    assert random_system.grace_period == 20

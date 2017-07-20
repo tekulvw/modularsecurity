@@ -32,17 +32,40 @@ def test_system_post(logged_in_app, random_system, random_user):
     assert resp.status_code == 200
 
 
+def system_put(app, system_id, data):
+    with app.application.app_context():
+        resp = app.put(url_for('system', system_id=system_id), data=json.dumps(data),
+                       headers={'content-type': 'application/json'})
+    return resp
+
+
+def test_system_put_nologin(app, random_owner, random_system):
+    data = dict(name="SOMEThING NEw")
+    resp = system_put(app, random_system.key.integer_id(), data)
+
+    assert resp.status_code == 401
+    assert random_system.name != data.get('name')
+
+
 def test_system_put(logged_in_app, random_owner, random_system):
     update_data = {
         "name": "ERIC"
     }
-    with logged_in_app:
-        resp = logged_in_app.put('/api/system/%d' %random_system.key.integer_id(), data=json.dumps(update_data),
-                                 headers={'content-type': 'application/json'})
+
+    resp = system_put(logged_in_app, random_system.key.integer_id(), update_data)
 
     assert resp.status_code == 200
     new_system = random_system.key.get()
     assert new_system.name == "ERIC"
+
+
+def test_system_put_strgrace(logged_in_app, random_owner, random_system):
+    data = dict(grace_period="20")
+
+    resp = system_put(logged_in_app, random_system.key.integer_id(), data)
+
+    assert resp.status_code == 200
+    assert random_system.grace_period == 20
 
 
 def test_system_put_nonowner(logged_in_app, random_system):

@@ -40,7 +40,10 @@ class System(MethodView):
         if not OwnerModel.is_owner_of(current_user, current_system):
             abort(401)
 
-        current_system.update_from(data)
+        try:
+            current_system.update_from(data)
+        except ValueError as e:
+            abort(400, e.message)
         return jsonify(current_system.to_json())
 
 
