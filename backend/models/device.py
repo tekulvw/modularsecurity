@@ -162,6 +162,7 @@ class DeviceData(ndb.Model):
 
 class DeviceDataType(ndb.Model):
     type_name = ndb.StringProperty()
+    display_name = ndb.StringProperty()
     is_binary = ndb.BooleanProperty(required=True)
 
     mime_type = ndb.StringProperty(required=True)
@@ -177,6 +178,7 @@ class DeviceDataType(ndb.Model):
         if default is None:
             default = DeviceDataType(
                 type_name="default",
+                display_name="Hi, John.",
                 is_binary=False,
                 mime_type="application/json"
             )
