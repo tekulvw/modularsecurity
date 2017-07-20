@@ -115,6 +115,9 @@ class DeviceResource(MethodView):
     def update_device_association(self, serial_number, req_data):
         system_id = req_data.get("system_id")
         device = DeviceModel.from_serial_number(serial_number)
+        if device is None:
+            abort(400, 'No such device.')
+
         if system_id is not None:
             system = System.from_system_id(system_id)
             return self.associate_device(device, system)
