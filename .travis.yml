@@ -7,8 +7,8 @@ env:
   - TESTING=1
 before_install:
 - openssl aes-256-cbc -K $encrypted_5e351169b63e_key -iv $encrypted_5e351169b63e_iv
-  -in backend/secrets.tar.enc -out backend/secrets.tar -d
-- tar xvf backend/secrets.tar -C backend/
+  -in secrets.tar.enc -out secrets.tar -d
+- tar xvf secrets.tar
 - mkdir -p backend/lib
 - pip install -t backend/lib -r backend/requirements.txt
 - cp -r frontend/app backend/www
@@ -22,13 +22,13 @@ before_script:
 - unzip -q google_appengine_$SDK_VERSION.zip
 script: py.test --ignore=backend/lib --ignore=google_appengine
 deploy:
-  - provider: gae
-    keyfile: backend/modular-security-system.json
-    project: modular-security-system
-    config: backend/app.yaml
-    skip_cleanup: true
-  - provider: gae
-    keyfile: backend/modular-security-system.json
-    project: modular-security-system
-    config: pubsub/app.yaml
-    skip_cleanup: true
+- provider: gae
+  keyfile: backend/modular-security-system.json
+  project: modular-security-system
+  config: backend/app.yaml
+  skip_cleanup: true
+- provider: gae
+  keyfile: backend/modular-security-system.json
+  project: modular-security-system
+  config: pubsub/app.yaml
+  skip_cleanup: true
