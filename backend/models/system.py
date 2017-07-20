@@ -45,6 +45,8 @@ class System(ndb.Model):
             raise RuntimeError("Invalid update keys.")
 
         for k, v in data.items():
+            if k == "grace_period":
+                v = int(v)
             setattr(self, k, v)
 
         self.put()
