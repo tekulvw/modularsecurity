@@ -1,4 +1,4 @@
-<div ng-controller="SettingsController as ctrl" layout="column" layout-padding flex="40">
+<md-content ng-controller="SettingsController as ctrl" layout="column" layout-padding flex-gt-sm="40">
 	<h2>{{global.userInfo.fname}} {{global.userInfo.lname}}'s Settings</h2>
 
     <md-input-container>
@@ -21,4 +21,4 @@
     <md-button ng-if="global.userInfo.is_admin" class="md-primary md-raised" ng-click="ctrl.createDevice()">
     	Create Device
     </md-button>
-</div>
+</md-content>
