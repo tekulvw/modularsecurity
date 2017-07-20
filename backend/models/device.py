@@ -109,10 +109,15 @@ class DeviceData(ndb.Model):
         data = {
             "location": self.location,
             "system_id": system_id,
-            "device_id": self.device_key.integer_id()
+            "device_id": self.device_key.integer_id(),
+            "data_received": self.datetime_serialize()
         }
 
         return data
+
+    def datetime_serialize(self):
+        date = self.data_received
+        return list(date.utctimetuple())
 
     @classmethod
     def create(cls, key):
