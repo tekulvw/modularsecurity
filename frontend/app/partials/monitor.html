@@ -1,5 +1,26 @@
-<div ng-controller="MonitorController as ctrl" layout="column">
-	<h2 ng-if="global.currentSystem.devices.length == 0">
+<div ng-controller="MonitorController as ctrl"
+		layout-fill 
+		ng-if="global.currentSystem.devices.length == 0">
+	<h2 >
 		You have no devices to monitor. If you have a device, add it in the Management tab.
 	</h2>
+</div>
+
+<div  ng-controller="MonitorController as ctrl" 
+		layout="row"
+		layout-fill 
+		ng-if="global.currentSystem.devices.length != 0" 
+		ng-style="{'background-color': 'LightGray'}"
+		layout-xs="column">
+    <div flex-xs flex-gt-xs="50" layout="column">
+    	<div ng-repeat="d in global.currentSystem.devices" ng-if="$index % 2 == 0">
+    		<div ng-include="'partials/monitorCard.html'"></div>
+    	</div>
+    </div>
+    <div flex-xs flex-gt-xs="50" layout="column">
+    	<div ng-repeat="d in global.currentSystem.devices" ng-if="$index % 2 == 1">
+    		<div ng-include="'partials/monitorCard.html'"></div>
+    	</div>
+    </div>
+
 </div>
