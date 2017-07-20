@@ -9,8 +9,9 @@
 	  </md-card-header-text>
 	  <md-switch ng-style="{'margin': '0px 0px 0px 0px'}" 
 	  				ng-model="d.enabled" 
-	  				ng-click="ctrl.toggleEnable(ev, d)"
-	  				class='md-primary'></md-switch>
+	  				ng-click="ctrl.toggleEnable(ev, d, global.isOwner());"
+	  				class='md-primary'
+	  				ng-disabled="!global.isOwner()"></md-switch>
 	</md-card-header>
 	<md-divider></md-divider>
 	<md-card-content ng-show 
