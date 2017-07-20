@@ -71,7 +71,7 @@ class User(ndb.Model, UserMixin):
             raise RuntimeError("Invalid update keys.")
 
         for k, v in data.items():
-            if k == "phone_num" and len(k) != 7:
+            if k == "phone_num" and len(v) != 10:
                 raise ValueError("Phone number too long or short!")
             setattr(self, k, v)
         self.put()

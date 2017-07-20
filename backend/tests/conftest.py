@@ -58,7 +58,7 @@ def user_factory(request):
             user = User(
                 fname="FirstName",
                 lname="LastName",
-                phone_num="0000000",
+                phone_num="0000000000",
                 oauth_id=oauth_id,
                 email="{}@email.com".format(oauth_id)
             )

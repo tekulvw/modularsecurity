@@ -27,7 +27,8 @@ def test_user_get(logged_in_app, random_user):
 
 def test_user_update(logged_in_app, random_user):
     update_data = {
-        "fname": "UPDATED"
+        "fname": "UPDATED",
+        "phone_num":"5135044350"
     }
     with logged_in_app:
         resp = logged_in_app.put('/api/user/', data=json.dumps(update_data),
@@ -37,6 +38,16 @@ def test_user_update(logged_in_app, random_user):
 
     from models.user import User
     assert User.from_oauth_id(random_user.oauth_id).fname == "UPDATED"
+
+def test_user_phone_update(logged_in_app, random_user):
+    update_data = {
+        "phone_num": "51350443501"
+    }
+    with logged_in_app:
+        resp = logged_in_app.put('/api/user/', data=json.dumps(update_data),
+                                 headers={'content-type': 'application/json'})
+
+    assert resp.status_code == 400
 
 
 """
