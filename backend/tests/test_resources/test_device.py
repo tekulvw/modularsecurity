@@ -1,6 +1,8 @@
 import json
 import uuid
 
+from flask import url_for
+
 import pytest
 
 
@@ -144,3 +146,15 @@ def test_system_disassociation(logged_in_app, random_system, random_device,
     new_device = random_device.key.get()
     assert new_device.system_key is None
 
+
+def test_system_assocdissoc_nodevice(logged_in_app, random_system, random_owner):
+    data = dict(system_id=random_system.key.integer_id())
+
+    with logged_in_app.application.app_context():
+        resp = logged_in_app.put(
+            url_for('device.single', serial_number="DOESNOTEXIST"),
+            data=json.dumps(data),
+            headers={'content-type': 'application/json'}
+        )
+
+    assert resp.status_code == 400

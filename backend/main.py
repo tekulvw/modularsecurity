@@ -96,6 +96,8 @@ app.add_url_rule('/api/secondary/<int:secondary_id>',
 
 auth = google.initialize(app)
 initialize_tokengetter(auth)
+login_manager.needs_refresh_handler(google.refresh_handler)
+login_manager.refresh_view = 'authorized'
 
 load_sentry(app)
 

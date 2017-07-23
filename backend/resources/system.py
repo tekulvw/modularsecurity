@@ -7,6 +7,8 @@ from models.secondary import Secondary as SecondaryModel
 from models.user import User as UserModel
 from models.system import System as SystemModel
 
+from storage.getter import get_download_url
+
 
 class System(MethodView):
     # @login_required
@@ -40,7 +42,10 @@ class System(MethodView):
         if not OwnerModel.is_owner_of(current_user, current_system):
             abort(401)
 
-        current_system.update_from(data)
+        try:
+            current_system.update_from(data)
+        except ValueError as e:
+            abort(400, e.message)
         return jsonify(current_system.to_json())
 
 
@@ -52,12 +57,13 @@ class LatestDataFrame(MethodView):
         is_owner = OwnerModel.is_owner_of(current_user, system)
         is_sec, _ = SecondaryModel.is_secondary_of(current_user, system)
 
-        if not is_owner or is_sec:
+        if not (is_owner or is_sec):
             abort(401)
 
         frames = system.get_latest_data_frames()
 
-        devid_loc = {f.device_key.integer_id(): f.location for f in frames}
+        devid_loc = {f.device_key.get().serial_num: get_download_url(f.location)
+                     for f in frames}
         return jsonify(devid_loc)
 
 

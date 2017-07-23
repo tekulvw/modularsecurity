@@ -1,4 +1,4 @@
-function SettingsController($mdDialog, $window) {
+function SettingsController($mdDialog, $window, $mdToast) {
   var self = this;
   self.submitSettings = function(info){
 	  $.ajax({
@@ -6,6 +6,28 @@ function SettingsController($mdDialog, $window) {
 	  	  type: "PUT",
 	  	  success: function(data){
 	        self.userInfo = data;
+	      	var toast = $mdToast.simple()
+		      .textContent('Settings updated successfully.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
+	      },
+	      error: function(){
+	      	var toast = $mdToast.simple()
+		      .textContent('Failed to save account settings.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
 	      },
 	      data: JSON.stringify({'phone_num': info}),
 	      dataType: 'json',
@@ -44,4 +66,4 @@ function SettingsController($mdDialog, $window) {
     });
   };
 };
-export default [ '$mdDialog', '$window', SettingsController ];
+export default [ '$mdDialog', '$window', '$mdToast', SettingsController ];

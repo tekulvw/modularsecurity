@@ -45,6 +45,12 @@ class System(ndb.Model):
             raise RuntimeError("Invalid update keys.")
 
         for k, v in data.items():
+            if k == "grace_period":
+                v = int(v)
+            if k == "grace_period" and v < 0:
+                raise ValueError("Grace Period must be 0 or greater")
+            if k == "name" and len(v) * 4 >= 1500:
+                raise ValueError("System name is too big!")
             setattr(self, k, v)
 
         self.put()

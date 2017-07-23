@@ -43,9 +43,17 @@ class Device(ndb.Model):
     def to_json(self):
         device_dict = self.to_dict(exclude=['system_key', 'device_type_key'])
         if self.system_key:
-            device_dict['system_id'] = self.system_key.integer_id()
+            system_id = self.system_key.integer_id()
         else:
-            device_dict['system_id'] = None
+            system_id = None
+        device_dict['system_id'] = system_id
+
+        if self.device_type_key:
+            type_data = self.device_type_key.get().to_json()
+        else:
+            type_data = {}
+        device_dict['type'] = type_data
+
         return device_dict
 
     def update_type(self, data_type):
@@ -109,10 +117,15 @@ class DeviceData(ndb.Model):
         data = {
             "location": self.location,
             "system_id": system_id,
-            "device_id": self.device_key.integer_id()
+            "device_id": self.device_key.integer_id(),
+            "data_received": self.datetime_serialize()
         }
 
         return data
+
+    def datetime_serialize(self):
+        date = self.data_received
+        return list(date.utctimetuple())
 
     @classmethod
     def create(cls, key):
@@ -154,6 +167,7 @@ class DeviceData(ndb.Model):
 
 class DeviceDataType(ndb.Model):
     type_name = ndb.StringProperty()
+    display_name = ndb.StringProperty()
     is_binary = ndb.BooleanProperty(required=True)
 
     mime_type = ndb.StringProperty(required=True)
@@ -169,6 +183,7 @@ class DeviceDataType(ndb.Model):
         if default is None:
             default = DeviceDataType(
                 type_name="default",
+                display_name="Hi, John.",
                 is_binary=False,
                 mime_type="application/json"
             )

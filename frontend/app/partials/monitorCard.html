@@ -1,0 +1,28 @@
+<md-card>
+	<md-card-header>
+	  <md-card-avatar>
+	    <md-icon class="material-icons">memory</md-icon>
+	  </md-card-avatar>
+	  <md-card-header-text>
+	    <span class="md-title">{{d.name.substr(0,25)}}</span>
+	    <span class="md-subhead">{{d.serial_num}}: {{d.type.display_name}}</span>
+	  </md-card-header-text>
+	  <md-switch ng-style="{'margin': '0px 0px 0px 0px'}" 
+	  				ng-model="d.enabled" 
+	  				ng-click="ctrl.toggleEnable(ev, d, global.isOwner());"
+	  				class='md-primary'
+	  				ng-disabled="!global.isOwner()"
+	  				aria-label="{{d.value.name}} enabled {{d.value.enabled}}"></md-switch>
+	</md-card-header>
+	<md-divider></md-divider>
+	<md-card-content ng-show 
+						ng-hide="d.enabled" 
+						ng-style="{'background-color': 'gray'}">
+		Device is disabled.
+	</md-card-content>
+	<md-card-content ng-if="d.enabled">
+		<div ng-if="d.type.type_name == 'door' || d.type.type_name == 'default'">
+			Open: {{ctrl.getDeviceData(d, global.currentSystem).open}}
+		</div>
+	</md-card-content>
+</md-card>

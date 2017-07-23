@@ -1,4 +1,4 @@
-function ManageController($mdDialog, $timeout) {
+function ManageController($mdDialog, $timeout, $mdToast) {
   var self = this;
   self.submitSettings = function(system){
 	  $.ajax({
@@ -6,7 +6,29 @@ function ManageController($mdDialog, $timeout) {
 	  	  type: "PUT",
 	  	  success: function(data){
 	        self.userInfo = data;
+	  	  	var toast = $mdToast.simple()
+		      .textContent('System settings updated.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
 	      },
+	  	  error: function(){
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Failed to save system settings.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
+	  	  },
 	      data: JSON.stringify({'name': system.name,
 	  							'grace_period': system.grace_period}),
 	      dataType: 'json',
@@ -28,6 +50,28 @@ function ManageController($mdDialog, $timeout) {
 	  	  type: "PUT",
 	  	  success: function(data){
 	  	  	refresh(data);
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Device added.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
+	  	  },
+	  	  error: function(){
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Failed to add device. Is the serial number correct and available?')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
 	  	  },
 	      data: JSON.stringify({'system_id': system.id}),
 	      dataType: 'json',
@@ -41,7 +85,30 @@ function ManageController($mdDialog, $timeout) {
   	$.ajax({
 	  	  url: "/api/device/" + device.serial_num,
 	  	  type: "PUT",
-	  	  success: function(data){},
+	  	  success: function(data){
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Device saved')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
+	  	  },
+	  	  error: function(){
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Failed to save device.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
+	  	  },
 	      data: JSON.stringify({'name': device.name,
 	  							'enabled': device.enabled}),
 	      dataType: 'json',
@@ -55,6 +122,28 @@ function ManageController($mdDialog, $timeout) {
 	  	  type: "PUT",
 	  	  success: function(data){
 	  	  	refresh(data);
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Device removed.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
+	  	  },
+	  	  error: function(){
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Failed to remove device.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
 	  	  },
 	      data: JSON.stringify({'system_id': null}),
 	      dataType: 'json',
@@ -75,7 +164,29 @@ function ManageController($mdDialog, $timeout) {
 	  	  url: "/api/secondary",
 	  	  type: "POST",
 	  	  success: function(data){
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Secondary user added.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
 	  	  	refresh(data);
+	  	  },
+	  	  error: function(){
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Failed to add secondary user, make sure the user has logged in before adding them.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
 	  	  },
 	      data: JSON.stringify({'system_id': system.id,
 	  							'user_email': result}),
@@ -92,8 +203,30 @@ function ManageController($mdDialog, $timeout) {
 	  	  type: "DELETE",
 	  	  success: function(data){
 	  	  	refresh(data);
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Secondary user removed.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
+	  	  },
+	  	  error: function(){
+	  	  	var toast = $mdToast.simple()
+		      .textContent('Failed to remove secondary user.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
 	  	  }
 	  });
   };
 };
-export default [ '$mdDialog', '$timeout', ManageController ];
+export default [ '$mdDialog', '$timeout', '$mdToast', ManageController ];
