@@ -1,4 +1,6 @@
 import pytest
+from flask import url_for
+
 from models.system import System
 import json
 
@@ -55,9 +57,39 @@ def test_updatefrom_str_grace(random_system):
     assert random_system.grace_period == 20
 
 
+def test_updatefrom_name_size(random_system):
+    # type: (System) -> None
+    data = {
+        "name": "A" * 1500
+    }
+    with pytest.raises(ValueError):
+        random_system.update_from(data)
+
+
 def test_updatefrom_int_grace(random_system):
     # type: (System) -> None
     data = dict(grace_period=20)
     random_system.update_from(data)
 
     assert random_system.grace_period == 20
+
+
+def test_download_urls(
+        random_owner, random_system, random_device, random_devicedata,
+        logged_in_app):
+    user = random_owner.user_key.get()
+    with logged_in_app.application.app_context():
+        resp = logged_in_app.get(
+            url_for('dataframe', system_id=random_system.key.integer_id())
+        )
+
+    assert resp.status_code == 200
+
+    data = json.loads(resp.data)
+    dev_serial = str(random_device.key.get().serial_num)
+    assert dev_serial in data
+
+    url = data.get(dev_serial)
+    assert url.startswith('https://')
+
+    assert 'appspot.com' in url

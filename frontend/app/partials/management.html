@@ -1,4 +1,4 @@
-<div ng-controller="ManageController as ctrl" layout="column">
+<md-content ng-controller="ManageController as ctrl" layout="column">
   <md-list>
 
   <md-subheader>System Info</md-subheader>
@@ -59,7 +59,8 @@
 
     <md-subheader>Secondary Users</md-subheader>
 
-    <md-list-item ng-repeat="(key, s) in global.secondaries"class="secondary-button-padding">
+    <md-list-item ng-repeat="(key, s) in global.secondaries" class="secondary-button-padding">
+      <md-icon ng-style="{'margin':'16px 16px 16px 16px'}" class="material-icons">person_outline</md-icon>
       {{s.fname}} {{s.lname}}
       <md-button class='md-icon-button' ng-click="ctrl.removeSecondary($event, key, global.refreshSecondaries)">
         <md-icon class="material-icons">delete</md-icon>
@@ -73,4 +74,4 @@
     </md-list-item>
   </md-list>
 
-</div>
+</md-content>

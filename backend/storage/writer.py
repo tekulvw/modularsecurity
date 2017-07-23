@@ -33,7 +33,8 @@ def store_data(device, data, type, extension):
                         mode=mode,
                         content_type=type.mime_type,
                         options={
-                            'x-goog-meta-devid': str(dev_id)
+                            'x-goog-meta-devid': str(dev_id),
+                            'x-goog-acl': 'public-read'
                         },
                         retry_params=WRITE_RETRY)
 

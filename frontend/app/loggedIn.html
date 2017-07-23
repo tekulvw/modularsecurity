@@ -10,7 +10,6 @@
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:400,700'>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.4/angular-material.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/app.css"/>
 </head>
 
 <body ng-cloak layout="column" ng-controller="GlobalController as global">
@@ -18,18 +17,26 @@
   <md-toolbar id='globalScope' layout="row" class="md-toolbar-tools">
     <h1 flex=80>Modular Security</h1>
 
-    <md-button id="refresh" class="md-icon-button" ng-click="global.refreshData()">
-      <md-icon class="material-icons">refresh</md-icon>
-    </md-button>
-
     <md-menu hide show-gt-sm>
       <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
-        {{global.currentSystem.name}} <md-icon class="material-icons">arrow_drop_down</md-icon>
+        {{global.currentSystem.name.substr(0,50)}} <md-icon class="material-icons">arrow_drop_down</md-icon>
       </md-button>
       <md-menu-content width = 2>
-        <md-menu-item ng-repeat="s in global.availableSystems">
+        <md-menu-item ng-repeat="s in global.userInfo.owned_systems">
           <md-button ng-click="global.selectSystem(s)">
-           {{s.name}}
+            <md-icon class='material-icons'>
+              person
+            </md-icon>
+            {{s.name.substr(0,50)}}
+          </md-button>
+        </md-menu-item>
+        <md-divider></md-divider>
+        <md-menu-item ng-repeat="s in global.userInfo.secondary_systems">
+          <md-button ng-click="global.selectSystem(s)">
+            <md-icon class='material-icons'>
+              people_outline
+            </md-icon>
+            {{s.name.substr(0,50)}}
           </md-button>
         </md-menu-item>
       </md-menu-content>
@@ -51,12 +58,24 @@
 
     <md-menu>
       <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
-        {{global.currentSystem.name}} <md-icon class="material-icons">arrow_drop_down</md-icon>
+        {{global.currentSystem.name.substr(0,40)}} <md-icon class="material-icons">arrow_drop_down</md-icon>
       </md-button>
       <md-menu-content width = 2>
-        <md-menu-item ng-repeat="s in global.availableSystems">
+        <md-menu-item ng-repeat="s in global.userInfo.owned_systems">
           <md-button ng-click="global.selectSystem(s)">
-           {{s.name}}
+            <md-icon class='material-icons'>
+              person
+            </md-icon>
+            {{s.name.substr(0,40)}}
+          </md-button>
+        </md-menu-item>
+        <md-divider></md-divider>
+        <md-menu-item ng-repeat="s in global.userInfo.secondary_systems">
+          <md-button ng-click="global.selectSystem(s)">
+            <md-icon class='material-icons'>
+              people_outline
+            </md-icon>
+            {{s.name.substr(0,40)}}
           </md-button>
         </md-menu-item>
       </md-menu-content>
@@ -89,7 +108,7 @@
 
     </md-sidenav>
 
-    <div ng-include="global.currentTab.url" layout-padding></div>
+    <div ng-include="global.currentTab.url" layout-fill></div>
 
   </div>
 
