@@ -7,6 +7,8 @@ from models.secondary import Secondary as SecondaryModel
 from models.user import User as UserModel
 from models.system import System as SystemModel
 
+from storage.getter import get_download_url
+
 
 class System(MethodView):
     # @login_required
@@ -60,7 +62,8 @@ class LatestDataFrame(MethodView):
 
         frames = system.get_latest_data_frames()
 
-        devid_loc = {f.device_key.get().serial_num: f.location for f in frames}
+        devid_loc = {f.device_key.get().serial_num: get_download_url(f.location)
+                     for f in frames}
         return jsonify(devid_loc)
 
 

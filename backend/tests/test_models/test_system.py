@@ -1,4 +1,6 @@
 import pytest
+from flask import url_for
+
 from models.system import System
 import json
 
@@ -53,3 +55,24 @@ def test_updatefrom_int_grace(random_system):
     random_system.update_from(data)
 
     assert random_system.grace_period == 20
+
+
+def test_download_urls(
+        random_owner, random_system, random_device, random_devicedata,
+        logged_in_app):
+    user = random_owner.user_key.get()
+    with logged_in_app.application.app_context():
+        resp = logged_in_app.get(
+            url_for('dataframe', system_id=random_system.key.integer_id())
+        )
+
+    assert resp.status_code == 200
+
+    data = json.loads(resp.data)
+    dev_id = str(random_device.key.integer_id())
+    assert dev_id in data
+
+    url = data.get(dev_id)
+    assert url.startswith('https://')
+
+    assert 'appspot.com' in url
