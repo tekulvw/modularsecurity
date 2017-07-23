@@ -62,5 +62,9 @@ def get_next_data_location(device):
 
     num += 1
 
-
     return os.path.join(head, str(num))
+
+
+def get_download_url(location):
+    download_url = "https://storage.googleapis.com{}".format(location)
+    return download_url
