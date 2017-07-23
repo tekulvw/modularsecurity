@@ -26,9 +26,19 @@ deploy:
   keyfile: backend/modular-security-system.json
   project: modular-security-system
   config: backend/app.yaml
+  on: master
   skip_cleanup: true
 - provider: gae
   keyfile: backend/modular-security-system.json
   project: modular-security-system
+  config: backend/app.yaml
+  on: develop
+  skip_cleanup: true
+  no_promote: true
+  no_stop_previous_version: true
+- provider: gae
+  keyfile: backend/modular-security-system.json
+  project: modular-security-system
   config: pubsub/app.yaml
+  on: master
   skip_cleanup: true
