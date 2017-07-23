@@ -13,12 +13,16 @@ function MonitorController($mdToast, $scope, $interval) {
 		  });
   	}
   	else{
-	    $mdToast.show(
-	      $mdToast.simple()
-	        .textContent('Failed to update device.')
-	        .position("top right")
-	        .hideDelay(1500)
-	    );
+	    var toast = $mdToast.simple()
+		      .textContent('You do not have permission to manage this device.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
   	}
   }
 
