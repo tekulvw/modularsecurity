@@ -6,20 +6,28 @@ function SettingsController($mdDialog, $window, $mdToast) {
 	  	  type: "PUT",
 	  	  success: function(data){
 	        self.userInfo = data;
-	  	  	$mdToast.show(
-		      $mdToast.simple()
-		        .textContent('Settings updated successfully.')
-		        .position("top right")
-		        .hideDelay(1500)
-		    );
+	      	var toast = $mdToast.simple()
+		      .textContent('Settings updated successfully.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
 	      },
 	      error: function(){
-	  	  	$mdToast.show(
-		      $mdToast.simple()
-		        .textContent('Failed to update settings.')
-		        .position("top right")
-		        .hideDelay(1500)
-		    );
+	      	var toast = $mdToast.simple()
+		      .textContent('Failed to save account settings.')
+		      .action('CLOSE')
+		      .highlightAction(true)
+		      .position("top right")
+		      .hideDelay(3000);
+
+		    $mdToast.show(toast).then(function(response) {
+		      $mdToast.hide();
+		  	});
 	      },
 	      data: JSON.stringify({'phone_num': info}),
 	      dataType: 'json',
