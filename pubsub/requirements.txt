@@ -5,3 +5,4 @@ google-cloud-storage
 gunicorn
 raven[flask]
 twilio
+requests_toolbelt

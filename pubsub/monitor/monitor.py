@@ -1,6 +1,7 @@
 import json
 import base64
 from typing import List
+from urllib.parse import urlparse
 
 from flask import current_app, request
 
@@ -36,6 +37,7 @@ def data_event_handler():
 def handle_door(data: dict):
     system_id = data['system_id']
     curr_location = data['location']
+    parsed_loc = urlparse(curr_location)
     phones = data['phones']
 
     prev_frames = data['previous']
@@ -46,7 +48,7 @@ def handle_door(data: dict):
         # Can't compare to anything so get out
         return
 
-    curr_data = get_data(curr_location)
+    curr_data = get_data(parsed_loc.path)
     curr_json = json.loads(curr_data)
 
     if curr_json.get('open'):
