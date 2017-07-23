@@ -1,4 +1,4 @@
-function ManageController($mdDialog, $timeout) {
+function ManageController($mdDialog, $timeout, $mdToast) {
   var self = this;
   self.submitSettings = function(system){
 	  $.ajax({
@@ -7,6 +7,14 @@ function ManageController($mdDialog, $timeout) {
 	  	  success: function(data){
 	        self.userInfo = data;
 	      },
+	  	  error: function(){
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Failed to save system settings.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
+	  	  },
 	      data: JSON.stringify({'name': system.name,
 	  							'grace_period': system.grace_period}),
 	      dataType: 'json',
@@ -29,6 +37,14 @@ function ManageController($mdDialog, $timeout) {
 	  	  success: function(data){
 	  	  	refresh(data);
 	  	  },
+	  	  error: function(){
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Failed to add device. Is the serial number correct and available?')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
+	  	  },
 	      data: JSON.stringify({'system_id': system.id}),
 	      dataType: 'json',
 	      contentType: 'application/json'
@@ -42,6 +58,14 @@ function ManageController($mdDialog, $timeout) {
 	  	  url: "/api/device/" + device.serial_num,
 	  	  type: "PUT",
 	  	  success: function(data){},
+	  	  error: function(){
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Failed to save device.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
+	  	  },
 	      data: JSON.stringify({'name': device.name,
 	  							'enabled': device.enabled}),
 	      dataType: 'json',
@@ -55,6 +79,14 @@ function ManageController($mdDialog, $timeout) {
 	  	  type: "PUT",
 	  	  success: function(data){
 	  	  	refresh(data);
+	  	  },
+	  	  error: function(){
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Failed to remove device.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
 	  	  },
 	      data: JSON.stringify({'system_id': null}),
 	      dataType: 'json',
@@ -77,6 +109,14 @@ function ManageController($mdDialog, $timeout) {
 	  	  success: function(data){
 	  	  	refresh(data);
 	  	  },
+	  	  error: function(){
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Failed to add secondary user, make sure the user has logged in before adding them.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
+	  	  },
 	      data: JSON.stringify({'system_id': system.id,
 	  							'user_email': result}),
 	      dataType: 'json',
@@ -92,8 +132,16 @@ function ManageController($mdDialog, $timeout) {
 	  	  type: "DELETE",
 	  	  success: function(data){
 	  	  	refresh(data);
+	  	  },
+	  	  error: function(){
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Failed to remove secondary user.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
 	  	  }
 	  });
   };
 };
-export default [ '$mdDialog', '$timeout', ManageController ];
+export default [ '$mdDialog', '$timeout', '$mdToast', ManageController ];
