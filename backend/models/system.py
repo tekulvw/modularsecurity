@@ -47,6 +47,8 @@ class System(ndb.Model):
         for k, v in data.items():
             if k == "grace_period":
                 v = int(v)
+            if k == "grace_period" and v < 0:
+                raise ValueError("Grace Period must be 0 or greater")
             setattr(self, k, v)
 
         self.put()

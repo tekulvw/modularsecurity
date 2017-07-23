@@ -38,6 +38,14 @@ def test_updatefrom_grace_baddata(random_system):
     with pytest.raises(ValueError):
         random_system.update_from(data)
 
+def test_updatefrom_grace_negative(random_system):
+    # type: (System) -> None
+    data = {
+        "grace_period": "-1"
+    }
+    with pytest.raises(ValueError):
+        random_system.update_from(data)
+
 
 def test_updatefrom_str_grace(random_system):
     # type: (System) -> None
