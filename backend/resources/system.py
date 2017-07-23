@@ -57,7 +57,7 @@ class LatestDataFrame(MethodView):
         is_owner = OwnerModel.is_owner_of(current_user, system)
         is_sec, _ = SecondaryModel.is_secondary_of(current_user, system)
 
-        if not is_owner or is_sec:
+        if not (is_owner or is_sec):
             abort(401)
 
         frames = system.get_latest_data_frames()
