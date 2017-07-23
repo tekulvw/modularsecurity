@@ -5,7 +5,7 @@
 	  </md-card-avatar>
 	  <md-card-header-text>
 	    <span class="md-title">{{d.name}}</span>
-	    <span class="md-subhead">{{d.serial_num}}</span>
+	    <span class="md-subhead">{{d.serial_num}}: {{d.type.display_name}}</span>
 	  </md-card-header-text>
 	  <md-switch ng-style="{'margin': '0px 0px 0px 0px'}" 
 	  				ng-model="d.enabled" 
@@ -21,6 +21,8 @@
 		Device is disabled.
 	</md-card-content>
 	<md-card-content ng-if="d.enabled">
-		Device is not disabled.
+		<div ng-if="d.type.type_name == 'door' || d.type.type_name == 'default'">
+			Open: {{ctrl.getDeviceData(d, global.currentSystem).open}}
+		</div>
 	</md-card-content>
 </md-card>
