@@ -13,7 +13,6 @@
 # limitations under the License.
 
 # [START app]
-import base64
 import json
 import logging
 import os
@@ -22,6 +21,10 @@ from google.cloud.datastore import Client
 from flask import current_app, Flask, jsonify, request, abort
 from pubsub.tasks import get_system_topic, get_all_system_topic
 from monitor import data_event_handler
+from requests_toolbelt.adapters import appengine
+
+appengine.monkeypatch()
+
 from sentry import load_sentry
 
 
