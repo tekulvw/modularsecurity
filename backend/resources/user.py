@@ -112,6 +112,8 @@ class User(MethodView):
         data = request.get_json()
         if data is None or not UserModel.valid_update_keys(data.keys()):
             abort(400)
-
-        current_user.update_from(data)
+        try:
+            current_user.update_from(data)
+        except ValueError as e:
+            abort(400, e.message)
         return jsonify(current_user.to_json())

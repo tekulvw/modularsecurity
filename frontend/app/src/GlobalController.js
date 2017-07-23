@@ -61,8 +61,12 @@ function GlobalController($mdSidenav, $window, $interval, $scope) {
     $scope.$apply();
   }
 
+  self.isOwner = function(){
+    return $.inArray(self.currentSystem, self.userInfo.owned_systems) != -1
+  }
+
   self.updateTabs = function(){
-    if($.inArray(self.currentSystem, self.userInfo.owned_systems) != -1){
+    if(self.isOwner()){
       self.tabs = [{i: 0, name: 'Monitor', url: 'partials/monitor.html'},
                   {i: 1, name: 'Management', url: 'partials/management.html'},
                   {i: 2, name: 'Account Settings', url: 'partials/settings.html'}];
