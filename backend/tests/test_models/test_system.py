@@ -69,10 +69,10 @@ def test_download_urls(
     assert resp.status_code == 200
 
     data = json.loads(resp.data)
-    dev_id = str(random_device.key.integer_id())
-    assert dev_id in data
+    dev_serial = str(random_device.key.get().serial_num)
+    assert dev_serial in data
 
-    url = data.get(dev_id)
+    url = data.get(dev_serial)
     assert url.startswith('https://')
 
     assert 'appspot.com' in url

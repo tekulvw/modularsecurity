@@ -1,6 +1,8 @@
 import json
 
 import pytest
+from models.device import Device
+from models.device import DeviceData
 from flask import url_for
 
 
@@ -89,8 +91,10 @@ def test_dataframes_get(logged_in_app, random_owner, random_devicedata):
         resp = logged_in_app.get(
             url_for('dataframe', system_id=system_key.integer_id())
         )
-
+    data = json.loads(resp.data)
+    device = random_devicedata.device_key.get()
     assert resp.status_code == 200
+    assert device.serial_num in data
 
 
 def test_killswitch_put(logged_in_app, random_system, random_owner):

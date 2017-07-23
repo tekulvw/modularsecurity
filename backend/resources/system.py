@@ -62,7 +62,7 @@ class LatestDataFrame(MethodView):
 
         frames = system.get_latest_data_frames()
 
-        devid_loc = {f.device_key.integer_id(): get_download_url(f.location)
+        devid_loc = {f.device_key.get().serial_num: get_download_url(f.location)
                      for f in frames}
         return jsonify(devid_loc)
 
