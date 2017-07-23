@@ -25,3 +25,10 @@ def test_ensure_phone_string(random_user):
 
 def test_ensure_adminflag_in_json(random_user):
     assert random_user.to_json().get("is_admin") is not None
+
+def test_ensure_phone_not_none(random_user):
+    data = {
+        "phone_num": ""
+    }
+    with pytest.raises(ValueError):
+        random_user.update_from(data)
