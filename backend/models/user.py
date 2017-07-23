@@ -3,13 +3,14 @@ from flask import session, current_app
 from flask_login import UserMixin
 import datetime
 import os
+
+
 # Property Information can be found here:
 # https://cloud.google.com/appengine/docs/standard/python/ndb/entity-property-reference
 
 
 # noinspection PyUnresolvedReferences
 class User(ndb.Model, UserMixin):
-
     VALID_UPDATE_ATTRS = ("fname", "lname", "phone_num")
 
     fname = ndb.StringProperty()
@@ -73,6 +74,8 @@ class User(ndb.Model, UserMixin):
         for k, v in data.items():
             if k == "phone_num" and len(v) != 10:
                 raise ValueError("Phone number too long or short!")
+            if k == "phone_num" and v.isdigit() is False:
+                raise ValueError("Phone number must be a number!")
             setattr(self, k, v)
         self.put()
 

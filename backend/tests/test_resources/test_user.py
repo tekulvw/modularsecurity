@@ -49,6 +49,16 @@ def test_user_phone_update(logged_in_app, random_user):
 
     assert resp.status_code == 400
 
+def test_user_phone_is_int(logged_in_app, random_user):
+    update_data = {
+        "phone_num": "513504435b"
+    }
+    with logged_in_app:
+        resp = logged_in_app.put('/api/user/', data=json.dumps(update_data),
+                                 headers={'content-type': 'application/json'})
+
+    assert resp.status_code == 400
+
 
 """
 @pytest.fixture
