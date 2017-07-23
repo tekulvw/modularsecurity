@@ -1,4 +1,4 @@
-function MonitorController($mdToast, $scope) {
+function MonitorController($mdToast, $scope, $interval) {
   var self = this;
 
   self.toggleEnable = function(ev, device, permission){
@@ -24,8 +24,15 @@ function MonitorController($mdToast, $scope) {
 
 
 	self.gottenData = false;
+	self.lastSystem = null;
 
 	self.getDataFrames = function(system){
+		if(system == null){
+			system = self.lastSystem;
+		}
+		else{
+			self.lastSystem = system;
+		}
 		$.ajax({
 	  	  url: "/api/system/" + system.id + "/dataframes",
 	  	  type: "GET",
@@ -56,5 +63,7 @@ function MonitorController($mdToast, $scope) {
 		return ret;
 	}
 
+	$interval(function(){self.getDataFrames();}, 5000);
+
 };
-export default [ '$mdToast', '$scope', MonitorController ];
+export default [ '$mdToast', '$scope', '$interval', MonitorController ];
