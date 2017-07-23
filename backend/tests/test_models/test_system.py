@@ -49,6 +49,15 @@ def test_updatefrom_str_grace(random_system):
     assert random_system.grace_period == 20
 
 
+def test_updatefrom_name_size(random_system):
+    # type: (System) -> None
+    data = {
+        "name": "A" * 1500
+    }
+    with pytest.raises(ValueError):
+        random_system.update_from(data)
+
+
 def test_updatefrom_int_grace(random_system):
     # type: (System) -> None
     data = dict(grace_period=20)
