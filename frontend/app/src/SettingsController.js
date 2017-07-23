@@ -1,4 +1,4 @@
-function SettingsController($mdDialog, $window) {
+function SettingsController($mdDialog, $window, $mdToast) {
   var self = this;
   self.submitSettings = function(info){
 	  $.ajax({
@@ -6,6 +6,20 @@ function SettingsController($mdDialog, $window) {
 	  	  type: "PUT",
 	  	  success: function(data){
 	        self.userInfo = data;
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Settings updated successfully.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
+	      },
+	      error: function(){
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Failed to update settings.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
 	      },
 	      data: JSON.stringify({'phone_num': info}),
 	      dataType: 'json',
@@ -44,4 +58,4 @@ function SettingsController($mdDialog, $window) {
     });
   };
 };
-export default [ '$mdDialog', '$window', SettingsController ];
+export default [ '$mdDialog', '$window', '$mdToast', SettingsController ];

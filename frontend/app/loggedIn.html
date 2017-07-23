@@ -17,13 +17,9 @@
   <md-toolbar id='globalScope' layout="row" class="md-toolbar-tools">
     <h1 flex=80>Modular Security</h1>
 
-    <md-button id="refresh" class="md-icon-button" ng-click="global.refreshData()">
-      <md-icon class="material-icons">refresh</md-icon>
-    </md-button>
-
     <md-menu hide show-gt-sm>
       <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
-        {{global.currentSystem.name}} <md-icon class="material-icons">arrow_drop_down</md-icon>
+        {{global.currentSystem.name.substr(0,50)}} <md-icon class="material-icons">arrow_drop_down</md-icon>
       </md-button>
       <md-menu-content width = 2>
         <md-menu-item ng-repeat="s in global.userInfo.owned_systems">
@@ -31,7 +27,7 @@
             <md-icon class='material-icons'>
               person
             </md-icon>
-            {{s.name}}
+            {{s.name.substr(0,50)}}
           </md-button>
         </md-menu-item>
         <md-divider></md-divider>
@@ -40,7 +36,7 @@
             <md-icon class='material-icons'>
               people_outline
             </md-icon>
-            {{s.name}}
+            {{s.name.substr(0,50)}}
           </md-button>
         </md-menu-item>
       </md-menu-content>
@@ -62,7 +58,7 @@
 
     <md-menu>
       <md-button md-raised md-primry ng-click="global.openMenu($mdMenu, $event)">
-        {{global.currentSystem.name}} <md-icon class="material-icons">arrow_drop_down</md-icon>
+        {{global.currentSystem.name.substr(0,40)}} <md-icon class="material-icons">arrow_drop_down</md-icon>
       </md-button>
       <md-menu-content width = 2>
         <md-menu-item ng-repeat="s in global.userInfo.owned_systems">
@@ -70,7 +66,7 @@
             <md-icon class='material-icons'>
               person
             </md-icon>
-            {{s.name}}
+            {{s.name.substr(0,40)}}
           </md-button>
         </md-menu-item>
         <md-divider></md-divider>
@@ -79,7 +75,7 @@
             <md-icon class='material-icons'>
               people_outline
             </md-icon>
-            {{s.name}}
+            {{s.name.substr(0,40)}}
           </md-button>
         </md-menu-item>
       </md-menu-content>

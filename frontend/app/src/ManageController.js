@@ -6,6 +6,12 @@ function ManageController($mdDialog, $timeout, $mdToast) {
 	  	  type: "PUT",
 	  	  success: function(data){
 	        self.userInfo = data;
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('System settings updated successfully.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
 	      },
 	  	  error: function(){
 	  	  	$mdToast.show(
@@ -108,6 +114,12 @@ function ManageController($mdDialog, $timeout, $mdToast) {
 	  	  type: "POST",
 	  	  success: function(data){
 	  	  	refresh(data);
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Secondary user added.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
 	  	  },
 	  	  error: function(){
 	  	  	$mdToast.show(
@@ -132,6 +144,12 @@ function ManageController($mdDialog, $timeout, $mdToast) {
 	  	  type: "DELETE",
 	  	  success: function(data){
 	  	  	refresh(data);
+	  	  	$mdToast.show(
+		      $mdToast.simple()
+		        .textContent('Device added.')
+		        .position("top right")
+		        .hideDelay(1500)
+		    );
 	  	  },
 	  	  error: function(){
 	  	  	$mdToast.show(
