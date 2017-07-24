@@ -21,14 +21,13 @@ from google.cloud.datastore import Client
 from flask import current_app, Flask, jsonify, request, abort
 from pubsub.tasks import get_system_topic, get_all_system_topic
 from monitor import data_event_handler
-from requests_toolbelt.adapters import appengine
-
-appengine.monkeypatch()
 
 from sentry import load_sentry
 
 
 app = Flask(__name__)
+
+app.logger.propagate = True
 
 app.config['TESTING'] = bool(os.environ.get('TESTING', False))
 
@@ -59,7 +58,7 @@ all_sys_sub = all_sys_topic.subscription(
 if not all_sys_sub.exists():
     all_sys_sub.create()
 
-load_sentry(app)
+app.config['SENTRY'] = load_sentry(app)
 
 
 # [START push]

@@ -1,6 +1,7 @@
 import json
 import os
 from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
 from flask import current_app
 
 import functools
@@ -36,8 +37,12 @@ def load_twilio_creds() -> (str, str):
 def notify_number(phone_number: str):
     my_num = current_app.config.get('TWILIO_NUMBER')
     client = get_client()
-    client.messages.create(
-        to=phone_number,
-        from_=my_num,
-        body="ALARM ALARM ALARM"
-    )
+    sentry_client = current_app.config.get('SENTRY')
+    try:
+        client.messages.create(
+            to=phone_number,
+            from_=my_num,
+            body="ALARM ALARM ALARM"
+        )
+    except TwilioRestException:
+        sentry_client.captureException()
