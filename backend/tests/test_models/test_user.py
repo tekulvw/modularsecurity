@@ -28,7 +28,7 @@ def test_ensure_adminflag_in_json(random_user):
 
 def test_ensure_phone_not_none(random_user):
     data = {
-        "phone_num": ""
+        "phone_num": None
     }
     with pytest.raises(ValueError):
         random_user.update_from(data)
