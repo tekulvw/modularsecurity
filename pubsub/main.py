@@ -56,7 +56,7 @@ all_sys_sub = all_sys_topic.subscription(
 if not all_sys_sub.exists():
     all_sys_sub.create()
 
-load_sentry(app)
+app.config['SENTRY'] = load_sentry(app)
 
 
 # [START push]

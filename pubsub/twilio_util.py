@@ -37,6 +37,7 @@ def load_twilio_creds() -> (str, str):
 def notify_number(phone_number: str):
     my_num = current_app.config.get('TWILIO_NUMBER')
     client = get_client()
+    sentry_client = current_app.config.get('SENTRY')
     try:
         client.messages.create(
             to=phone_number,
@@ -44,4 +45,4 @@ def notify_number(phone_number: str):
             body="ALARM ALARM ALARM"
         )
     except TwilioRestException:
-        pass
+        sentry_client.captureException()
