@@ -51,7 +51,7 @@ def handle_door(data: dict):
     curr_data = get_data(parsed_loc.path)
     curr_json = json.loads(curr_data)
 
-    if curr_json.get('open'):
+    if curr_json.get('open') is True:
         raise_alarm(phones)
 
 
