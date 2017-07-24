@@ -14,7 +14,7 @@ def get_data(location: str) -> str:
     location = Path(location)
     bucket_name, blob_parts = location.parts[1], location.parts[2:]
 
-    blob_path = '/' + '/'.join(blob_parts)
+    blob_path = '/'.join(blob_parts)
 
     bucket = client.bucket(bucket_name=bucket_name)
     data = None
