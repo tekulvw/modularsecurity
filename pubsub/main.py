@@ -27,6 +27,8 @@ from sentry import load_sentry
 
 app = Flask(__name__)
 
+app.logger.propagate = True
+
 app.config['TESTING'] = bool(os.environ.get('TESTING', False))
 
 app.config['TWILIO_NUMBER'] = os.environ.get('TWILIO_NUMBER', '')

@@ -5,7 +5,7 @@ from pathlib import Path
 from flask import current_app
 
 
-def get_data(location: str) -> str:
+def get_data(location: str) -> bytes:
     """
     Location needs to be in form /bucket_name/path/to/blob.txt
     :param location:
